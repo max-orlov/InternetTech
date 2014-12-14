@@ -1,12 +1,11 @@
 var net = require("net");
 
+//TODO: make sanwitches
 var server = net.createServer(function (socket) {
     socket.write("Welcome\r\n");
     socket.on('data', function(dat){
-        console.log(dat + "\r\n");
-        var str = "HTTP/1.1 200 OK\r\n";
-        socket.write(str);
-        socket.end();
+        socket.write(dat+"\r\n");
+        //socket.end();
 
     });
 });
