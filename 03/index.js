@@ -3,7 +3,11 @@ var net = require("net");
 var server = net.createServer(function (socket) {
     socket.write("Welcome\r\n");
     socket.on('data', function(dat){
-        socket.write(dat + "\r\n");
+        console.log(dat + "\r\n");
+        var str = "HTTP/1.1 200 OK\r\n";
+        socket.write(str);
+        socket.end();
+
     });
 });
 
