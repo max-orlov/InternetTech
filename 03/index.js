@@ -1,11 +1,13 @@
 var net = require("net");
 
+var http = 'HTTP/1.1 200 OK\n\
+Content-Type: text/plain\r\n\
+Tom';
+
 var server = net.createServer(function (socket) {
-    socket.write("Welcome\r\n");
     socket.on('data', function(dat){
         console.log(dat + "\r\n");
-        var str = "HTTP/1.1 200 OK\r\n";
-        socket.write(str);
+        socket.write(http);
         socket.end();
 
     });
