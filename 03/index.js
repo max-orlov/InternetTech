@@ -1,14 +1,17 @@
 var net = require("net");
-
+var parser = require('./hujiparser');
 var http = 'HTTP/1.1 200 OK\n\
 Content-Type: text/plain\r\n\
 Tom';
 
 var server = net.createServer(function (socket) {
+    socket.setEncoding('utf8');
     socket.on('data', function(dat){
-        console.log(dat + "\r\n");
-        socket.write(http);
-        socket.end();
+        var reqObj = parser.parse(dat);
+        // NOTICE : This is an object.
+        console.log(reqObj);
+        socket.write("ll");
+        //socket.end("");
 
     });
 });
