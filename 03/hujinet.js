@@ -5,6 +5,7 @@ var parser = require('./hujiparser');
 var net = require('net'), listening_port, host_adress, text_content;
 var isServerUp = false, wasRequestMade = false;
 
+
 exports.getSocket = function(lPort, hAdress){
     listening_port = lPort;
     host_adress = hAdress;
@@ -19,7 +20,8 @@ exports.getSocket = function(lPort, hAdress){
     server.listen(listening_port, host_adress);
     isServerUp = true;
     return server;
-}
+};
+
 
 exports.getRequestContent = function() {
     if (isServerUp == true)
@@ -29,11 +31,12 @@ exports.getRequestContent = function() {
             console.log("No request has been made");
     else
         console.log("No server is up");
-}
+};
+
 exports.writeToSocket = function(){
 
-}
+};
 
 exports.readFromSocket = function(){
 
-}
+};
