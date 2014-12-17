@@ -4,7 +4,7 @@ var hujiNet         = require("./hujinet");
     url         = require("url");
     querystring = require("querystring");
     hujiParser      = require("./hujiparser")
-var lPort, root, server;
+var lPort, server;
 
 var CRLF = '\r\n';
 
@@ -24,17 +24,13 @@ Server = function () {
 };
 
 exports.start = function (port, rootFolder, callback) {
-    root = rootFolder;
     lPort = port;
-    server = hujiNet.getSocket(lPort, "localhost");
-    console.log(hujiNet.getRequestContent());
-    console.log("REFRESh NOW!")
-    setTimeout(function () {
-        console.log(hujiNet.getRequestContent());
-    },3000);
+    server = hujiNet.getSocket(lPort, "localhost", rootFolder);
+    console.log("Server is up and listening");
+
 };
 
 exports.stop = function (serverID, callback) {
-    console.log("1111");
+    console.log("Stoppin server");
 };
 
