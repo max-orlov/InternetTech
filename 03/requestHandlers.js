@@ -1,5 +1,6 @@
 var querystring = require("querystring"),
     fs = require("fs");
+//var express = require('express');
 
 exports.start = function(request_object, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
@@ -22,10 +23,12 @@ exports.start = function(request_object, rootFolder, parser, socket) {
             writeHTMLFile(rootFolder + request_object['type']['path'].replace("/", "\\"), responseObject, parser, socket);
         }
         else if (requestPath.indexOf('ico') != -1){
-
+            console.log("tried to access ICON")
         }
-        else if (requestPath.indexOf('png') != -1){
-            console.log("PNG >>><<<")
+        else if (requestPath.indexOf('jpg') != -1){
+            console.log("JPEG >>><<<")
+            responseObject['headers']['Content-Type'] = "image/jpeg";
+            writeImageFile(rootFolder + request_object['type']['path'].replace("/", "\\"), responseObject, parser, socket);
         }
     }
 
@@ -48,11 +51,27 @@ function writeHTMLFile(path, responseObject, parser, socket){
     var fs  = require("fs");
     var date = new Date();
     console.log(path);
-    fs.readFile(path, "utf8", function(error, contents) {
+    fs.readFile(path, function(error, contents) {
         if (error){throw error;}
         responseObject['body'] = contents;
         responseObject['headers']['Content-Length'] = contents.length;
-        socket.write(parser.stringify(responseObject), "utf8",new function(){
+        socket.write(parser.stringify(responseObject), "utf8",function(){
+            console.log("Data was sent back on " + date.getHours() +":"+date.getMinutes()+":"+date.getSeconds()+":"+date.getMilliseconds());
+        });
+    });
+}
+
+function writeImageFile(path, responseObject, parser, socket){
+    var fs  = require("fs");
+    var date = new Date();
+    console.log(path);
+    fs.readFile(path, function(error, contents) {
+
+        if (error){console.log("error reading")}
+
+        responseObject['body'] = contents;
+        responseObject['headers']['Content-Length'] = responseObject['body'].length;
+        socket.write(parser.stringify(responseObject['headers']), "utf8" ,function(){
             console.log("Data was sent back on " + date.getHours() +":"+date.getMinutes()+":"+date.getSeconds()+":"+date.getMilliseconds());
         });
     });

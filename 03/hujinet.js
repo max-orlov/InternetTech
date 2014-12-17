@@ -17,7 +17,7 @@ exports.getSocket = function(lPort, hAdress, rootFolder){
             var date = new Date();
             httpRequestObject = parser.parse(dat);
             console.log("Data was received on " + date.getHours() +":"+date.getMinutes()+":"+date.getSeconds()+":"+date.getMilliseconds());
-            //console.log(httpRequestObject)
+            console.log(httpRequestObject)
 
             handlers.start(httpRequestObject, rootFolder, parser, socket);
             wasRequestMade = true;

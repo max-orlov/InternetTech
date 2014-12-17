@@ -30,7 +30,6 @@ exports.parse = function (str) {
 exports.stringify = function (httpResponseObject) {
     var str_to_return = "";
 
-
     str_to_return += httpResponseObject['type'] + "\r\n";
     for (var key in httpResponseObject['headers']){
         str_to_return += key + ":" + httpResponseObject['headers'][key] + "\r\n";
