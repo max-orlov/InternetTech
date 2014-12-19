@@ -4,8 +4,24 @@
 var parser = require('./hujiparser');
 var net = require('net');
 var handlers = require('./requestHandlers');
-var listening_port, host_address, httpRequestObject;
+var listening_port, host_address;
 var isServerUp = false, wasRequestMade = false;
+var HttpResponseObject = function(){
+    this.type = {};
+    this.headers = {};
+    this.headers.Date = "";
+    this.headers['Content-Type'] = "";
+    this.headers['Content-Length'] = "";
+    this.body = "";
+    this.bodyEncoding = "";
+};
+
+var HttpRequestObject = function(){
+    this.type = {};
+    this.headers = {};
+    this.body = "";
+};
+
 
 exports.getSocket = function(lPort, hAddress, rootFolder){
     listening_port = lPort;
@@ -15,12 +31,9 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
 
         socket.on('data', function(dat){
             var date = new Date();
-            httpRequestObject = parser.parse(dat);
-            console.log("Data was received on " + date.getHours() +":"+date.getMinutes()+":"+date.getSeconds()+":"+date.getMilliseconds());
-            console.log(httpRequestObject);
+            var httpRequestObject = parser.parse(dat, HttpRequestObject);
 
-            handlers.start(httpRequestObject, rootFolder, parser, socket);
-            wasRequestMade = true;
+            handlers.start(httpRequestObject, HttpResponseObject, rootFolder, parser, socket);
         });
     });
 
@@ -29,20 +42,3 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
     return server;
 };
 
-exports.getRequestContent = function() {
-    if (isServerUp == true)
-        if (wasRequestMade == true)
-            return httpRequestObject;
-        else
-            console.log("No request has been made");
-    else
-        console.log("No server is up");
-};
-
-exports.writeToSocket = function(){
-
-};
-
-exports.readFromSocket = function(){
-
-};

@@ -8,12 +8,7 @@ var lPort, server;
 
 var CRLF = '\r\n';
 
-var STATUS_CODES = {
-    200 : 'OK',
-    404 : 'Not Found',
-    405 : 'Method Not Allowed',
-    500 : 'Parsing Error'
-};
+
 
 var SERVER_VERSION = "v0.10.33";
 
