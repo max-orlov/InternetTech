@@ -1,7 +1,7 @@
 /**
  * Created by Tom on 14/12/2014.
  */
-
+var url = require('url')
 var CRLF = '\r\n';
 
 exports.parse = function (str, HttpRequestObject) {
@@ -9,20 +9,27 @@ exports.parse = function (str, HttpRequestObject) {
     httpRequestObject['body'] =  str.substr(str.indexOf(CRLF + CRLF) , str.length).trim();
     str.replace(str.indexOf(CRLF + CRLF), httpRequestObject['body'].length,"");
 
-    var text_content = str.split(CRLF);
-    var type = text_content[0].trim();
-    var type_content = type.split(' ');
+    var textContent = str.split(CRLF);
+    var type = textContent[0].trim();
+    var typeContent = type.split(' ');
+    var urlPath = url.parse(typeContent[1].trim(), true);
     httpRequestObject['type'] = {};
-    httpRequestObject['type']['method'] = type_content[0].trim();
-    httpRequestObject['type']['path'] = type_content[1].trim();
-    httpRequestObject['type']['version'] = type_content[2].trim();
+    httpRequestObject['type']['method'] = typeContent[0].trim();
+    httpRequestObject['type']['path'] = urlPath.pathname;
+    httpRequestObject['type']['pathParameters'] = urlPath.query;
+    httpRequestObject['type']['version'] = typeContent[2].trim();
 
-    delete text_content[0];
+
+    console.log(urlPath.pathname)
+    console.log(typeContent[1].trim())
+
+
+    delete textContent[0];
 
     httpRequestObject['headers'] = {};
 
-    for (var index in text_content){
-        var line = text_content[index].trim();
+    for (var index in textContent){
+        var line = textContent[index].trim();
         if (line != '')
             httpRequestObject['headers'][line.substr(0, line.indexOf(':')).trim()] = line.substr(line.indexOf(':') + 1).trim();
     }

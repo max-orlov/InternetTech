@@ -1,6 +1,6 @@
 var querystring = require("querystring"),
     fs = require("fs");
-    url = require("url");
+url = require("url");
 var CONTENT_TYPES={
     js: "application/javascript",
     txt: "text/plain",
@@ -30,7 +30,6 @@ exports.start = function(requestObject, HttpResponseObject, rootFolder, parser, 
         responseObject['type'] = "HTTP/1.1 200 " + STATUS_CODES[200];
         responseObject['headers']['Date'] = "Fri, 31 Dec 1999 23:59:59 GMT";
         var fileType = requestObject['type']['path'].substr(requestObject['type']['path'].lastIndexOf('.') + 1);
-        console.log(fileType)
         responseObject['headers']['Content-Type'] = CONTENT_TYPES[fileType];
 
 
@@ -48,8 +47,12 @@ exports.start = function(requestObject, HttpResponseObject, rootFolder, parser, 
 function writeFile(path, responseObject, parser, socket){
     var fs  = require("fs");
     var date = new Date();
+    fs.stat(path, function(error, stat) {
+        responseObject['headers']['Content-Length'] = stat.size;
+        socket.write(parser.stringify(responseObject));
+        var filestream = fs.createReadStream(path);
+        filestream.pipe(socket);
+    });
 
-    socket.write(parser.stringify(responseObject));
-    var filestream = fs.createReadStream(path);
-    filestream.pipe(socket);
+
 }
