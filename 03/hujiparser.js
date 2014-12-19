@@ -1,7 +1,7 @@
 /**
  * Created by Tom on 14/12/2014.
  */
-var url = require('url')
+var url = require('url');
 var CRLF = '\r\n';
 
 exports.parse = function (str, HttpRequestObject) {

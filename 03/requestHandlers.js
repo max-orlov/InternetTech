@@ -26,9 +26,9 @@ exports.start = function(requestObject, HttpResponseObject, rootFolder, parser, 
     var responseObject = new HttpResponseObject();
     if (requestObject['type']['version'].indexOf('HTTP/1.1') != -1)
     {
-
+        var now = new Date();
         responseObject['type'] = "HTTP/1.1 200 " + STATUS_CODES[200];
-        responseObject['headers']['Date'] = "Fri, 31 Dec 1999 23:59:59 GMT";
+        responseObject['headers']['Date'] = new(Date)().toUTCString();
         var fileType = requestObject['type']['path'].substr(requestObject['type']['path'].lastIndexOf('.') + 1);
         responseObject['headers']['Content-Type'] = CONTENT_TYPES[fileType];
 

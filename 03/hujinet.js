@@ -30,7 +30,6 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
         socket.setEncoding('utf8');
 
         socket.on('data', function(dat){
-            var date = new Date();
             var httpRequestObject = parser.parse(dat, HttpRequestObject);
 
             handlers.start(httpRequestObject, HttpResponseObject, rootFolder, parser, socket);
