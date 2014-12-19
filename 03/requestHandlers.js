@@ -26,26 +26,26 @@ exports.start = function(request_object, rootFolder, parser, socket) {
             console.log("tried to access ICON")
         }
         else if (requestPath.indexOf('jpg') != -1){
-            console.log("JPEG >>><<<")
+            console.log("JPEG >>><<<");
             responseObject['headers']['Content-Type'] = "image/jpeg";
             writeImageFile(rootFolder + request_object['type']['path'].replace("/", "\\"), responseObject, parser, socket);
         }
     }
 
     return true;
-}
+};
 
 exports.upload = function(response, request) {
     console.log("Request handler 'upload' was called.");
 
     console.log("about to parse");
-}
+};
 
 exports.show = function(response) {
     console.log("Request handler 'show' was called.");
     response.writeHead(200, {"Content-Type": "image/png"});
     fs.createReadStream("/tmp/test.png").pipe(response);
-}
+};
 
 function writeHTMLFile(path, responseObject, parser, socket){
     var fs  = require("fs");

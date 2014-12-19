@@ -2,10 +2,12 @@
  * Created by Tom on 14/12/2014.
  */
 
+var CRLF = '\r\n';
+
 exports.parse = function (str) {
     var httpRequestObject={};
-    httpRequestObject['body'] =  str.substr(str.indexOf('\r\n\r\n')+4 , str.length);
-    str.replace(str.indexOf('\r\n\r\n'), httpRequestObject['body'].length,"");
+    httpRequestObject['body'] =  str.substr(str.indexOf(CRLF + CRLF) + 4 , str.length);
+    str.replace(str.indexOf(CRLF + CRLF), httpRequestObject['body'].length,"");
 
     var text_content = str.split('\n');
     var type = text_content[0].trim();
@@ -30,11 +32,11 @@ exports.parse = function (str) {
 exports.stringify = function (httpResponseObject) {
     var str_to_return = "";
 
-    str_to_return += httpResponseObject['type'] + "\r\n";
+    str_to_return += httpResponseObject['type'] + CRLF;
     for (var key in httpResponseObject['headers']){
-        str_to_return += key + ":" + httpResponseObject['headers'][key] + "\r\n";
+        str_to_return += key + ":" + httpResponseObject['headers'][key] + CRLF;
     }
-    str_to_return += "\r\n" + httpResponseObject['body'];
+    str_to_return += CRLF + httpResponseObject['body'];
     console.log(str_to_return);
     return str_to_return;
 };

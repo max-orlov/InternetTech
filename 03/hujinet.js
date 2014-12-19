@@ -4,12 +4,12 @@
 var parser = require('./hujiparser');
 var net = require('net');
 var handlers = require('./requestHandlers');
-var listening_port, host_adress, httpRequestObject;
+var listening_port, host_address, httpRequestObject;
 var isServerUp = false, wasRequestMade = false;
 
-exports.getSocket = function(lPort, hAdress, rootFolder){
+exports.getSocket = function(lPort, hAddress, rootFolder){
     listening_port = lPort;
-    host_adress = hAdress;
+    host_address = hAddress;
     var server = net.createServer(function (socket) {
         socket.setEncoding('utf8');
 
@@ -17,17 +17,17 @@ exports.getSocket = function(lPort, hAdress, rootFolder){
             var date = new Date();
             httpRequestObject = parser.parse(dat);
             console.log("Data was received on " + date.getHours() +":"+date.getMinutes()+":"+date.getSeconds()+":"+date.getMilliseconds());
-            console.log(httpRequestObject)
+            console.log(httpRequestObject);
 
             handlers.start(httpRequestObject, rootFolder, parser, socket);
             wasRequestMade = true;
         });
     });
 
-    server.listen(listening_port, host_adress);
+    server.listen(listening_port, host_address);
     isServerUp = true;
     return server;
-}
+};
 
 exports.getRequestContent = function() {
     if (isServerUp == true)
@@ -41,8 +41,8 @@ exports.getRequestContent = function() {
 
 exports.writeToSocket = function(){
 
-}
+};
 
 exports.readFromSocket = function(){
 
-}
+};
