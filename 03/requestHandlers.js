@@ -1,13 +1,17 @@
-var querystring = require("querystring"),
-    fs = require("fs");
-    url = require("url");
-    serverSettngs  = require("./settings");
+var serverSettngs  = require("./settings"),
+    fs = require("fs"),
+    url = require("url"),
+    querystring = require("querystring");
+
 
 
 HttpResponseObject = function(){
     this.version = "";
     this.status = "";
     this.headers = {};
+    this.headers['Content-Type'] = "";
+    this.headers['Content-Length'] = "";
+
 };
 
 exports.HttpRequestObject = function(){
@@ -29,9 +33,10 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
     if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSION)
     {
         responseObject.status = serverSettngs.STATUS_CODES['200'];
-        responseObject.headers.date = new(Date)().toUTCString();
+        responseObject.headers['Date'] = new(Date)().toUTCString();
         var fileType = requestObject.path.substr(requestObject.path.lastIndexOf('.') + 1);
         responseObject.headers['Content-Type'] = serverSettngs.CONTENT_TYPES[fileType];
+        responseObject.headers['Server'] = serverSettngs.SERVER_VERSION;
 
     }
     else{

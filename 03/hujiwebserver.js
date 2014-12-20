@@ -1,5 +1,4 @@
-var hujiNet         = require("./hujinet");
-    hujiParser      = require("./hujiparser");
+var hujiNet         = require("./hujinet"),
     serverSettings  = require("./settings");
 
 var lPort, server;

@@ -1,4 +1,4 @@
-exports.SERVER_VERSION = 'v0.10.33';
+exports.SERVER_VERSION = 'node.js v0.10.33';
 
 exports.CRLF = '\r\n';
 

@@ -1,5 +1,5 @@
-var url             = require('url');
-    serverSettings  = require('./settings');
+var url             = require('url'),
+    serverSettings  = require('./settings'),
     requestHandlers = require('./requestHandlers');
 
 exports.parse = function (httpRequestStr) {
