@@ -4,7 +4,7 @@
 var parser = require('./hujiparser');
     serverSettings  = require('./settings');
     handlers = require('./requestHandlers');
-    server = require('net');
+    net = require('net');
 
 
 var listeningPort;
@@ -24,7 +24,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
         });
     });
 
-    net.once('error', function(err) {
+    server.once('error', function(err) {
         if (err.code === 'EADDRINUSE') {
             console.log("port is currently in use");
             //TODO:: handle error.
