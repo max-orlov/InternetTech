@@ -2,7 +2,7 @@ var serverSettngs  = require("./settings"),
     fs = require("fs"),
     url = require("url"),
     querystring = require("querystring");
-
+    pathModule = require("path");
 
 
 HttpResponseObject = function(){
@@ -35,26 +35,28 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
     {
         responseObject.status = serverSettngs.STATUS_CODES['200'];
         responseObject.headers['Date'] = new(Date)().toUTCString();
-        var fileType = requestObject.path.substr(requestObject.path.lastIndexOf('.') + 1);
+        var fileType = pathModule.extname(requestObject.path);
         responseObject.headers['Content-Type'] = serverSettngs.CONTENT_TYPES[fileType];
         responseObject.headers['Server'] = serverSettngs.SERVER_VERSION;
-
     }
     else{
         responseObject.status = serverSettngs.STATUS_CODES['505'];
-
     }
-    writeFile(rootFolder + requestObject.path.replace("/", "\\"), responseObject, parser, socket);
+    writeObjectToSocket(pathModule.join(rootFolder, requestObject.path), responseObject, parser, socket);
 
     return true;
 };
 
 
-function writeFile(path, responseObject, parser, socket){
-    fs.stat(path, function(error, stat) {
-        responseObject.headers['Content-Length'] = stat.size;
-        socket.write(parser.stringify(responseObject));
-        var fileStream = fs.createReadStream(path);
-        fileStream.pipe(socket);
-    });
+function writeObjectToSocket(path, responseObject, parser, socket){
+        fs.stat(path, function (error, stat) {
+            responseObject.headers['Content-Length'] = stat.size;
+
+            socket.write(parser.stringify(responseObject));
+            var fileStream = fs.createReadStream(path);
+            fileStream.on("error", function(e) { console.log(e); });
+            fileStream.pipe(socket, function(){socket.destroy();});
+
+        });
+
 }
