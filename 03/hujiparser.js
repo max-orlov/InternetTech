@@ -20,6 +20,7 @@ exports.parse = function (httpRequestStr) {
         httpRequestObject.params = urlPath.query;
     } else {
         //TODO:: Extract POST parameters.
+        httpRequestObject.params = '';
     }
 
     delete textContent[0];
