@@ -1,58 +1,54 @@
 var querystring = require("querystring"),
     fs = require("fs");
-url = require("url");
-var CONTENT_TYPES={
-    js: "application/javascript",
-    txt: "text/plain",
-    html: "text/html",
-    css: "text/css",
-    jpg: "image/jpeg",
-    jpeg: "image/jpeg",
-    gif: "image/gif",
-    png: "image/png"
-}
+    url = require("url");
+    serverSettngs  = require("./settings");
 
-var STATUS_CODES = {
-    200 : 'OK',
-    404 : 'Not Found',
-    405 : 'Method Not Allowed',
-    500 : 'Parsing Error'
+
+HttpResponseObject = function(){
+    this.version = "";
+    this.status = "";
+    this.headers = {};
 };
 
-exports.start = function(requestObject, HttpResponseObject, rootFolder, parser, socket) {
+exports.HttpRequestObject = function(){
+    this.method = "";
+    this.path = "";
+    this.params = "";
+    this.version = "";
+    this.headers = {};
+    this.body = "";
+};
+
+
+exports.start = function(requestObject, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
-    //console.log(requestObject);
 
     var responseObject = new HttpResponseObject();
-    if (requestObject['type']['version'].indexOf('HTTP/1.1') != -1)
-    {
-        var now = new Date();
-        responseObject['type'] = "HTTP/1.1 200 " + STATUS_CODES[200];
-        responseObject['headers']['Date'] = new(Date)().toUTCString();
-        var fileType = requestObject['type']['path'].substr(requestObject['type']['path'].lastIndexOf('.') + 1);
-        responseObject['headers']['Content-Type'] = CONTENT_TYPES[fileType];
+    responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSION;
 
+    if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSION)
+    {
+        responseObject.status = serverSettngs.STATUS_CODES['200'];
+        responseObject.headers.date = new(Date)().toUTCString();
+        var fileType = requestObject.path.substr(requestObject.path.lastIndexOf('.') + 1);
+        responseObject.headers['Content-Type'] = serverSettngs.CONTENT_TYPES[fileType];
 
     }
     else{
-        responseObject['type'] = "HTTP/1.1 404" + STATUS_CODES[404];
+        responseObject.status = serverSettngs.STATUS_CODES['505'];
 
     }
-    writeFile(rootFolder + requestObject['type']['path'].replace("/", "\\"), responseObject, parser, socket);
+    writeFile(rootFolder + requestObject.path.replace("/", "\\"), responseObject, parser, socket);
 
     return true;
 };
 
 
 function writeFile(path, responseObject, parser, socket){
-    var fs  = require("fs");
-    var date = new Date();
     fs.stat(path, function(error, stat) {
-        responseObject['headers']['Content-Length'] = stat.size;
+        responseObject.headers['Content-Length'] = stat.size;
         socket.write(parser.stringify(responseObject));
-        var filestream = fs.createReadStream(path);
-        filestream.pipe(socket);
+        var fileStream = fs.createReadStream(path);
+        fileStream.pipe(socket);
     });
-
-
 }

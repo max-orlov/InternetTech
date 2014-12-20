@@ -1,48 +1,44 @@
-/**
- * Created by Tom on 14/12/2014.
- */
-var url = require('url');
-var CRLF = '\r\n';
+var url             = require('url');
+    serverSettings  = require('./settings');
+    requestHandlers = require('./requestHandlers');
 
-exports.parse = function (str, HttpRequestObject) {
-    var httpRequestObject = new HttpRequestObject();
-    httpRequestObject['body'] =  str.substr(str.indexOf(CRLF + CRLF) , str.length).trim();
-    str.replace(str.indexOf(CRLF + CRLF), httpRequestObject['body'].length,"");
+exports.parse = function (httpRequestStr) {
+    var httpRequestObject = new requestHandlers.HttpRequestObject();
 
-    var textContent = str.split(CRLF);
+    httpRequestObject.body =  httpRequestStr.substr(httpRequestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF) , httpRequestStr.length).trim();
+    httpRequestStr.replace(httpRequestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF), httpRequestObject.body.length,"");
+
+    var textContent = httpRequestStr.split(serverSettings.CRLF);
     var type = textContent[0].trim();
     var typeContent = type.split(' ');
     var urlPath = url.parse(typeContent[1].trim(), true);
-    httpRequestObject['type'] = {};
-    httpRequestObject['type']['method'] = typeContent[0].trim();
-    httpRequestObject['type']['path'] = urlPath.pathname;
-    httpRequestObject['type']['pathParameters'] = urlPath.query;
-    httpRequestObject['type']['version'] = typeContent[2].trim();
+    httpRequestObject.method = typeContent[0].trim();
+    httpRequestObject.path = urlPath.pathname;
+    httpRequestObject.version = typeContent[2].trim();
 
-
-    console.log(urlPath.pathname)
-    console.log(typeContent[1].trim())
-
+    if (httpRequestObject.method === serverSettings.HTTP_METHODS.GET || httpRequestObject.method === serverSettings.HTTP_METHODS.HEAD) {
+        httpRequestObject.params = urlPath.query;
+    } else {
+        //TODO:: Extract POST parameters.
+    }
 
     delete textContent[0];
-
-    httpRequestObject['headers'] = {};
 
     for (var index in textContent){
         var line = textContent[index].trim();
         if (line != '')
-            httpRequestObject['headers'][line.substr(0, line.indexOf(':')).trim()] = line.substr(line.indexOf(':') + 1).trim();
+            httpRequestObject.headers[line.substr(0, line.indexOf(':')).trim()] = line.substr(line.indexOf(':') + 1).trim();
     }
     return httpRequestObject;
 };
 
 exports.stringify = function (httpResponseObject) {
-    var str_to_return = "";
+    var httpResponseStr = "";
 
-    str_to_return += httpResponseObject['type'] + CRLF;
-    for (var key in httpResponseObject['headers']){
-        str_to_return += key + ":" + httpResponseObject['headers'][key] + CRLF;
+    httpResponseStr += httpResponseObject.version + " " + httpResponseObject.status + " " + serverSettings.STATUS_CODES[httpResponseObject.status] + serverSettings.CRLF;
+    for (var key in httpResponseObject.headers){
+        httpResponseStr += key + ":" + httpResponseObject.headers[key] + serverSettings.CRLF;
     }
-    //str_to_return += CRLF + httpResponseObject['body'];
-    return str_to_return + CRLF;
+    httpResponseStr += serverSettings.CRLF;
+    return httpResponseStr;
 };
