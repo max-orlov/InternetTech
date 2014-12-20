@@ -28,12 +28,12 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
         if (err.code === 'EADDRINUSE') {
             console.log("port is currently in use");
             //TODO:: handle error.
-        } else {
-            server.listen(listeningPort, hostAddress);
-            isServerUp = true;
-            return server;
         }
     });
+
+    server.listen(listeningPort, hostAddress);
+    isServerUp = true;
+    return server;
 };
 
 
