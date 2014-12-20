@@ -30,6 +30,7 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
     var responseObject = new HttpResponseObject();
     responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'];
 
+    //TODO:: I think we should support html v1.0
     if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'])
     {
         responseObject.status = serverSettngs.STATUS_CODES['200'];
