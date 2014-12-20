@@ -28,9 +28,9 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
 
     var responseObject = new HttpResponseObject();
-    responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSION;
+    responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'];
 
-    if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSION)
+    if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'])
     {
         responseObject.status = serverSettngs.STATUS_CODES['200'];
         responseObject.headers['Date'] = new(Date)().toUTCString();

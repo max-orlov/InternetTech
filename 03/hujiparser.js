@@ -5,6 +5,8 @@ var url             = require('url'),
 exports.parse = function (httpRequestStr) {
     var httpRequestObject = new requestHandlers.HttpRequestObject();
 
+    //TODO:: pay attention that you and the browser should use the content-length header in order to recognize the end of the body of the request/response).
+    //TODO:: You can assume that when an http request contains a body, it contains a content-length header that specifies the length of the body.
     httpRequestObject.body =  httpRequestStr.substr(httpRequestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF) , httpRequestStr.length).trim();
     httpRequestStr.replace(httpRequestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF), httpRequestObject.body.length,"");
 

@@ -16,6 +16,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
 
     var server = net.createServer(function (socket) {
         socket.setEncoding(serverSettings.ENCODING);
+        //TODO:: ask if we need to check that the data is a valid HTTP request
         socket.on('data', function(dat){
             var httpRequestObject = parser.parse(dat);
             handlers.start(httpRequestObject, rootFolder, parser, socket);

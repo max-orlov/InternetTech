@@ -31,6 +31,10 @@ exports.HTTP_METHODS = {
 
 exports.LAST_REQUEST_TIMEOUT_SEC = 2;
 
-exports.HTTP_SUPPORTED_VERSION = 'HTTP/1.1';
+
+exports.HTTP_SUPPORTED_VERSIONS = {
+    1.0 : 'HTTP/1.0',
+    1.1 : 'HTTP/1.1'
+};
 
 exports.HOST_ADDRESS = 'localhost';
