@@ -1,59 +1,42 @@
-var serverSettngs  = require("./settings"),
-    fs = require("fs"),
-    url = require("url"),
+var serverSettings  = require("./settings"),
+    Response         = require("./response"),
+    fs              = require("fs"),
+    url             = require("url"),
     querystring = require("querystring");
 
 
 
-HttpResponseObject = function(){
-    this.version = "";
-    this.status = "";
-    this.headers = {};
-    this.headers['Content-Type'] = "";
-    this.headers['Content-Length'] = "";
 
-};
-
-exports.HttpRequestObject = function(){
-    this.method = "";
-    this.path = "";
-    this.params = "";
-    this.version = "";
-    this.headers = {};
-    this.body = "";
-};
-
-
-exports.start = function(requestObject, rootFolder, parser, socket) {
+exports.start = function(request, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
 
-    var responseObject = new HttpResponseObject();
-    responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'];
+    var response = new Response();
+    response.version =  serverSettings.HTTP_SUPPORTED_VERSIONS['1.1'];
 
     //TODO:: I think we should support html v1.0
-    if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'])
+    if (request.version == serverSettings.HTTP_SUPPORTED_VERSIONS['1.1'])
     {
-        responseObject.status = serverSettngs.STATUS_CODES['200'];
-        responseObject.headers['Date'] = new(Date)().toUTCString();
-        var fileType = requestObject.path.substr(requestObject.path.lastIndexOf('.') + 1);
-        responseObject.headers['Content-Type'] = serverSettngs.CONTENT_TYPES[fileType];
-        responseObject.headers['Server'] = serverSettngs.SERVER_VERSION;
+        response.status = serverSettings.STATUS_CODES['200'];
+        response.headers['Date'] = new(Date)().toUTCString();
+        var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
+        response.headers['Content-Type'] = serverSettings.CONTENT_TYPES[fileType];
+        response.headers['Server'] = serverSettings.SERVER_VERSION;
 
     }
     else{
-        responseObject.status = serverSettngs.STATUS_CODES['505'];
+        response.status = serverSettings.STATUS_CODES['505'];
 
     }
-    writeFile(rootFolder + requestObject.path.replace("/", "\\"), responseObject, parser, socket);
+    writeFile(rootFolder + request.path.replace("/", "\\"), response, parser, socket);
 
     return true;
 };
 
 
-function writeFile(path, responseObject, parser, socket){
+function writeFile(path, response, parser, socket){
     fs.stat(path, function(error, stat) {
-        responseObject.headers['Content-Length'] = stat.size;
-        socket.write(parser.stringify(responseObject));
+        response.headers['Content-Length'] = stat.size;
+        socket.write(parser.stringify(response));
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(socket);
     });
