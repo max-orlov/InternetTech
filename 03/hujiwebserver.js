@@ -1,5 +1,5 @@
 var hujiNet         = require("./hujinet"),
-    serverSettings  = require("./settings");
+    serverSettings  = require("./settings/settings");
 
 var lPort,
     server;

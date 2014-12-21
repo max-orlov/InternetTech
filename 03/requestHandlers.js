@@ -1,5 +1,5 @@
-var serverSettings  = require("./settings"),
-    Response         = require("./response"),
+var serverSettings  = require("./settings/settings"),
+    Response         = require("./response/response"),
     fs              = require("fs"),
     url             = require("url"),
     querystring = require("querystring");
@@ -27,8 +27,9 @@ exports.start = function(request, rootFolder, parser, socket) {
 
     }
 
-    if(request.status === "Done") {
-        var normPath = rootFolder + (request.path.replace("/", "\\"));
+    if(request != null && request.status === "Done") {
+
+        var normPath = rootFolder + (request.path.replace(/\//g, "\\"));
         console.log(normPath);
         fs.exists(normPath, function (exists) {
             if(!exists){

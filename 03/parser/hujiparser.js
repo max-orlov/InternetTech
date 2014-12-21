@@ -1,6 +1,6 @@
 var url             = require('url'),
-    Request         = require("./request"),
-    serverSettings  = require('./settings');
+    Request         = require("./../request/request"),
+    serverSettings  = require('./../settings/settings');
 
 function parse(requestStr) {
     var request = new Request();
