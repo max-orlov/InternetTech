@@ -10,7 +10,8 @@ exports.CONTENT_TYPES={
     jpg: 'image/jpeg',
     jpeg: 'image/jpeg',
     gif: 'image/gif',
-    png: 'image/png'
+    png: 'image/png',
+    ico: 'image/x-ico'
 };
 
 exports.STATUS_CODES = {

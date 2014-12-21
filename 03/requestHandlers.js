@@ -33,10 +33,10 @@ exports.start = function(request, rootFolder, parser, socket) {
 };
 
 
-function writeFile(path, response, parser, socket){
+function writeFile(path, responseObject, parser, socket){
     fs.stat(path, function(error, stat) {
-        response.headers['Content-Length'] = stat.size;
-        socket.write(parser.stringify(response));
+        responseObject.headers['Content-Length'] = stat.size;
+        socket.write(parser.stringify(responseObject));
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(socket);
     });
