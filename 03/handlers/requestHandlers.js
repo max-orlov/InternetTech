@@ -1,5 +1,5 @@
-var serverSettings  = require("./settings/settings"),
-    Response         = require("./response/response"),
+var serverSettings  = require("./../settings/settings"),
+    Response         = require("./../response/response"),
     fs              = require("fs"),
     url             = require("url"),
     querystring = require("querystring");

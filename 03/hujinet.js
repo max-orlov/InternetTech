@@ -1,6 +1,6 @@
 var parser = require('./parser/hujiparser'),
     serverSettings  = require('./settings/settings'),
-    handlers = require('./requestHandlers'),
+    handlers = require('./handlers/requestHandlers'),
     net = require('net');
 
 
