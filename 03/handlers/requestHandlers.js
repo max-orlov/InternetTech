@@ -17,7 +17,7 @@ function start(request, rootFolder, parser, socket) {
     var response = new Response();
     var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
 
-    response.httpVersion =  serverSettings.HTTP_SUPPORTED_VERSIONS['1.1'];
+    response.httpVersion = request.httpVersion;
     response.status = serverSettings.STATUS_CODES['200'];
     response.headers['date'] = new(Date)().toUTCString();
     response.headers['content-type'] = serverSettings.CONTENT_TYPES[fileType];
