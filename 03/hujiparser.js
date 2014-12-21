@@ -5,11 +5,12 @@ var url             = require('url'),
 function parse(requestStr) {
     var request = new Request();
     request.rawData = requestStr;
+    request.status = 200;
     separateHeaders(request);
     parseHeaders(request);
     validateHeaders(request);
     parseBody(request);
-
+    console.log(request);
     return request;
 }
 
@@ -27,10 +28,12 @@ function separateHeaders(request) {
 }
 
 function parseHeaders(request) {
+
     var headersContent = request.rawHeaders.split(serverSettings.CRLF);
     var type = headersContent[0].trim();
     var typeContent = type.split(' ');
-    var urlPath = url.parse(typeContent[1].trim(), true);
+
+    var urlPath = url.parse(typeContent[1], true);
 
 
     if(typeContent.length != 3) {
