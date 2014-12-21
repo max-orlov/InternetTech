@@ -5,12 +5,24 @@ var url             = require('url'),
 function parse(requestStr) {
     var request = new Request();
     request.rawData = requestStr;
-    request.status = 200;
-    separateHeaders(request);
-    parseHeaders(request);
-    validateHeaders(request);
-    parseBody(request);
-    console.log(request);
+
+    console.log(requestStr);
+
+    if(request.status === null) {
+        separateHeaders(request);
+    }
+    if (request.status === "Done Separate headers") {
+        parseHeaders(request);
+    }
+
+    if (request.status === "Done parse headers") {
+        validateHeaders(request);
+    }
+
+    if (request.status === "Done validate headers") {
+        parseBody(request);
+    }
+
     return request;
 }
 
@@ -21,6 +33,7 @@ function separateHeaders(request) {
                 if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
                     request.rawHeaders = request.rawData.slice(0, i);
                     request.headersEnd = i + 3;
+                    request.status = "Done Separate headers";
                 }
             }
         }
@@ -28,7 +41,6 @@ function separateHeaders(request) {
 }
 
 function parseHeaders(request) {
-
     var headersContent = request.rawHeaders.split(serverSettings.CRLF);
     var type = headersContent[0].trim();
     var typeContent = type.split(' ');
@@ -63,8 +75,8 @@ function parseHeaders(request) {
             }
             request.headers[line.substr(0, separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
         }
-
     }
+    request.status = "Done parse headers";
 }
 
 function validateHeaders(request) {
@@ -85,6 +97,7 @@ function validateHeaders(request) {
         request.status = 405;
         throw new Error("The required method is not supported");
     }
+    request.status = "Done validate headers";
 
 }
 
@@ -96,6 +109,7 @@ function parseBody(request) {
         request.body = request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength);
     } else {
         request.body = "";
+        request.status = "Done";
     }
 }
 

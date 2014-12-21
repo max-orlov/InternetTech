@@ -26,16 +26,31 @@ exports.start = function(request, rootFolder, parser, socket) {
         response.status = serverSettings.STATUS_CODES['505'];
 
     }
-    writeFile(rootFolder + request.path.replace("/", "\\"), response, parser, socket);
+
+    if(request.status === "Done") {
+        var normPath = rootFolder + (request.path.replace("/", "\\"));
+        console.log(normPath);
+        fs.exists(normPath, function (exists) {
+            if(!exists){
+                response.status = 404;
+                writeHeaders(response, parser, socket);
+            } else {
+                writeHeaders(response, parser, socket);
+                writeFile(normPath, response, parser, socket);
+            }
+        });
+    }
 
     return true;
 };
 
+function writeHeaders(response, parser, socket) {
+    socket.write(parser.stringify(response));
+}
 
 function writeFile(path, response, parser, socket){
     fs.stat(path, function(error, stat) {
-        response.headers['Content-Length'] = stat.size;
-        socket.write(parser.stringify(response));
+        //response.headers['Content-Length'] = stat.size;
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(socket);
     });
