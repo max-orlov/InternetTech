@@ -47,7 +47,8 @@ function writeFile(path, response, socket){
     fs.stat(path, function(error, stat) {
         response.headers['Content-Length'] = stat.size;
         var fileStream = fs.createReadStream(path);
-        fileStream.pipe(socket);
+        fileStream.pipe(socket, {end: false});
+
     });
 }
 

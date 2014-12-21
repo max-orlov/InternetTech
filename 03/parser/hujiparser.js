@@ -1,6 +1,8 @@
 var url             = require('url'),
     serverSettings  = require('./../settings/settings');
 
+
+//TODO: Continuous buffer rather overwriting.
 function parse(requestStr, request) {
     request.rawData += requestStr;
 
@@ -60,6 +62,7 @@ function parseHeaders(request) {
         request.params = '';
     }
 
+    //TODO: Find a better way deleting the method line. maybe parsing apart.
     delete headersContent[0];
     for (var index in headersContent){
         var line = headersContent[index].trim();
@@ -82,7 +85,7 @@ function validateHeaders(request) {
         throw new Error("HTTP version is not supported");
     }
 
-    if (request.httpVersion === serverSettings.HTTP_SUPPORTED_VERSIONS['1.0']) {
+    if (request.httpVersion === serverSettings.HTTP_SUPPORTED_VERSIONS['1.1']) {
         if (!("host" in request.headers)) {
             request.status = 500;
             throw new Error("HTTP version is v1.1 and doesn't contain 'host' key");
@@ -120,8 +123,7 @@ function stringify(response) {
     for (var key in response.headers){
         responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
     }
-    responseStr += serverSettings.CRLF;
-    return responseStr;
+    return responseStr + serverSettings.CRLF;
 }
 
 
