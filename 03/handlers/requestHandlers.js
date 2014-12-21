@@ -23,7 +23,8 @@ function start(request, rootFolder, parser, socket) {
     response.headers['content-type'] = serverSettings.CONTENT_TYPES[fileType];
     response.headers['server'] = serverSettings.SERVER_VERSION;
 
-    if(request != null && request.status === "Done") {
+    if(request != null && request.status === request.requestStatus.done) {
+        console.log(request);
         var normPath = path.normalize(rootFolder + request.path);
         fs.exists(normPath, function (exists) {
             if(!exists){
@@ -31,7 +32,7 @@ function start(request, rootFolder, parser, socket) {
                 writeHeaders(response, parser, socket);
             } else {
                 writeHeaders(response, parser, socket);
-                writeFile(normPath, response, parser, socket);
+                writeFile(normPath, response, socket);
             }
         });
     }
@@ -42,7 +43,7 @@ function writeHeaders(response, parser, socket) {
     socket.write(parser.stringify(response));
 }
 
-function writeFile(path, response, parser, socket){
+function writeFile(path, response, socket){
     fs.stat(path, function(error, stat) {
         response.headers['Content-Length'] = stat.size;
         var fileStream = fs.createReadStream(path);

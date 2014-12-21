@@ -4,10 +4,11 @@ var Request = function(){
     this.method = null;
     this.path = null;
     this.params = {};
-    this.status = null;
+    this.status = this.requestStatus.initialized;
     this.httpVersion = null;
     this.headers = {};
     this.body = null;
+    this.rawData = ""
 };
 
 Request.prototype.isKeepAlive = function() {
@@ -16,6 +17,14 @@ Request.prototype.isKeepAlive = function() {
     } else {
         return !(this.headers["connection"] && this.headers["connection"].toLowerCase() === "close");
     }
+};
+
+Request.prototype.requestStatus = {
+    initialized : "initialized",
+    separatedHeaders: "separatedHeaders",
+    parsedHeaders : "parsedHeaders",
+    validatedHeaders: "validatedHeaders",
+    done : "done"
 };
 
 module.exports = Request;

@@ -1,6 +1,7 @@
 var parser = require('./parser/hujiparser'),
     serverSettings  = require('./settings/settings'),
     handlers = require('./handlers/requestHandlers'),
+    Request = require('./request/request'),
     net = require('net');
 
 
@@ -15,10 +16,11 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
     hostAddress = hAddress;
 
     var server = net.createServer(function (socket) {
+        var request = new Request;
         socket.setEncoding(serverSettings.ENCODING);
         //TODO:: ask if we need to check that the data is a valid HTTP Response
         socket.on('data', function(dat){
-            var request = parser.parse(dat);
+            request = parser.parse(dat, request);
             handlers.start(request, rootFolder, parser, socket);
         });
     });

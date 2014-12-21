@@ -1,25 +1,21 @@
 var url             = require('url'),
-    Request         = require("./../request/request"),
     serverSettings  = require('./../settings/settings');
 
-function parse(requestStr) {
-    var request = new Request();
-    request.rawData = requestStr;
+function parse(requestStr, request) {
+    request.rawData += requestStr;
 
-    console.log(requestStr);
-
-    if(request.status === null) {
+    if(request.status === request.requestStatus.initialized) {
         separateHeaders(request);
     }
-    if (request.status === "Done Separate headers") {
+    if (request.status === request.requestStatus.separatedHeaders) {
         parseHeaders(request);
     }
 
-    if (request.status === "Done parse headers") {
+    if (request.status === request.requestStatus.parsedHeaders) {
         validateHeaders(request);
     }
 
-    if (request.status === "Done validate headers") {
+    if (request.status === request.requestStatus.validatedHeaders) {
         parseBody(request);
     }
 
@@ -33,7 +29,7 @@ function separateHeaders(request) {
                 if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
                     request.rawHeaders = request.rawData.slice(0, i);
                     request.headersEnd = i + 3;
-                    request.status = "Done Separate headers";
+                    request.status = request.requestStatus.separatedHeaders;
                 }
             }
         }
@@ -76,7 +72,7 @@ function parseHeaders(request) {
             request.headers[line.substr(0, separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
         }
     }
-    request.status = "Done parse headers";
+    request.status = request.requestStatus.parsedHeaders;
 }
 
 function validateHeaders(request) {
@@ -97,21 +93,25 @@ function validateHeaders(request) {
         request.status = 405;
         throw new Error("The required method is not supported");
     }
-    request.status = "Done validate headers";
+    request.status = request.requestStatus.validatedHeaders;
 
 }
 
 function parseBody(request) {
     var contentLength = 0;
-    //console.log(request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength));
     if ('content-length' in request.headers) {
         contentLength = parseInt(request.headers['content-length']);
-        request.body = request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength);
+        var body = request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength);
+        if(body.length >= contentLength) {
+            request.body = body;
+            request.status = request.requestStatus.done;
+        }
     } else {
         request.body = "";
-        request.status = "Done";
+        request.status =  request.requestStatus.done;
     }
 }
+
 
 function stringify(response) {
     var responseStr = "";
