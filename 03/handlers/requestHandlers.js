@@ -1,16 +1,22 @@
 var serverSettings  = require("./../settings/settings"),
-    Response         = require("./../response/response"),
+    Response        = require("./../response/response"),
     fs              = require("fs"),
+    path            = require("path"),
     url             = require("url"),
     querystring = require("querystring");
 
 
 
-exports.start = function(request, rootFolder, parser, socket) {
+function isAlive(request) {
+
+}
+
+function start(request, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
 
     var response = new Response();
     response.httpVersion =  serverSettings.HTTP_SUPPORTED_VERSIONS['1.1'];
+
 
     //TODO:: I think we should support html v1.0
     if (request.httpVersion == serverSettings.HTTP_SUPPORTED_VERSIONS['1.1'])
@@ -28,9 +34,7 @@ exports.start = function(request, rootFolder, parser, socket) {
     }
 
     if(request != null && request.status === "Done") {
-
-        var normPath = rootFolder + (request.path.replace(/\//g, "\\"));
-        console.log(normPath);
+        var normPath = path.normalize(rootFolder + request.path);
         fs.exists(normPath, function (exists) {
             if(!exists){
                 response.status = 404;
@@ -51,8 +55,10 @@ function writeHeaders(response, parser, socket) {
 
 function writeFile(path, response, parser, socket){
     fs.stat(path, function(error, stat) {
-        //response.headers['Content-Length'] = stat.size;
+        response.headers['Content-Length'] = stat.size;
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(socket);
     });
 }
+
+exports.start = start;
