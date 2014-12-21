@@ -6,7 +6,6 @@ var serverSettings  = require("./settings"),
 
 
 
-
 exports.start = function(request, rootFolder, parser, socket) {
     console.log("Request handler 'start' was called.");
 
@@ -33,10 +32,10 @@ exports.start = function(request, rootFolder, parser, socket) {
 };
 
 
-function writeFile(path, responseObject, parser, socket){
+function writeFile(path, response, parser, socket){
     fs.stat(path, function(error, stat) {
-        responseObject.headers['Content-Length'] = stat.size;
-        socket.write(parser.stringify(responseObject));
+        response.headers['Content-Length'] = stat.size;
+        socket.write(parser.stringify(response));
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(socket);
     });
