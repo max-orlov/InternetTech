@@ -15,6 +15,7 @@ exports.parse = function (httpRequestStr) {
     var typeContent = type.split(' ');
     var urlPath = url.parse(typeContent[1].trim(), true);
     httpRequestObject.method = typeContent[0].trim();
+    //TODO: We need to check if we should add support to navigating to files without any extension, get them to 'guess' the extension or assume it html or whatever.
     httpRequestObject.path = urlPath.pathname;
     httpRequestObject.version = typeContent[2].trim();
 
@@ -37,11 +38,9 @@ exports.parse = function (httpRequestStr) {
 
 exports.stringify = function (httpResponseObject) {
     var httpResponseStr = "";
-
     httpResponseStr += httpResponseObject.version + " " + httpResponseObject.status + " " + serverSettings.STATUS_CODES[httpResponseObject.status] + serverSettings.CRLF;
     for (var key in httpResponseObject.headers){
         httpResponseStr += key + ":" + httpResponseObject.headers[key] + serverSettings.CRLF;
     }
-    httpResponseStr += serverSettings.CRLF;
-    return httpResponseStr;
+    return httpResponseStr + serverSettings.CRLF;
 };

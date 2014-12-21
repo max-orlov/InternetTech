@@ -2,6 +2,7 @@ var parser = require('./hujiparser'),
     serverSettings  = require('./settings'),
     handlers = require('./requestHandlers'),
     net = require('net');
+net.m
 
 
 var listeningPort,
@@ -22,18 +23,14 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
                 console.log("port is currently in use");
                 //TODO:: handle error.
             }
-            else{
-                console.log("EEEEEE");
-            }
         });
 
         socket.on('data', function(dat){
             handlers.start(parser.parse(dat), rootFolder, parser, socket);
         });
 
-    });
+    }).listen(listeningPort, hostAddress);
 
-    server.listen(listeningPort, hostAddress);
     isServerUp = true;
     return server;
 };

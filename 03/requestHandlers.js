@@ -1,6 +1,5 @@
 var serverSettngs  = require("./settings"),
     fs = require("fs"),
-    url = require("url"),
     querystring = require("querystring");
     pathModule = require("path");
 
@@ -25,7 +24,7 @@ exports.HttpRequestObject = function(){
 
 
 exports.start = function(requestObject, rootFolder, parser, socket) {
-    console.log("Request handler 'start' was called.");
+    console.log("Request handling for " + requestObject.path + " started");
 
     var responseObject = new HttpResponseObject();
     responseObject.version =  serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'];
@@ -33,9 +32,8 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
     //TODO:: I think we should support html v1.0
     if (requestObject.version == serverSettngs.HTTP_SUPPORTED_VERSIONS['1.1'])
     {
-        responseObject.status = serverSettngs.STATUS_CODES['200'];
         responseObject.headers['Date'] = new(Date)().toUTCString();
-        var fileType = pathModule.extname(requestObject.path);
+        var fileType = pathModule.extname(requestObject.path).substr(1);
         responseObject.headers['Content-Type'] = serverSettngs.CONTENT_TYPES[fileType];
         responseObject.headers['Server'] = serverSettngs.SERVER_VERSION;
     }
@@ -49,14 +47,37 @@ exports.start = function(requestObject, rootFolder, parser, socket) {
 
 
 function writeObjectToSocket(path, responseObject, parser, socket){
-        fs.stat(path, function (error, stat) {
-            responseObject.headers['Content-Length'] = stat.size;
+    console.log(path);
+    fs.exists(path, function(exists){
+        if (exists){
+            responseObject.status = serverSettngs.STATUS_CODES['200'];
 
-            socket.write(parser.stringify(responseObject));
-            var fileStream = fs.createReadStream(path);
-            fileStream.on("error", function(e) { console.log(e); });
-            fileStream.pipe(socket, function(){socket.destroy();});
+            fs.stat(path, function (error, stat) {
 
-        });
+                if (error)
+                    console.log("error");
+
+                responseObject.headers['Content-Length'] = stat.size;
+
+                socket.write(parser.stringify(responseObject));
+                var fileStream = fs.createReadStream(path);
+
+                // TODO: TOM - This little motherfucker {end:false} was all that was needed, goddamn nodeJS sucks.
+                // TODO: we do need to close the socked manually. One reason that it might have worked on your pc is maybe your nodeJS is of ver <= 0.8 - check this when you get up.
+                fileStream.pipe(socket, {end: false});
+                return true;
+
+            });
+        }
+        else{
+            console.log("NO such file exists");
+            responseObject.status = serverSettngs.STATUS_CODES['404'];
+            socket.write(parser.stringify(responseObject),function(){
+                console.log("empty header was written");
+            });
+        }
+    });
+
+
 
 }

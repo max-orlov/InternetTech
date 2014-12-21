@@ -5,6 +5,10 @@ var lPort,
     server;
 
 
+
+
+
+
 //TODO:: In case the server could not start it should execute the callback with a custom err object that contains the error reason.
 //TODO:: Add serverID.
 exports.start = function (port, rootFolder, callback) {
