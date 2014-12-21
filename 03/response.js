@@ -1,9 +1,9 @@
 var Response = function(){
-    this.version = "";
-    this.status = "";
+    this.httpVersion = null;
+    this.status = null;
     this.headers = {};
-    this.headers['Content-Type'] = "";
-    this.headers['Content-Length'] = "";
+    this.headers['Content-Type'] = null;
+    this.headers['Content-Length'] = null;
 };
 
 module.exports = Response;

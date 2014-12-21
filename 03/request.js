@@ -1,10 +1,11 @@
 var Request = function(){
-    this.method = "";
-    this.path = "";
-    this.params = "";
-    this.version = "";
+    this.method = null;
+    this.path = null;
+    this.params = {};
+    this.status = null;
+    this.httpVersion = null;
     this.headers = {};
-    this.body = "";
+    this.body = null;
 };
 
 module.exports = Request;

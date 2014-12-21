@@ -2,21 +2,45 @@ var url             = require('url'),
     Request         = require("./request"),
     serverSettings  = require('./settings');
 
-exports.parse = function (requestStr) {
+function parse(requestStr) {
     var request = new Request();
+    request.rawData = requestStr;
+    separateHeaders(request);
+    parseHeaders(request);
+    validateHeaders(request);
+    parseBody(request);
 
-    //TODO:: pay attention that you and the browser should use the content-length header in order to recognize the end of the body of the Response/response).
-    //TODO:: You can assume that when an http Response contains a body, it contains a content-length header that specifies the length of the body.
-    request.body =  requestStr.substr(requestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF) , requestStr.length).trim();
-    requestStr.replace(requestStr.indexOf(serverSettings.CRLF + serverSettings.CRLF), request.body.length,"");
+    return request;
+}
 
-    var textContent = requestStr.split(serverSettings.CRLF);
-    var type = textContent[0].trim();
+function separateHeaders(request) {
+    for (var i = 0; i < request.rawData.length - 1; i++) {
+        if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
+            if ((i < request.rawData.length - 3)) {
+                if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
+                    request.rawHeaders = request.rawData.slice(0, i);
+                    request.headersEnd = i + 3;
+                }
+            }
+        }
+    }
+}
+
+function parseHeaders(request) {
+    var headersContent = request.rawHeaders.split(serverSettings.CRLF);
+    var type = headersContent[0].trim();
     var typeContent = type.split(' ');
     var urlPath = url.parse(typeContent[1].trim(), true);
+
+
+    if(typeContent.length != 3) {
+        request.status = 500;
+        throw new Error("Parsing Error: Request initial line syntax is invalid");
+    }
+
     request.method = typeContent[0].trim();
     request.path = urlPath.pathname;
-    request.version = typeContent[2].trim();
+    request.httpVersion = typeContent[2].trim();
 
     if (request.method === serverSettings.HTTP_METHODS.GET || request.method === serverSettings.HTTP_METHODS.HEAD) {
         request.params = urlPath.query;
@@ -25,23 +49,64 @@ exports.parse = function (requestStr) {
         request.params = '';
     }
 
-    delete textContent[0];
+    delete headersContent[0];
+    for (var index in headersContent){
+        var line = headersContent[index].trim();
+        if (line != '') {
+            var separator = line.indexOf(":");
+            if (separator === -1) {
+                request.status = 500;
+                throw new Error("Parsing Error: Headers does not contain ':' separator");
+            }
+            request.headers[line.substr(0, separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
+        }
 
-    for (var index in textContent){
-        var line = textContent[index].trim();
-        if (line != '')
-            request.headers[line.substr(0, line.indexOf(':')).trim()] = line.substr(line.indexOf(':') + 1).trim();
     }
-    return request;
-};
+}
 
-exports.stringify = function (response) {
+function validateHeaders(request) {
+
+    if (request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.0'] && request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.1']){
+        request.status = 505;
+        throw new Error("HTTP version is not supported");
+    }
+
+    if (request.httpVersion === serverSettings.HTTP_SUPPORTED_VERSIONS['1.0']) {
+        if (!("host" in request.headers)) {
+            request.status = 500;
+            throw new Error("HTTP version is v1.1 and doesn't contain 'host' key");
+        }
+    }
+
+    if (!(request.method in serverSettings.HTTP_METHODS)) {
+        request.status = 405;
+        throw new Error("The required method is not supported");
+    }
+
+}
+
+function parseBody(request) {
+    var contentLength = 0;
+    //console.log(request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength));
+    if ('content-length' in request.headers) {
+        contentLength = parseInt(request.headers['content-length']);
+        request.body = request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength);
+    } else {
+        request.body = "";
+    }
+}
+
+function stringify(response) {
     var responseStr = "";
 
-    responseStr += response.version + " " + response.status + " " + serverSettings.STATUS_CODES[response.status] + serverSettings.CRLF;
+    responseStr += response.httpVersion + " " + response.status + " " + serverSettings.STATUS_CODES[response.status] + serverSettings.CRLF;
     for (var key in response.headers){
         responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
     }
     responseStr += serverSettings.CRLF;
     return responseStr;
-};
+}
+
+
+exports.parse = parse;
+exports.stringify = stringify;
