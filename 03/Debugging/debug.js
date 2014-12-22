@@ -8,7 +8,7 @@ var msg_lvl = process.env.MSG_LVL;
 exports.MESSAGE_LEVEL={
     clean: 'clean',
     dirty: 'dirty'
-}
+};
 
 exports.devlog = function(msg,lvl){
     //console.log(env_var);
@@ -26,4 +26,4 @@ exports.devlog = function(msg,lvl){
 
     }
 
-}
+};

@@ -7,8 +7,8 @@ var Request = function(){
     this.status = this.requestStatus.initialized;
     this.httpVersion = null;
     this.headers = {};
-    this.body = null;
-    this.rawData = ""
+    this.body = "";
+    this.rawData = "";
     this.parseIndex = null;
 };
 
@@ -22,7 +22,7 @@ Request.prototype.isKeepAlive = function() {
 
 Request.prototype.requestStatus = {
     initialized : "initialized",
-    separateMethod: 'seperatedMethod',
+    separateMethod: 'separatedMethod',
     parseMethod: 'parseMethod',
     validateMethod: 'validateMethod',
     separatedHeaders: "separatedHeaders",

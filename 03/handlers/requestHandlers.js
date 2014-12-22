@@ -36,6 +36,7 @@ exports.start = function(request, rootFolder, parser, socket) {
             else if(err.code == 'ENOENT'){
                 response.status = 404;
                 writeHeaders(response, parser, socket);
+                //socket.end();
             }
             // Any other error we can think of.
             else{
@@ -44,7 +45,7 @@ exports.start = function(request, rootFolder, parser, socket) {
         });
     }
     return true;
-}
+};
 
 function writeHeaders(response, parser, socket) {
     socket.write(parser.stringify(response));
@@ -53,16 +54,16 @@ function writeHeaders(response, parser, socket) {
 function writeFile(response, path, socket){
 
     var fileStream = fs.createReadStream(path);
-    fileStream.pipe(socket, {end: false});
-    fileStream.on('end', function(){
-        /**
-         *  This does the trick - no more errors, and the page is done loading. but this is a big issue
-         *  because we can't destroy the socked each time we done writing some file - this will make the
-         *  keep-alive irrelevant.
-         *  Try to check if u run it the way you do (without the {end:false} and the other stuff in here)
-         *  I hope it will work and this issue is only on my pc.
-         */
-        socket.destroy();
-    });
+    fileStream.pipe(socket);
+    //fileStream.on('end', function(){
+    //    /**
+    //     *  This does the trick - no more errors, and the page is done loading. but this is a big issue
+    //     *  because we can't destroy the socked each time we done writing some file - this will make the
+    //     *  keep-alive irrelevant.
+    //     *  Try to check if u run it the way you do (without the {end:false} and the other stuff in here)
+    //     *  I hope it will work and this issue is only on my pc.
+    //     */
+    //    socket.destroy();
+    //});
 }
 

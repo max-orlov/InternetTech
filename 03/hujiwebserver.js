@@ -38,4 +38,4 @@ exports.stop = function (serverID, callback) {
 
 exports.getServers = function(){
     return serverList;
-}
+};

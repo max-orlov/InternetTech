@@ -1,5 +1,5 @@
 var url             = require('url'),
-    debug           = require('./../debugging/debug')
+    debug           = require('./../debugging/debug'),
     serverSettings  = require('./../settings/settings');
 
 function parse(requestStr, request) {
@@ -72,7 +72,7 @@ function separateHeaders(request) {
                     request.rawHeaders = request.rawData.slice(request.parseIndex, i);
                     request.headersEnd = i + 3;
                     request.status = request.requestStatus.separatedHeaders;
-                    request.parseIndex += request.headersEnd;
+                    request.parseIndex = request.headersEnd;
                 }
             }
         }
@@ -125,7 +125,7 @@ function parseBody(request) {
         var body = request.rawData.slice(request.parseIndex + 1, request.headersEnd + 1 + contentLength);
         request.body += body;
         request.parseIndex += body.length;
-        if(request.body.length == contentLength) {
+        if(request.body.length >= contentLength) {
             request.status = request.requestStatus.done;
         }
     } else {
