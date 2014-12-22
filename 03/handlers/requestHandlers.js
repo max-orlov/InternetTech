@@ -6,9 +6,6 @@ var serverSettings  = require("./../settings/settings"),
     url             = require("url"),
     querystring = require("querystring");
 
-function isAlive(request) {
-
-}
 
 exports.start = function(request, rootFolder, parser, socket) {
     debug.devlog("Request handler 'start' was called.");
@@ -23,8 +20,8 @@ exports.start = function(request, rootFolder, parser, socket) {
     response.headers['server'] = serverSettings.SERVER_VERSION;
 
     if(request != null && request.status === request.requestStatus.done) {
-        debug.devlog("Request Object:");
-        debug.devlog(request);
+        debug.devlog("Request Object:", debug.MESSAGE_LEVEL.dirty);
+        debug.devlog(request, debug.MESSAGE_LEVEL.dirty);
 
         var normPath = path.normalize(rootFolder + request.path);
 
@@ -33,22 +30,18 @@ exports.start = function(request, rootFolder, parser, socket) {
             if (err == null) {
                 response.headers['Content-Length'] = stat.size;
                 writeHeaders(response, parser, socket);
-                writeFile(normPath, response, socket);
+                writeFile(request, normPath, socket);
             }
             // No file was found
             else if(err.code == 'ENOENT'){
                 response.status = 404;
                 writeHeaders(response, parser, socket);
-                socket.end();
-                socket.destroy();
             }
             // Any other error we can think of.
             else{
                 debug.devlog(err.code);
             }
         });
-
-
     }
     return true;
 }
@@ -57,13 +50,19 @@ function writeHeaders(response, parser, socket) {
     socket.write(parser.stringify(response));
 }
 
-function writeFile(path, response, socket){
+function writeFile(response, path, socket){
 
     var fileStream = fs.createReadStream(path);
     fileStream.pipe(socket, {end: false});
     fileStream.on('end', function(){
-        socket.end();
-        // This does the trick - no more errors, and the page is done loading.
+        /**
+         *  This does the trick - no more errors, and the page is done loading. but this is a big issue
+         *  because we can't destroy the socked each time we done writing some file - this will make the
+         *  keep-alive irrelevant.
+         *  Try to check if u run it the way you do (without the {end:false} and the other stuff in here)
+         *  I hope it will work and this issue is only on my pc.
+         */
         socket.destroy();
     });
 }
+

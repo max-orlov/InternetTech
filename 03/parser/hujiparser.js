@@ -5,7 +5,7 @@ var url             = require('url'),
 function parse(requestStr, request) {
     request.rawData += requestStr;
 
-    debug.devlog(request.status);
+    debug.devlog(request.status, debug.MESSAGE_LEVEL.clean);
     if (request.status == request.requestStatus.initialized)
         separateMethod(request);
     if(request.status == request.requestStatus.separateMethod)

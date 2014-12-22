@@ -5,41 +5,39 @@ var parser = require('./parser/hujiparser'),
     net = require('net'),
     debug = require('./debugging/debug');
 
+function isAlive(request) {
+    return ((request.headers['connection'] != undefined && request.headers['connection'] == 'keep-alive') || request.httpVersion.substr('1.1') != -1);
+}
 
+exports.getSocket = function(lPort, hAddress, rootFolder, callback){
 
-var listeningPort,
-    hostAddress,
-    isServerUp = false,
-    wasRequestMade = false;
+    try {
+        server = net.createServer(function (socket) {
+            var request = new Request;
+            socket.setEncoding(serverSettings.ENCODING);
+            //TODO:: ask if we need to check that the data is a valid HTTP Response
+            socket.once('data', function () {
+                request.parseIndex = 0;
+            })
+            socket.on('data', function (dat) {
+                request = parser.parse(dat, request);
+                socket.setKeepAlive(isAlive(request));
+                handlers.start(request, rootFolder, parser, socket);
+            });
+        }).on('error', function (err) {
+            if (err.code === 'EADDRINUSE') {
+                debug.devlog("port is currently in use," + " originated from EADDRINUSE by the server", debug.MESSAGE_LEVEL.clean)
+                //TODO:: handle error.
+            }
+        }).listen(lPort, hAddress);
 
+    }
+    catch (err){
+        callback(err);
+    }
 
-exports.getSocket = function(lPort, hAddress, rootFolder){
-    listeningPort = lPort;
-    hostAddress = hAddress;
-
-    var server = net.createServer(function (socket) {
-        var request = new Request;
-        socket.setEncoding(serverSettings.ENCODING);
-        //TODO:: ask if we need to check that the data is a valid HTTP Response
-        socket.once('data', function(){
-            request.parseIndex = 0;
-        })
-        socket.on('data', function(dat){
-            request = parser.parse(dat, request);
-            handlers.start(request, rootFolder, parser, socket);
-        });
-    });
-
-    server.once('error', function(err) {
-        if (err.code === 'EADDRINUSE') {
-            debug.devlog("port is currently in use");
-            //TODO:: handle error.
-        }
-    });
-
-    server.listen(listeningPort, hostAddress);
-    isServerUp = true;
     return server;
 };
+
 
 
