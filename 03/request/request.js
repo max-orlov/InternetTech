@@ -9,6 +9,7 @@ var Request = function(){
     this.headers = {};
     this.body = null;
     this.rawData = ""
+    this.parseIndex = null;
 };
 
 Request.prototype.isKeepAlive = function() {

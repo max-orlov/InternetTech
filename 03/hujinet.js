@@ -2,7 +2,9 @@ var parser = require('./parser/hujiparser'),
     serverSettings  = require('./settings/settings'),
     handlers = require('./handlers/requestHandlers'),
     Request = require('./request/request'),
-    net = require('net');
+    net = require('net'),
+    debug = require('./debugging/debug');
+
 
 
 var listeningPort,
@@ -16,9 +18,12 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
     hostAddress = hAddress;
 
     var server = net.createServer(function (socket) {
-        var request = new Request();
+        var request = new Request;
         socket.setEncoding(serverSettings.ENCODING);
         //TODO:: ask if we need to check that the data is a valid HTTP Response
+        socket.once('data', function(){
+            request.parseIndex = 0;
+        })
         socket.on('data', function(dat){
             request = parser.parse(dat, request);
             handlers.start(request, rootFolder, parser, socket);
@@ -27,7 +32,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder){
 
     server.once('error', function(err) {
         if (err.code === 'EADDRINUSE') {
-            console.log("port is currently in use");
+            debug.devlog("port is currently in use");
             //TODO:: handle error.
         }
     });

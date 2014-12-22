@@ -1,10 +1,9 @@
 var url             = require('url'),
     serverSettings  = require('./../settings/settings');
 
-
-//TODO: Continuous buffer rather overwriting.
 function parse(requestStr, request) {
     request.rawData += requestStr;
+    request.parseIndex += requestStr.length;
 
     if(request.status === request.requestStatus.initialized) {
         separateHeaders(request);
@@ -25,17 +24,20 @@ function parse(requestStr, request) {
 }
 
 function separateHeaders(request) {
-    for (var i = 0; i < request.rawData.length - 1; i++) {
+    for (var i = 0; i < request.parseIndex ; i++) {
         if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
             if ((i < request.rawData.length - 3)) {
                 if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
                     request.rawHeaders = request.rawData.slice(0, i);
                     request.headersEnd = i + 3;
                     request.status = request.requestStatus.separatedHeaders;
+                    request.parseIndex += request.headersEnd;
                 }
             }
         }
     }
+
+    return 0;
 }
 
 function parseHeaders(request) {
@@ -101,12 +103,12 @@ function validateHeaders(request) {
 }
 
 function parseBody(request) {
-    var contentLength = 0;
     if ('content-length' in request.headers) {
-        contentLength = parseInt(request.headers['content-length']);
-        var body = request.rawData.slice(request.headersEnd + 1, request.headersEnd + 1 + contentLength);
-        if(body.length >= contentLength) {
-            request.body = body;
+        var contentLength = parseInt(request.headers['content-length']);
+        var body = request.rawData.slice(request.parseIndex + 1, request.headersEnd + 1 + contentLength);
+        request.body += body;
+        request.parseIndex += body.length;
+        if(request.body.length == contentLength) {
             request.status = request.requestStatus.done;
         }
     } else {

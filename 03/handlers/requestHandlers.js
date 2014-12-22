@@ -2,17 +2,16 @@ var serverSettings  = require("./../settings/settings"),
     Response        = require("./../response/response"),
     fs              = require("fs"),
     path            = require("path"),
+    debug           = require('./../debugging/debug'),
     url             = require("url"),
     querystring = require("querystring");
-
-
 
 function isAlive(request) {
 
 }
 
 function start(request, rootFolder, parser, socket) {
-    console.log("Request handler 'start' was called.");
+    debug.devlog("Request handler 'start' was called.");
 
     var response = new Response();
     var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
@@ -24,17 +23,33 @@ function start(request, rootFolder, parser, socket) {
     response.headers['server'] = serverSettings.SERVER_VERSION;
 
     if(request != null && request.status === request.requestStatus.done) {
-        console.log(request);
+        debug.devlog("Request Object:");
+        debug.devlog(request);
+
+
         var normPath = path.normalize(rootFolder + request.path);
-        fs.exists(normPath, function (exists) {
-            if(!exists){
-                response.status = 404;
-                writeHeaders(response, parser, socket);
-            } else {
+
+        fs.stat(normPath, function(err,stat){
+            // Meaning no err was returnes and so the file exists.
+            if (err == null) {
+                response.headers['Content-Length'] = stat.size;
                 writeHeaders(response, parser, socket);
                 writeFile(normPath, response, socket);
             }
+            // No file was found
+            else if(err.code == 'ENOENT'){
+                response.status = 404;
+                writeHeaders(response, parser, socket);
+                socket.end();
+                socket.destroy();
+            }
+            // Any other error we can think of.
+            else{
+                debug.devlog(err.code);
+            }
         });
+
+
     }
     return true;
 }
@@ -44,11 +59,13 @@ function writeHeaders(response, parser, socket) {
 }
 
 function writeFile(path, response, socket){
-    fs.stat(path, function(error, stat) {
-        response.headers['Content-Length'] = stat.size;
-        var fileStream = fs.createReadStream(path);
-        fileStream.pipe(socket, {end: false});
 
+    var fileStream = fs.createReadStream(path);
+    fileStream.pipe(socket, {end: false});
+    fileStream.on('end', function(){
+        socket.end();
+        // This does the trick - no more errors, and the page is done loading.
+        socket.destroy();
     });
 }
 
