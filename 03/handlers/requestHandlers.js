@@ -10,7 +10,7 @@ function isAlive(request) {
 
 }
 
-function start(request, rootFolder, parser, socket) {
+exports.start = function(request, rootFolder, parser, socket) {
     debug.devlog("Request handler 'start' was called.");
 
     var response = new Response();
@@ -26,11 +26,10 @@ function start(request, rootFolder, parser, socket) {
         debug.devlog("Request Object:");
         debug.devlog(request);
 
-
         var normPath = path.normalize(rootFolder + request.path);
 
         fs.stat(normPath, function(err,stat){
-            // Meaning no err was returnes and so the file exists.
+            // no err was returned - so the file exists.
             if (err == null) {
                 response.headers['Content-Length'] = stat.size;
                 writeHeaders(response, parser, socket);
@@ -68,5 +67,3 @@ function writeFile(path, response, socket){
         socket.destroy();
     });
 }
-
-exports.start = start;

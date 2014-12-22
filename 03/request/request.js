@@ -22,6 +22,9 @@ Request.prototype.isKeepAlive = function() {
 
 Request.prototype.requestStatus = {
     initialized : "initialized",
+    separateMethod: 'seperatedMethod',
+    parseMethod: 'parseMethod',
+    validateMethod: 'validateMethod',
     separatedHeaders: "separatedHeaders",
     parsedHeaders : "parsedHeaders",
     validatedHeaders: "validatedHeaders",

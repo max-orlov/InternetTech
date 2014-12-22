@@ -1,34 +1,75 @@
 var url             = require('url'),
+    debug           = require('./../debugging/debug')
     serverSettings  = require('./../settings/settings');
 
 function parse(requestStr, request) {
     request.rawData += requestStr;
-    request.parseIndex += requestStr.length;
 
-    if(request.status === request.requestStatus.initialized) {
+    debug.devlog(request.status);
+    if (request.status == request.requestStatus.initialized)
+        separateMethod(request);
+    if(request.status == request.requestStatus.separateMethod)
+        parseMethod(request);
+    if (request.status == request.requestStatus.parseMethod)
+        validateMethod(request);
+    if (request.status == request.requestStatus.validateMethod)
         separateHeaders(request);
-    }
-    if (request.status === request.requestStatus.separatedHeaders) {
+    if (request.status == request.requestStatus.separatedHeaders)
         parseHeaders(request);
-    }
-
-    if (request.status === request.requestStatus.parsedHeaders) {
+    if (request.status == request.requestStatus.parsedHeaders)
         validateHeaders(request);
-    }
-
-    if (request.status === request.requestStatus.validatedHeaders) {
+    if (request.status == request.requestStatus.validatedHeaders)
         parseBody(request);
-    }
 
     return request;
 }
 
+
+function separateMethod(request){
+    for (var i = request.parseIndex ; i < request.rawData.length ; i++){
+        if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
+            request.rawMethod = request.rawData.slice(request.parseIndex, i);
+            request.status = request.requestStatus.separateMethod;
+            request.parseIndex += i + 1;
+            return;
+        }
+    }
+}
+
+function parseMethod(request) {
+    var methodContent = request.rawMethod.split(' ');
+
+    if(methodContent.length != 3) {
+        request.status = 500;
+        throw new Error("Parsing Error: Request initial line syntax is invalid");
+    }
+
+    var urlPath = url.parse(methodContent[1], true);
+
+    request.method = methodContent[0].trim();
+    request.path = urlPath.pathname;
+    request.httpVersion = methodContent[2].trim();
+
+    if (request.method === serverSettings.HTTP_METHODS.GET || request.method === serverSettings.HTTP_METHODS.HEAD) {
+        request.params = urlPath.query;
+    } else {
+        //TODO:: Extract POST parameters.
+        request.params = '';
+    }
+    request.status = request.requestStatus.parseMethod;
+}
+
+function validateMethod(request) {
+    //TODO: Some validation if needed.
+    request.status = request.requestStatus.validateMethod;
+}
+
 function separateHeaders(request) {
-    for (var i = 0; i < request.parseIndex ; i++) {
+    for (var i = request.parseIndex; i < request.rawData.length ; i++) {
         if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
             if ((i < request.rawData.length - 3)) {
                 if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
-                    request.rawHeaders = request.rawData.slice(0, i);
+                    request.rawHeaders = request.rawData.slice(request.parseIndex, i);
                     request.headersEnd = i + 3;
                     request.status = request.requestStatus.separatedHeaders;
                     request.parseIndex += request.headersEnd;
@@ -42,30 +83,6 @@ function separateHeaders(request) {
 
 function parseHeaders(request) {
     var headersContent = request.rawHeaders.split(serverSettings.CRLF);
-    var type = headersContent[0].trim();
-    var typeContent = type.split(' ');
-
-    var urlPath = url.parse(typeContent[1], true);
-
-
-    if(typeContent.length != 3) {
-        request.status = 500;
-        throw new Error("Parsing Error: Request initial line syntax is invalid");
-    }
-
-    request.method = typeContent[0].trim();
-    request.path = urlPath.pathname;
-    request.httpVersion = typeContent[2].trim();
-
-    if (request.method === serverSettings.HTTP_METHODS.GET || request.method === serverSettings.HTTP_METHODS.HEAD) {
-        request.params = urlPath.query;
-    } else {
-        //TODO:: Extract POST parameters.
-        request.params = '';
-    }
-
-    //TODO: Find a better way deleting the method line. maybe parsing apart.
-    delete headersContent[0];
     for (var index in headersContent){
         var line = headersContent[index].trim();
         if (line != '') {
