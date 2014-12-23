@@ -2,6 +2,7 @@ var hujiNet         = require("./hujinet"),
     serverSettings  = require("./settings/settings"),
     debug           = require('./debugging/debug');
 
+
 var runningServerID = 0;
 
 ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
@@ -18,8 +19,10 @@ var serverList = [];
 exports.start = function (port, rootFolder, callback) {
     var server = hujiNet.getSocket(port, serverSettings.HOST_ADDRESS, rootFolder, callback);
 
-    serverList.push(new ServerShell(runningServerID++, server, port, rootFolder, callback));
-    debug.devlog("Server is up and running", debug.MESSAGE_LEVEL.clean);
+    serverList.push(new ServerShell(runningServerID, server, port, rootFolder, callback));
+    debug.devlog("Server is up and running on " + serverSettings.HOST_ADDRESS+":" + port + " [serverID:" + runningServerID + "]",
+        debug.MESSAGE_LEVEL.clean);
+    runningServerID++;
     return serverList[serverList.length - 1].serverID;
 
 };

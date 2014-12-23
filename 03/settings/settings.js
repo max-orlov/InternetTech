@@ -46,3 +46,5 @@ exports.HTTP_SUPPORTED_VERSIONS = {
 };
 
 exports.HOST_ADDRESS = 'localhost';
+
+exports.PAGE_NOT_FOUND_IMAGE_PATH = '/home/maxim/WebstormProjects/InternetTech/03/tests/404.jpg';

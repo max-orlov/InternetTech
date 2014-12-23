@@ -24,19 +24,21 @@ exports.start = function(request, rootFolder, parser, socket) {
         debug.devlog(request, debug.MESSAGE_LEVEL.dirty);
 
         var normPath = path.normalize(rootFolder + request.path);
-
+        console.log(normPath);
         fs.stat(normPath, function(err,stat){
             // no err was returned - so the file exists.
             if (err == null) {
                 response.headers['Content-Length'] = stat.size;
                 writeHeaders(response, parser, socket);
-                writeFile(request, normPath, socket);
+                writeFile(normPath, socket);
             }
             // No file was found
             else if(err.code == 'ENOENT'){
                 response.status = 404;
+                //response.headers['Content-Length'] = fs.statSync(serverSettings.PAGE_NOT_FOUND_IMAGE_PATH).size;
                 writeHeaders(response, parser, socket);
-                //socket.end();
+                //TODO: figure out why the image displays only for wrong extension but jibrish comes out for wrong file.
+                fs.createReadStream(serverSettings.PAGE_NOT_FOUND_IMAGE_PATH).pipe(socket);
             }
             // Any other error we can think of.
             else{
@@ -51,19 +53,7 @@ function writeHeaders(response, parser, socket) {
     socket.write(parser.stringify(response));
 }
 
-function writeFile(response, path, socket){
-
-    var fileStream = fs.createReadStream(path);
-    fileStream.pipe(socket);
-    //fileStream.on('end', function(){
-    //    /**
-    //     *  This does the trick - no more errors, and the page is done loading. but this is a big issue
-    //     *  because we can't destroy the socked each time we done writing some file - this will make the
-    //     *  keep-alive irrelevant.
-    //     *  Try to check if u run it the way you do (without the {end:false} and the other stuff in here)
-    //     *  I hope it will work and this issue is only on my pc.
-    //     */
-    //    socket.destroy();
-    //});
+function writeFile(path, socket){
+    fs.createReadStream(path).pipe(socket);
 }
 
