@@ -17,9 +17,8 @@ exports.start = function(dat, rootFolder, parser, socket) {
     if (request.status !== request.requestStatus.errorParsing || request.status !== request.requestStatus.done) {
         parser.parse(dat, request);
     }
-    if(request.status == request.requestStatus.errorParsing) {
+    if(request.status === request.requestStatus.errorParsing) {
         response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
-        response.headers['server'] = serverSettings.serverVersion;
         writeHeaders(response, parser, socket);
         socket.end();
     }

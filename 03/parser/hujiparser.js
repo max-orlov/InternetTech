@@ -139,7 +139,7 @@ function parseBody(request) {
 function stringify(response) {
     var responseStr = "";
 
-    responseStr += response.httpVersion + " " + response.status + " " + serverSettings.statusCodes[response.status] + serverSettings.CRLF;
+    responseStr += response.httpVersion + " " + response.statusCode + " " + serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
     for (var key in response.headers){
         responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
     }
