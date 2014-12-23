@@ -12,12 +12,6 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
         var server = net.createServer(function (socket) {
             socket.setEncoding(serverSettings.encoding);
             //TODO:: ask if we need to check that the data is a valid HTTP Response
-            socket.setTimeout(2000, function () {
-                if(socket.connected) {
-                    console.log("connection timeout");
-                    socket.end();
-                }
-            });
             socket.on('data', function (dat) {
                 handlers.start(dat, rootFolder, parser, socket);
             });

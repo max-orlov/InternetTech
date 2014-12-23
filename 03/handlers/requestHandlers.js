@@ -6,7 +6,6 @@ var serverSettings  = require("./../settings/settings"),
     debug           = require('./../debugging/debug');
 
 var request = null;
-var response = null;
 
 exports.start = function(dat, rootFolder, parser, socket) {
     debug.devlog("Request handler 'start' was called.");
@@ -18,16 +17,16 @@ exports.start = function(dat, rootFolder, parser, socket) {
         parser.parse(dat, request);
     }
     if(request.status === request.requestStatus.errorParsing) {
-        response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
+        var response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
         writeHeaders(response, parser, socket);
         socket.end();
     }
-    if(request.status === request.requestStatus.done) {
+    else if(request.status === request.requestStatus.done) {
         response = new Response(request.httpVersion, 200, new(Date)().toUTCString());
 
         var normPath = path.normalize(rootFolder + request.path);
         var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
-
+        request = null;
         fs.stat(normPath, function(err, stat){
             // no err was returned - so the file exists.
             if (err == null) {
@@ -54,7 +53,7 @@ exports.start = function(dat, rootFolder, parser, socket) {
             else{
                 debug.devlog(err.code);
             }
-            request = null;
+
         });
     }
     return true;
@@ -65,6 +64,6 @@ function writeHeaders(response, parser, socket) {
 }
 
 function writeFile(path, socket) {
-    fs.createReadStream(path).pipe(socket, {end: false});
+    fs.createReadStream(path).pipe(socket);
 }
 
