@@ -5,16 +5,17 @@ var Request = function(){
     this.path = null;
     this.params = {};
     this.status = this.requestStatus.initialized;
+    this.statusCode = null;
     this.httpVersion = null;
     this.headers = {};
     this.body = "";
     this.rawData = "";
     this.messageError = "";
-    this.parseIndex = null;
+    this.parseIndex = 0;
 };
 
 Request.prototype.isKeepAlive = function() {
-    if (this.httpVersion === serverSettings.HTTP_SUPPORTED_VERSIONS['1.0']) {
+    if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {
         return this.headers["connection"] && this.headers["connection"].toLowerCase() === "keep-alive";
     } else {
         return !(this.headers["connection"] && this.headers["connection"].toLowerCase() === "close");
