@@ -9,6 +9,7 @@ var Request = function(){
     this.headers = {};
     this.body = "";
     this.rawData = "";
+    this.messageError = "";
     this.parseIndex = null;
 };
 
@@ -21,6 +22,7 @@ Request.prototype.isKeepAlive = function() {
 };
 
 Request.prototype.requestStatus = {
+    errorParsing : "error parsing",
     initialized : "initialized",
     separateMethod: 'separatedMethod',
     parseMethod: 'parseMethod',

@@ -10,7 +10,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
 
     try {
         var server = net.createServer(function (socket) {
-            var request = new Request;
+            var request = new Request();
             socket.setEncoding(serverSettings.ENCODING);
             //TODO:: ask if we need to check that the data is a valid HTTP Response
             socket.once('data', function () {

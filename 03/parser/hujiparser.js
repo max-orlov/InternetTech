@@ -2,28 +2,34 @@ var url             = require('url'),
     debug           = require('./../debugging/debug'),
     serverSettings  = require('./../settings/settings');
 
+
 function parse(requestStr, request) {
-    request.rawData += requestStr;
+    try {
+        request.rawData += requestStr;
 
-    debug.devlog(request.status, debug.MESSAGE_LEVEL.clean);
-    if (request.status == request.requestStatus.initialized)
-        separateMethod(request);
-    if(request.status == request.requestStatus.separateMethod)
-        parseMethod(request);
-    if (request.status == request.requestStatus.parseMethod)
-        validateMethod(request);
-    if (request.status == request.requestStatus.validateMethod)
-        separateHeaders(request);
-    if (request.status == request.requestStatus.separatedHeaders)
-        parseHeaders(request);
-    if (request.status == request.requestStatus.parsedHeaders)
-        validateHeaders(request);
-    if (request.status == request.requestStatus.validatedHeaders)
-        parseBody(request);
+        debug.devlog(request.status, debug.MESSAGE_LEVEL.clean);
+        if (request.status == request.requestStatus.initialized)
+            separateMethod(request);
+        if (request.status == request.requestStatus.separateMethod)
+            parseMethod(request);
+        if (request.status == request.requestStatus.parseMethod)
+            validateMethod(request);
+        if (request.status == request.requestStatus.validateMethod)
+            separateHeaders(request);
+        if (request.status == request.requestStatus.separatedHeaders)
+            parseHeaders(request);
+        if (request.status == request.requestStatus.parsedHeaders)
+            validateHeaders(request);
+        if (request.status == request.requestStatus.validatedHeaders)
+            parseBody(request);
 
-    return request;
+        return request;
+
+    } catch (e) {
+        request.status = request.requestStatus.errorParsing;
+        request.messageError = e.message + serverSettings.CRLF;
+    }
 }
-
 
 function separateMethod(request){
     for (var i = request.parseIndex ; i < request.rawData.length ; i++){
@@ -53,14 +59,21 @@ function parseMethod(request) {
     if (request.method === serverSettings.HTTP_METHODS.GET || request.method === serverSettings.HTTP_METHODS.HEAD) {
         request.params = urlPath.query;
     } else {
-        //TODO:: Extract POST parameters.
         request.params = '';
     }
     request.status = request.requestStatus.parseMethod;
 }
 
 function validateMethod(request) {
-    //TODO: Some validation if needed.
+    if (request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.0'] && request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.1']){
+        request.status = 505;
+        throw new Error("HTTP version is not supported");
+    }
+
+    if (!(request.method in serverSettings.HTTP_METHODS)) {
+        request.status = 405;
+        throw new Error("The required method is not supported");
+    }
     request.status = request.requestStatus.validateMethod;
 }
 
@@ -98,22 +111,11 @@ function parseHeaders(request) {
 }
 
 function validateHeaders(request) {
-
-    if (request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.0'] && request.httpVersion !== serverSettings.HTTP_SUPPORTED_VERSIONS['1.1']){
-        request.status = 505;
-        throw new Error("HTTP version is not supported");
-    }
-
     if (request.httpVersion === serverSettings.HTTP_SUPPORTED_VERSIONS['1.1']) {
         if (!("host" in request.headers)) {
             request.status = 500;
             throw new Error("HTTP version is v1.1 and doesn't contain 'host' key");
         }
-    }
-
-    if (!(request.method in serverSettings.HTTP_METHODS)) {
-        request.status = 405;
-        throw new Error("The required method is not supported");
     }
     request.status = request.requestStatus.validatedHeaders;
 
@@ -133,7 +135,6 @@ function parseBody(request) {
         request.status =  request.requestStatus.done;
     }
 }
-
 
 function stringify(response) {
     var responseStr = "";
