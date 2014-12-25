@@ -22,6 +22,8 @@ exports.start = function(dat, rootFolder, parser, socket) {
         socket.end();
     }
     else if(request.status === request.requestStatus.done) {
+        console.log(request)
+        var keepAlive = request.isKeepAlive();
         response = new Response(request.httpVersion, 200, new(Date)().toUTCString());
 
         var normPath = path.normalize(rootFolder + request.path);
@@ -33,7 +35,7 @@ exports.start = function(dat, rootFolder, parser, socket) {
                 response.headers['content-type'] = serverSettings.contentsTypes[fileType];
                 response.headers['content-length'] = stat.size;
                 writeHeaders(response, parser, socket);
-                writeFile(normPath, socket);
+                writeFile(normPath, socket, keepAlive);
             }
             // No file was found
             else if(err.code == 'ENOENT'){
@@ -63,7 +65,7 @@ function writeHeaders(response, parser, socket) {
     socket.write(parser.stringify(response));
 }
 
-function writeFile(path, socket) {
-    fs.createReadStream(path).pipe(socket);
+function writeFile(path, socket, keepAlive) {
+    fs.createReadStream(path).pipe(socket, {end : !keepAlive});
 }
 
