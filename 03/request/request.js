@@ -23,15 +23,15 @@ Request.prototype.isKeepAlive = function() {
 };
 
 Request.prototype.requestStatus = {
-    errorParsing : "error parsing",
-    initialized : "initialized",
-    separateMethod: 'separatedMethod',
-    parseMethod: 'parseMethod',
-    validateMethod: 'validateMethod',
+    errorParsing    : "error parsing",
+    initialized     : "initialized",
+    separateMethod  : 'separatedMethod',
+    parseMethod     : 'parseMethod',
+    validateMethod  : 'validateMethod',
     separatedHeaders: "separatedHeaders",
-    parsedHeaders : "parsedHeaders",
+    parsedHeaders   : "parsedHeaders",
     validatedHeaders: "validatedHeaders",
-    done : "done"
+    done            : "done"
 };
 
 module.exports = Request;

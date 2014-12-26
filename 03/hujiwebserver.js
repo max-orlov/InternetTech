@@ -15,13 +15,10 @@ ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
 
 var serverList = [];
 
-//TODO:: In case the server could not start it should execute the callback with a custom err object that contains the error reason.
 exports.start = function (port, rootFolder, callback) {
     var server = hujiNet.getSocket(port, serverSettings.hostAddress, rootFolder, callback);
 
     serverList.push(new ServerShell(runningServerID, server, port, rootFolder, callback));
-    debug.devlog("Server is up and running on " + serverSettings.hostAddress+":" + port + " [serverID:" + runningServerID + "]",
-        debug.MESSAGE_LEVEL.clean);
     runningServerID++;
     return serverList[serverList.length - 1].serverID;
 

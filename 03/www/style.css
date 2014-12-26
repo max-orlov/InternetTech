@@ -1,0 +1,131 @@
+#login_screen, #profile_screen, #calculator_screen{
+    font-family: 'calibri', serif;
+    width: 420px;
+    height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    padding: 10px 55px 40px;
+    background-color: #edf0f5;
+    box-shadow: 0 0 10px;
+    border-radius: 25px;
+    font-size: 13px;
+}
+
+#login_screen h2{
+    padding-bottom: 20px;
+}
+
+#login_message{
+    padding-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#username, #password, #input_box, #output_screen {
+    width: 98%;
+    height: 34px;
+    padding-left: 5px;
+    margin-bottom: 20px;
+    margin-top: 8px;
+    box-shadow: 0 0 5px #c0bcff;
+    border: 2px solid #c0bcff;
+    color: #4f4f4f;
+    font-size: 16px;
+}
+
+label{
+    color: #393a46;
+    text-shadow: 0 1px 0 #fff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+#login_button {
+    width: 98%;
+    background: #3a5795;
+    border: 1px solid #0F799E;
+    font-size: 20px;
+    margin-top: 8%;
+    padding: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+}
+
+#login_button:hover{
+    background: #2d5095;
+}
+#calculator_button, #c_login_button, #logout_button, #profile_info_button{
+    width: 200px;
+    font-size: 20px;
+    margin-top: 15px;
+    padding: 8px;
+    margin-right: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+}
+
+#calculator_button, #profile_info_button {
+    background: #3a5795;
+    border: 1px solid #0F799E;
+    margin-right: 10px;
+}
+
+#logout_button, #c_login_button{
+    background: #505357;
+    border: 1px solid #525657;
+}
+
+
+#calculator_button:hover{
+    background: #2d5095;
+}
+
+
+#logout_button:hover{
+    background: #424549;
+}
+
+
+.profile_titles{
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#profile_content{
+    padding-left: 5px;
+    margin-bottom: 30px;
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+#images{
+    margin-bottom: 30px;
+}
+
+#profile_image{
+    width: 200px;
+    height: 160px;
+}
+
+#add_button, #multiply_button, #clear_button{
+    width: 115px;
+    background: #2c3036;
+    border: 1px solid #0F799E;
+    font-size: 20px;
+    margin-top: 15px;
+    padding: 8px;
+    font-weight: bold;
+    color: white;
+}
+
+#add_button, #multiply_button{
+    margin-right: 33px;
+}
+#calculator_screen #calculator_content{
+    margin-bottom: 96px;
+}

@@ -2,6 +2,9 @@
   <dictionary name="Tom">
     <words>
       <w>hujiparser</w>
+      <w>hujiwebserver</w>
+      <w>lport</w>
+      <w>succeded</w>
     </words>
   </dictionary>
 </component>
