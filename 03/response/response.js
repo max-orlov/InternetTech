@@ -1,6 +1,6 @@
 var serverSettings  = require('./../settings/settings');
 
-var Response = function(httpVersion,statusCode, date){
+var Response = function (httpVersion, statusCode, date) {
     this.httpVersion = httpVersion;
     this.statusCode = statusCode;
     this.headers = {};

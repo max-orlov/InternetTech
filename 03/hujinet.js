@@ -9,7 +9,7 @@ var parser = require('./parser/hujiparser'),
     //debug = require('./debugging/debug');
 
 
-exports.getSocket = function(lPort, hAddress, rootFolder, callback){
+exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
     var request = null;
 
     var server = net.createServer(function (socket) {
@@ -18,7 +18,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
         socket.setTimeout(serverSettings.maxTimeout);
 
         socket.on('data', function (dat) {
-            if(!request) {
+            if (!request) {
                 request = new Request();
             }
             if (request.status !== request.requestStatus.errorParsing || request.status !== request.requestStatus.done) {
@@ -31,7 +31,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                 var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
 
-                fs.stat(normPath, function(err, stat){
+                fs.stat(normPath, function (err, stat) {
                     // no err was returned - so the file exists.
                     if (err == null) {
                         response.headers['content-type'] = serverSettings.contentsTypes[fileType];
@@ -41,12 +41,12 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                     }
 
                     // No file was found
-                    else if(err.code == 'ENOENT'){
+                    else if (err.code == 'ENOENT') {
 
                         var picNormPath = path.normalize(__dirname + serverSettings.pageNotFoundImagePath);
                         var picType = picNormPath.substr(picNormPath.lastIndexOf('.') + 1);
 
-                        fs.stat(picNormPath, function(error, picStat){
+                        fs.stat(picNormPath, function (error, picStat) {
                             if (error == null) {
                                 response.statusCode = 404;
                                 response.headers['Content-Type'] = serverSettings.contentsTypes[picType];
@@ -58,7 +58,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                     }
                 });
                 request = null;
-            } else if(request.status === request.requestStatus.errorParsing) {
+            } else if (request.status === request.requestStatus.errorParsing) {
                 response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
                 writeHeaders(response, parser, socket);
                 socket.end();

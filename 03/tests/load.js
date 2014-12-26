@@ -6,7 +6,7 @@ var lPort = 8888;
 var numberOfRequests = 100;
 
 
-function test(requestNumber, connectionType){
+function test(requestNumber, connectionType) {
     var options = {
         hostname: 'localhost',
         port: lPort,
@@ -23,24 +23,24 @@ function test(requestNumber, connectionType){
                 console.log("Got response " + res.statusCode + " for request: " + requestNumber);
             }
         });
-    }).on('error', function(e) {
+    }).on('error', function (e) {
         console.log("Got error for request: " + requestNumber + ". error: " + e);
     });
 }
 
-function load(){
+function load() {
     var serverID = huji.start(lPort,"/tests",function(e){console.log(e)});
     var i;
 
-    for (i = 0; i < numberOfRequests; i++){
+    for (i = 0; i < numberOfRequests; i++) {
         test(i, 'keep-alive');
     }
 
-    for (i = 0; i < numberOfRequests; i++){
+    for (i = 0; i < numberOfRequests; i++) {
         test(i,'close');
     }
 
-    setTimeout(function(){
+    setTimeout(function () {
         huji.stop(serverID, function(e) {e ? (console.log(e)) : (console.log('server is down'))});
     }, 4000);
 }

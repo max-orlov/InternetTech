@@ -36,6 +36,6 @@ exports.stop = function (serverID, callback) {
     }
 };
 
-exports.getServers = function(){
+exports.getServers = function () {
     return serverList;
 };

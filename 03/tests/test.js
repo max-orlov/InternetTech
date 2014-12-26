@@ -21,11 +21,11 @@ function generateOptions(host, port, path, method, connection) {
 /**
  * Testing GET request.
  */
-function testGetRequest(){
+function testGetRequest() {
     var options = generateOptions('localhost', 8888, ex2Dir + '/index.html', 'GET', 'close');
-    http.get(options, function(response){
+    http.get(options, function (response) {
         response.on('data', function (data) {
-            if (response.statusCode == 200){
+            if (response.statusCode == 200) {
                 console.log('Testing GET request succeeded!!');
             }
             else {
@@ -46,9 +46,9 @@ function testNonExistingFile(){
     var options = generateOptions('localhost', 8888, ex2Dir + '/NotExistFile.html', 'GET', 'close');
 
 
-    http.get(options, function(response){
+    http.get(options, function (response) {
         response.on('data', function (data) {
-            if (response.statusCode == 404){
+            if (response.statusCode == 404) {
                 console.log('Testing not exist file succeeded!!');
             }
             else {
@@ -66,7 +66,7 @@ function testNonExistingFile(){
  * Testing Non HTTP format.
  */
 function testNonHTTPFormat(){
-    var message = 'bla bla bla\r\n';
+    var message = 'bla bla blaa';
     var conn = net.createConnection(lport);
     conn.write(message);
     conn.on('data', function (data) {
@@ -85,7 +85,7 @@ function testNonHTTPFormat(){
  */
 function testListeningToPotInUse() {
         huji.start(lport, rootFolder, function (e) {
-            if(e && e.toString().indexOf('EADDRINUSE') != -1){
+            if (e && e.toString().indexOf('EADDRINUSE') != -1) {
                 console.log('Test listening to used port succeeded');
             } else {
                 console.log('Test listening to used port failed.');
@@ -95,7 +95,7 @@ function testListeningToPotInUse() {
 
 
 
-var serverID = huji.start(8888,"/",function(e){console.log(e)});
+var serverID = huji.start(8888,"/", upCallback);
 
 
 testGetRequest();

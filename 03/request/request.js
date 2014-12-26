@@ -14,7 +14,7 @@ var Request = function(){
     this.parseIndex = 0;
 };
 
-Request.prototype.isKeepAlive = function() {
+Request.prototype.isKeepAlive = function () {
     if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {
         return this.headers["connection"] && this.headers["connection"].toLowerCase() === "keep-alive";
     } else {
