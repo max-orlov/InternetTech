@@ -1,12 +1,12 @@
 var parser = require('./parser/hujiparser'),
     serverSettings  = require('./settings/settings'),
-    handlers = require('./handlers/requestHandlers'),
     Request = require('./request/request'),
     Response = require('./response/response'),
     net = require('net'),
     fs = require("fs"),
-    path = require('path'),
-    debug = require('./debugging/debug');
+    path = require('path');
+    //handlers = require('./handlers/requestHandlers'),
+    //debug = require('./debugging/debug');
 
 
 exports.getSocket = function(lPort, hAddress, rootFolder, callback){
@@ -27,7 +27,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
             if(request.status === request.requestStatus.done) {
 
                 var keepAlive = request.isKeepAlive();
-                response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
+                var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
                 var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
 
@@ -59,7 +59,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                 });
                 request = null;
             } else if(request.status === request.requestStatus.errorParsing) {
-                var response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
+                response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
                 writeHeaders(response, parser, socket);
                 socket.end();
                 request = null;
