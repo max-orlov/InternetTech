@@ -36,7 +36,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                     if (err == null) {
                         response.headers['content-type'] = serverSettings.contentsTypes[fileType];
                         response.headers['content-length'] = stat.size;
-                        writeHeaders(response, parser, socket);
+                        writeHeaders(response, socket);
                         writeFile(normPath, socket, keepAlive);
                     }
 
@@ -51,7 +51,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
                                 response.statusCode = 404;
                                 response.headers['Content-Type'] = serverSettings.contentsTypes[picType];
                                 response.headers['Content-Length'] = picStat.size;
-                                writeHeaders(response, parser, socket);
+                                writeHeaders(response, socket);
                                 writeFile(picNormPath, socket, false);
                             }
                         });
@@ -86,7 +86,7 @@ exports.getSocket = function(lPort, hAddress, rootFolder, callback){
 };
 
 
-function writeHeaders(response, parser, socket) {
+function writeHeaders(response, socket) {
     socket.write(parser.stringify(response));
 }
 
