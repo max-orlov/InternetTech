@@ -95,7 +95,7 @@ function testListeningToPotInUse() {
 
 
 
-var serverID = huji.start(8888,"/", upCallback);
+var serverID = huji.start(lport,"/", upCallback);
 
 
 testGetRequest();

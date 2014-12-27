@@ -91,8 +91,6 @@ function separateHeaders(request) {
             }
         }
     }
-
-    return 0;
 }
 
 function parseHeaders(request) {

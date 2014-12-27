@@ -8,15 +8,14 @@ var parser = require('./parser/hujiparser'),
     //handlers = require('./handlers/requestHandlers'),
     //debug = require('./debugging/debug');
 
-
+var i = 0;
 exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
     var request = null;
 
     var server = net.createServer(function (socket) {
 
-        socket.setEncoding(serverSettings.encoding);
         socket.setTimeout(serverSettings.maxTimeout);
-
+        socket.setEncoding(serverSettings.encoding);
         socket.on('data', function (dat) {
             if (!request) {
                 request = new Request();
@@ -25,12 +24,10 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
                 parser.parse(dat, request);
             }
             if(request.status === request.requestStatus.done) {
-
                 var keepAlive = request.isKeepAlive();
                 var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
                 var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
-
                 fs.stat(normPath, function (err, stat) {
                     // no err was returned - so the file exists.
                     if (err == null) {
@@ -77,7 +74,7 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
 
     }).once('error', function (e) {
         if (e.code === 'EADDRINUSE') {
-           callback(e)
+           callback(e);
         }
     });
     server.listen(lPort, hAddress);
