@@ -5,15 +5,12 @@ var parser = require('./parser/hujiparser'),
     net = require('net'),
     fs = require("fs"),
     path = require('path');
-    //handlers = require('./handlers/requestHandlers'),
-    //debug = require('./debugging/debug');
 
-var i = 0;
+
 exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
-    var request = null;
 
     var server = net.createServer(function (socket) {
-
+        var request = null;
         socket.setTimeout(serverSettings.maxTimeout);
         socket.setEncoding(serverSettings.encoding);
         socket.on('data', function (dat) {
@@ -39,17 +36,15 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
 
                     // No file was found
                     else if (err.code == 'ENOENT') {
+                        var pageNotFoundPath = path.normalize(__dirname + serverSettings.pageNotFoundPath);
 
-                        var picNormPath = path.normalize(__dirname + serverSettings.pageNotFoundImagePath);
-                        var picType = picNormPath.substr(picNormPath.lastIndexOf('.') + 1);
-
-                        fs.stat(picNormPath, function (error, picStat) {
+                        fs.stat(pageNotFoundPath, function (error, pageNotFound) {
                             if (error == null) {
                                 response.statusCode = 404;
-                                response.headers['Content-Type'] = serverSettings.contentsTypes[picType];
-                                response.headers['Content-Length'] = picStat.size;
+                                response.headers['Content-Type'] = serverSettings.contentsTypes.html;
+                                response.headers['Content-Length'] = pageNotFound.size;
                                 writeHeaders(response, socket);
-                                writeFile(picNormPath, socket, false);
+                                writeFile(pageNotFoundPath, socket, false);
                             }
                         });
                     }
@@ -67,18 +62,18 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
             socket.end();
         });
 
-        //socket.on('close', function() {
-        //    console.log('connection closed');
-        //});
+        socket.on('close', function() {
+            console.log('connection closed');
+        });
 
+        socket.on('error', function (e) {
+            callback(e);
+        });
 
-    }).once('error', function (e) {
-        if (e.code === 'EADDRINUSE') {
-           callback(e);
-        }
+    }).on('error', function (e) {
+        callback(e);
     });
     server.listen(lPort, hAddress);
-
     return server;
 };
 

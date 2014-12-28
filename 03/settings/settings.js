@@ -6,7 +6,7 @@ var Settings = {
     CR                      : '\r',
     LF                      : '\n',
     CRLF                    : '\r\n',
-    pageNotFoundImagePath   : '/tests/404.jpg',
+    pageNotFoundPath   : '/tests/404.html',
     contentsTypes           : {
         js      : 'application/javascript',
         txt     : 'text/plain',

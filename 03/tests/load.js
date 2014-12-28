@@ -1,15 +1,15 @@
-var http = require('http');
-var net = require('net');
-var huji = require('../hujiwebserver');
+var http = require('http'),
+    net = require('net'),
+    huji = require('../hujiwebserver');
 
 
 var lPort = 8888;
-var numberOfRequests = 2;
+var numberOfRequests = 100;
 
 function test(i, connectionType) {
     var request;
     var conn;
-    var requestStr = 'GET /loadHttp.html HTTP/1.1\r\nHost:localhost\r\n' + 'Connection: ' + connectionType + '\r\n\r\n';
+    var requestStr = 'GET /loadhttp.html HTTP/1.1\r\nHost:localhost\r\n' + 'Connection: ' + connectionType + '\r\n\r\n';
 
     conn = net.createConnection(lPort);
     conn.setNoDelay();
@@ -20,6 +20,7 @@ function test(i, connectionType) {
     });
 
     conn.on('error', function (error) {
+        console.log(error);
         console.log(' error for request: ' + i);
     });
 }
@@ -28,7 +29,7 @@ function test1(requestNumber, connectionType) {
     var options = {
         hostname: 'localhost',
         port: lPort,
-        path: '/loadHttp.html',
+        path: '/loadhttp.html',
         method: 'GET',
         headers : {Connection : connectionType}
     };
@@ -52,6 +53,7 @@ function load() {
 
     for (i = 0; i < numberOfRequests; i++) {
         test(i, 'keep-alive');
+        test(i,'close');
     }
 
     for (i = 0; i < numberOfRequests; i++) {

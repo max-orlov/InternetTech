@@ -36,7 +36,7 @@
 //            // No file was found
 //            else if(err.code == 'ENOENT'){
 //
-//                var picNormPath = path.normalize(__dirname + serverSettings.pageNotFoundImagePath);
+//                var picNormPath = path.normalize(__dirname + serverSettings.pageNotFoundPath);
 //                var picType = picNormPath.substr(picNormPath.lastIndexOf('.') + 1);
 //                fs.stat(picNormPath, function(error, picStat){
 //                    if (error == null) {
