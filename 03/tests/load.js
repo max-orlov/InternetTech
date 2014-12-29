@@ -2,7 +2,6 @@ var http = require('http'),
     net = require('net'),
     huji = require('../hujiwebserver');
 
-
 var lPort = 8888;
 var numberOfRequests = 100;
 
@@ -58,6 +57,10 @@ function load() {
 
     for (i = 0; i < numberOfRequests; i++) {
         test(i,'close');
+    }
+
+    for (i = 0; i < numberOfRequests; i++) {
+        test(i, i % 2 == 0 ? 'close' : 'keep-alive');
     }
 
     setTimeout(function () {

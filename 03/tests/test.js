@@ -26,6 +26,7 @@ function testGetRequest() {
     http.get(options, function (response) {
         response.on('data', function (data) {
             if (response.statusCode == 200) {
+
                 console.log('Testing GET request succeeded!!');
             }
             else {
@@ -83,7 +84,7 @@ function testNonHTTPFormat(){
 /**
  * Testing listening to the same port
  */
-function testListeningToPotInUse() {
+function testListeningToPortInUse() {
         huji.start(lport, rootFolder, function (e) {
             if (e && e.toString().indexOf('EADDRINUSE') != -1) {
                 console.log('Test listening to used port succeeded');
@@ -101,7 +102,7 @@ var serverID = huji.start(lport,"/", upCallback);
 testGetRequest();
 testNonExistingFile();
 testNonHTTPFormat();
-testListeningToPotInUse();
+testListeningToPortInUse();
 
 
 setTimeout(function(){

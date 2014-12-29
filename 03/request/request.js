@@ -5,16 +5,15 @@ var Request = function(){
     this.path = null;
     this.params = {};
     this.status = this.requestStatus.initialized;
-    this.statusCode = null;
     this.httpVersion = null;
     this.headers = {};
-    this.body = "";
-    this.rawData = "";
-    this.messageError = "";
-    this.parseIndex = 0;
+    this.body = null;
+    this.rawData = ""
+    this.parseIndex = null;
 };
 
-Request.prototype.isKeepAlive = function () {
+Request.prototype.isKeepAlive = function() {
+    //return false;
     if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {
         return this.headers["connection"] && this.headers["connection"].toLowerCase() === "keep-alive";
     } else {
@@ -23,15 +22,14 @@ Request.prototype.isKeepAlive = function () {
 };
 
 Request.prototype.requestStatus = {
-    errorParsing    : "error parsing",
-    initialized     : "initialized",
-    separateMethod  : 'separatedMethod',
-    parseMethod     : 'parseMethod',
-    validateMethod  : 'validateMethod',
+    initialized : "initialized",
+    separateMethod: 'seperatedMethod',
+    parseMethod: 'parseMethod',
+    validateMethod: 'validateMethod',
     separatedHeaders: "separatedHeaders",
-    parsedHeaders   : "parsedHeaders",
+    parsedHeaders : "parsedHeaders",
     validatedHeaders: "validatedHeaders",
-    done            : "done"
+    done : "done"
 };
 
 module.exports = Request;

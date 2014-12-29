@@ -91,6 +91,7 @@ function separateHeaders(request) {
             }
         }
     }
+    //TODO: Figure out if seperateheader throw is needed.
 }
 
 function parseHeaders(request) {

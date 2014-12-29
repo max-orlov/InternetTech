@@ -10,20 +10,11 @@ exports.MESSAGE_LEVEL={
     dirty: 'dirty'
 };
 
-exports.devlog = function(msg,lvl){
+exports.devlog = function(msg){
     //console.log(env_var);
-    if (dev_mod) {
-        if (msg_lvl ==  exports.MESSAGE_LEVEL.dirty  && exports.MESSAGE_LEVEL.dirty == lvl) {
-            //console.log("<<<<<   A LOGMSG WAS CREATED AT " + (new Date()).getHours() + ":" + (new Date()).getMinutes() + ":" + (new Date()).getSeconds() + ":" + (new Date()).getMilliseconds() + "   >>>>>")
-            console.log(msg);
-        }
-        if (msg_lvl == exports.MESSAGE_LEVEL.clean && exports.MESSAGE_LEVEL.clean == lvl) {
-            //console.log("<<<<<   A LOGMSG WAS CREATED AT " + (new Date()).getHours() + ":" + (new Date()).getMinutes() + ":" + (new Date()).getSeconds() + ":" + (new Date()).getMilliseconds() + "   >>>>>")
-            console.log(msg);
-        }
-        if (msg_lvl == 'all')
-            console.log(msg);
+            console.log("<<<<<   A LOGMSG WAS CREATED AT " + (new Date()).getHours() + ":" + (new Date()).getMinutes() +
+            ":" + (new Date()).getSeconds() + ":" + (new Date()).getMilliseconds() + "   >>>>>     " + msg)
 
-    }
+
 
 };
