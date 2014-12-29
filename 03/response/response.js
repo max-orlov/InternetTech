@@ -1,11 +1,13 @@
 var serverSettings  = require('./../settings/settings');
 
-var Response = function (httpVersion, statusCode) {
+var Response = function (httpVersion, statusCode, socket) {
     this.httpVersion = httpVersion;
     this.statusCode = statusCode;
     this.headers = {};
     this.headers['date'] = new(Date)().toUTCString();
     this.headers['server'] = serverSettings.serverVersion;
+
+    this.socket = socket;
 
 };
 
@@ -52,6 +54,26 @@ Response.prototype.cookie = function(name, value, options){
  */
 Response.prototype.send = function(body){
     body = (typeof body === 'undefined') ? 'noBody' : body;
+    if (body != 'noBody'){
+        if (body instanceof Buffer){
+            this.set('Content-Type', 'application/octet-stream');
+
+        }
+        else if (body instanceof String){
+            this.set('Content-Type', 'text/html');
+
+            if (this.headers['content-length'] != undefined && this.headers['content-length'] === null)
+                this.set('Content-Length', body.length);
+        }
+        else if (body instanceof Object){
+            if (this.headers['content-length'] != undefined && this.headers['content-length'] === null)
+                body = this.json(body);
+        }
+        else{
+            console.log("Incompatible body type");
+        }
+
+    }
 }
 
 /**
@@ -61,7 +83,8 @@ Response.prototype.send = function(body){
  * @param body
  */
 Response.prototype.json = function(body){
-    body = (typeof body === 'undefined') ? 'noBody' : body;
+    //TODO: stringify for JSON is not fully clear to me. for example, what should happen for body = null or undefined?
+    this.send(JSON.stringify(body, null,'\t'));
 
 }
 

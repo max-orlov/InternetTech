@@ -25,7 +25,7 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback, serverID) {
                 parser.parse(dat, request);
             }
             if(request.status === request.requestStatus.done) {
-                var response = new Response(request.httpVersion, 200);
+                var response = new Response(request.httpVersion, 200, socket);
                 var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
                 var isKeepAlive = request.isKeepAlive();

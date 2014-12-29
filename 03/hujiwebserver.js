@@ -14,15 +14,17 @@ Server = function(serverID, server, port, rootFolder, callbackFunction){
 };
 
 var serverList = [];
-exports.start = function(port, callback);
+exports.start = function(port, callback){
 
-exports.start2 = function (port, rootFolder, callback) {
-    var server = hujiNet.getSocket(port, serverSettings.hostAddress, rootFolder, callback, runningServerID);
-    serverList.push(new Server(runningServerID, server, port, rootFolder, callback));
-    runningServerID++;
-    return serverList[serverList.length - 1].serverID;
+}
 
-};
+//exports.start2 = function (port, rootFolder, callback) {
+//    var server = hujiNet.getSocket(port, serverSettings.hostAddress, rootFolder, callback, runningServerID);
+//    serverList.push(new Server(runningServerID, server, port, rootFolder, callback));
+//    runningServerID++;
+//    return serverList[serverList.length - 1].serverID;
+//
+//};
 
 
 
