@@ -14,8 +14,9 @@ Server = function(serverID, server, port, rootFolder, callbackFunction){
 };
 
 var serverList = [];
+exports.start = function(port, callback);
 
-exports.start = function (port, rootFolder, callback) {
+exports.start2 = function (port, rootFolder, callback) {
     var server = hujiNet.getSocket(port, serverSettings.hostAddress, rootFolder, callback, runningServerID);
     serverList.push(new Server(runningServerID, server, port, rootFolder, callback));
     runningServerID++;
@@ -23,17 +24,7 @@ exports.start = function (port, rootFolder, callback) {
 
 };
 
-exports.stop = function (serverID, callback) {
-    console.log("Stopping server");
-    for (var i = 0 ; i < serverList.length ; i++){
-        if (serverList[i].serverID === serverID){
-            var tmpServer = serverList[i];
-            serverList.splice(i,1);
-            tmpServer.server.close(callback);
-            break;
-        }
-    }
-};
+
 
 exports.getServers = function () {
     return serverList;
