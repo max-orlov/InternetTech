@@ -1,7 +1,7 @@
 Questions
 Q1. What was hard in this exercise?
 Q2. What was fun in this exercise?
-Q3. What did we do in order to make your server efficient?
+Q3. What did we do in order to make our server efficient?
 
 Answers
 A1.
