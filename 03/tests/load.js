@@ -1,59 +1,40 @@
-var http = require('http'),
+var serverSettings  = require("./../settings/settings"),
     net = require('net'),
     huji = require('../hujiwebserver');
 
 
-var lPort = 8888;
-var numberOfRequests = 100;
+var lPort = 8888,
+    numberOfRequests = 300,
+    upCallback      = function(e) {e ? (console.log(e)) : console.log('server is up. port' + lPort)},
+    downCallback    = function(e) {e ? (console.log(e)) : console.log('server is down')};
 
-function test(i, connectionType) {
+
+function test(requestNumber, connectionType) {
     var request;
     var conn;
-    var requestStr = 'GET /loadhttp.html HTTP/1.1\r\nHost:localhost\r\n' + 'Connection: ' + connectionType + '\r\n\r\n';
+    var requestStr = 'GET /loadhttp.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
+        serverSettings.CRLF + 'Connection: ' + connectionType + serverSettings.CRLF + serverSettings.CRLF;
 
     conn = net.createConnection(lPort);
     conn.setNoDelay();
 
     conn.write(requestStr);
     conn.on('data', function (data) {
-        console.log(' got response for request: ' + i);
+        console.log("Got response for request: " + requestNumber);
     });
-
     conn.on('error', function (error) {
-        console.log(error);
-        console.log(' error for request: ' + i);
+        console.log("Got error for request: " + requestNumber + ". error: " + error);
     });
 }
 
-function test1(requestNumber, connectionType) {
-    var options = {
-        hostname: 'localhost',
-        port: lPort,
-        path: '/loadhttp.html',
-        method: 'GET',
-        headers : {Connection : connectionType}
-    };
-
-    http.get(options, function(res) {
-        res.on('data', function(e) {
-            if (res.statusCode == 200) {
-                console.log("Got response " + res.statusCode + " for request: " + requestNumber);
-            } else {
-                console.log("Got response " + res.statusCode + " for request: " + requestNumber);
-            }
-        });
-    }).on('error', function (e) {
-        console.log("Got error for request: " + requestNumber + ". error: " + e);
-    });
-}
 
 function load() {
-    var serverID = huji.start(lPort,"/tests",function(e){console.log(e)});
+
+    var serverID = huji.start(lPort,"/tests", upCallback);
     var i;
 
     for (i = 0; i < numberOfRequests; i++) {
         test(i, 'keep-alive');
-        test(i,'close');
     }
 
     for (i = 0; i < numberOfRequests; i++) {
@@ -61,7 +42,7 @@ function load() {
     }
 
     setTimeout(function () {
-        huji.stop(serverID, function(e) {e ? (console.log(e)) : (console.log('server is down'))});
+        huji.stop(serverID, downCallback);
     }, 4000);
 }
 

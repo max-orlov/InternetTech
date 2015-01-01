@@ -1,5 +1,4 @@
 var url             = require('url'),
-    debug           = require('./../debugging/debug'),
     serverSettings  = require('./../settings/settings');
 
 
@@ -40,7 +39,7 @@ function separateMethod(request) {
         }
     }
     request.statusCode = 500;
-    throw new Error("There is no initial line");
+    throw new Error("Parsing Error: There is no initial line");
 }
 
 function parseMethod(request) {
@@ -67,12 +66,12 @@ function parseMethod(request) {
 
 function validateMethod(request) {
     if (request.httpVersion !== serverSettings.httpSupportedVersions['1.0'] && request.httpVersion !== serverSettings.httpSupportedVersions['1.1']) {
-        request.statusCode = 500;
+        request.statusCode = 505;
         throw new Error("HTTP version is not supported");
     }
 
     if (!(request.method in serverSettings.httpMethods)) {
-        request.statusCode = 500;
+        request.statusCode = 501;
         throw new Error("The required method is not supported");
     }
     request.status = request.requestStatus.validateMethod;

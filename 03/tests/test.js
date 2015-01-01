@@ -1,11 +1,12 @@
 var http = require('http'),
+    serverSettings  = require('./../settings/settings'),
     net  = require('net'),
     huji = require('../hujiwebserver');
 
-var lport           = 8888,
+var lPort           = 8888,
     rootFolder      = '/',
     ex2Dir          = '/www',
-    upCallback      = function(e) {e ? (console.log(e)) : console.log('server is up. port' + lport)},
+    upCallback      = function(e) {e ? (console.log(e)) : console.log('server is up. port' + lPort)},
     downCallback    = function(e) {e ? (console.log(e)) : console.log('server is down')};
 
 function generateOptions(host, port, path, method, connection) {
@@ -67,10 +68,10 @@ function testNonExistingFile(){
  */
 function testNonHTTPFormat(){
     var message = 'bla bla blaa';
-    var conn = net.createConnection(lport);
+    var conn = net.createConnection(lPort);
     conn.write(message);
     conn.on('data', function (data) {
-        if (data.toString().indexOf('500')!= -1) {
+        if (data.toString().indexOf('500') !== -1) {
             console.log('test non http format succeeded!!');
         }
         else {
@@ -84,26 +85,50 @@ function testNonHTTPFormat(){
  * Testing listening to the same port
  */
 function testListeningToPotInUse() {
-        huji.start(lport, rootFolder, function (e) {
-            if (e && e.toString().indexOf('EADDRINUSE') != -1) {
-                console.log('Test listening to used port succeeded');
+        huji.start(lPort, rootFolder, function (e) {
+            if (e && e.toString().indexOf('EADDRINUSE') !== -1) {
+                console.log('Test listening to used port succeeded!!');
             } else {
                 console.log('Test listening to used port failed.');
             }
         });
 }
 
+/**
+ * Testing keep alive mechanism
+ */
+function testKeepAlive(){
+    var requestStr = 'GET tests/404.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
+        serverSettings.CRLF + 'Connection: keep-alive' + serverSettings.CRLF + serverSettings.CRLF;
+    var conn;
+    conn = net.createConnection(lPort);
+    conn.setNoDelay();
 
 
-var serverID = huji.start(lport,"/", upCallback);
+    setTimeout(function (){
+        try {
+            conn.write(requestStr);
+            console.log('keep alive test succeeded!!');
+        } catch(e) {
+            console.log('keep alive test failed');
+            conn.end();
+        }
+    }, 400);
+
+    conn.write(requestStr);
+
+}
+
+var serverID = huji.start(lPort,"/", upCallback);
 
 
 testGetRequest();
 testNonExistingFile();
 testNonHTTPFormat();
 testListeningToPotInUse();
+testKeepAlive();
 
 
-setTimeout(function(){
+setTimeout( function () {
     huji.stop(serverID, downCallback);
 }, 4000);

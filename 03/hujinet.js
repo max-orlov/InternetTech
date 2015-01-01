@@ -52,7 +52,7 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
                 response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
-                writeHeaders(response, parser, socket);
+                writeHeaders(response, socket);
                 socket.end();
                 request = null;
             }
@@ -62,17 +62,14 @@ exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
             socket.end();
         });
 
-        socket.on('close', function() {
-            console.log('connection closed');
-        });
-
         socket.on('error', function (e) {
-            callback(e);
+
         });
 
     }).on('error', function (e) {
         callback(e);
     });
+
     server.listen(lPort, hAddress);
     return server;
 };
