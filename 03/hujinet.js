@@ -17,7 +17,9 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
             if (!request) {
                 request = new Request();
             }
-            if (request.status !== request.requestStatus.errorParsing || request.status !== request.requestStatus.done) {
+            if (request.status !== request.requestStatus.errorParsing ||
+                    request.status !== request.requestStatus.done) {
+
                 parser.parse(dat, request);
             }
             if(request.status === request.requestStatus.done) {
@@ -51,7 +53,9 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 });
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
-                response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, new(Date)().toUTCString());
+                response = new Response(serverSettings.httpSupportedVersions['1.1'],
+                        request.statusCode, new(Date)().toUTCString());
+
                 writeHeaders(response, socket);
                 socket.end();
                 request = null;

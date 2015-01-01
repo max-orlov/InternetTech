@@ -31,7 +31,9 @@ function parse(requestStr, request) {
 
 function separateMethod(request) {
     for (var i = request.parseIndex ; i < request.rawData.length ; i++){
-        if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
+        if ((request.rawData[i] === serverSettings.CR) &&
+                    (request.rawData[i + 1] === serverSettings.LF)) {
+
             request.rawMethod = request.rawData.slice(request.parseIndex, i);
             request.status = request.requestStatus.separateMethod;
             request.parseIndex += i + 1;
@@ -56,7 +58,8 @@ function parseMethod(request) {
     request.path = urlPath.pathname;
     request.httpVersion = methodContent[2].trim();
 
-    if (request.method === serverSettings.httpMethods.GET || request.method === serverSettings.httpMethods.HEAD) {
+    if (request.method === serverSettings.httpMethods.GET ||
+                request.method === serverSettings.httpMethods.HEAD) {
         request.params = urlPath.query;
     } else {
         request.params = '';
@@ -65,7 +68,9 @@ function parseMethod(request) {
 }
 
 function validateMethod(request) {
-    if (request.httpVersion !== serverSettings.httpSupportedVersions['1.0'] && request.httpVersion !== serverSettings.httpSupportedVersions['1.1']) {
+    if (request.httpVersion !== serverSettings.httpSupportedVersions['1.0'] &&
+                request.httpVersion !== serverSettings.httpSupportedVersions['1.1']) {
+
         request.statusCode = 505;
         throw new Error("HTTP version is not supported");
     }
@@ -79,9 +84,14 @@ function validateMethod(request) {
 
 function separateHeaders(request) {
     for (var i = request.parseIndex; i < request.rawData.length ; i++) {
-        if ((request.rawData[i] === serverSettings.CR) && (request.rawData[i + 1] === serverSettings.LF)) {
+        if ((request.rawData[i] === serverSettings.CR) &&
+                    (request.rawData[i + 1] === serverSettings.LF)) {
+
             if ((i < request.rawData.length - 3)) {
-                if ((request.rawData[i + 2] === serverSettings.CR) && (request.rawData[i + 3] === serverSettings.LF)) {
+
+                if ((request.rawData[i + 2] === serverSettings.CR) &&
+                            (request.rawData[i + 3] === serverSettings.LF)) {
+
                     request.rawHeaders = request.rawData.slice(request.parseIndex, i);
                     request.headersEnd = i + 3;
                     request.status = request.requestStatus.separatedHeaders;
@@ -102,7 +112,8 @@ function parseHeaders(request) {
                 request.statusCode = 500;
                 throw new Error("Parsing Error: Headers does not contain ':' separator");
             }
-            request.headers[line.substr(0, separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
+            request.headers[line.substr(0,
+                    separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
         }
     }
     request.status = request.requestStatus.parsedHeaders;
@@ -122,7 +133,9 @@ function validateHeaders(request) {
 function parseBody(request) {
     if ('content-length' in request.headers) {
         var contentLength = parseInt(request.headers['content-length']);
-        var body = request.rawData.slice(request.parseIndex + 1, request.headersEnd + 1 + contentLength);
+        var body = request.rawData.slice(request.parseIndex + 1,
+                request.headersEnd + 1 + contentLength);
+
         request.body += body;
         request.parseIndex += body.length;
         if (request.body.length >= contentLength) {
@@ -137,7 +150,9 @@ function parseBody(request) {
 function stringify(response) {
     var responseStr = "";
 
-    responseStr += response.httpVersion + " " + response.statusCode + " " + serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
+    responseStr += response.httpVersion + " " + response.statusCode + " " +
+            serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
+
     for (var key in response.headers) {
         responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
     }
