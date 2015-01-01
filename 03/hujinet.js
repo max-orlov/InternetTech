@@ -7,7 +7,7 @@ var parser = require('./parser/hujiparser'),
     path = require('path');
 
 
-exports.getSocket = function (lPort, hAddress, rootFolder, callback) {
+exports.getServer = function (lPort, hAddress, rootFolder, callback) {
 
     var server = net.createServer(function (socket) {
         var request = null;
