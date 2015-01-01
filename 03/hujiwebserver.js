@@ -14,7 +14,6 @@ ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
 var serverList = [];
 
 exports.start = function (port, rootFolder, callback) {
-    console.log(runningServerID);
     var server = hujiNet.getServer(port, serverSettings.hostAddress, rootFolder, callback);
     serverList.push(new ServerShell(runningServerID, server, port, rootFolder, callback));
     runningServerID++;
