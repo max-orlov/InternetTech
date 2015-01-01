@@ -1,0 +1,11 @@
+Questions
+Q1. What was hard in this exercise?
+Q2. What was fun in this exercise?
+Q3. What did we do in order to make your server efficient?
+
+Answers
+A1.
+A2.
+A3.
+
+
