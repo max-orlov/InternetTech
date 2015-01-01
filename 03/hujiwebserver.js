@@ -1,6 +1,5 @@
 var hujiNet         = require("./hujinet"),
-    serverSettings  = require("./settings/settings"),
-    debug           = require('./debugging/debug');
+    serverSettings  = require("./settings/settings");
 
 
 var runningServerID = 0;
@@ -24,7 +23,6 @@ exports.start = function (port, rootFolder, callback) {
 };
 
 exports.stop = function (serverID, callback) {
-    debug.devlog("Stopping server", debug.MESSAGE_LEVEL.clean);
     for (var i = 0 ; i < serverList.length ; i++){
         if (serverList[i].serverID == serverID){
             var tmpServer = serverList[i];
