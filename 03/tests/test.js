@@ -85,13 +85,13 @@ function testNonHTTPFormat(){
  * Testing listening to the same port
  */
 function testListeningToPortInUse() {
-        huji.start(lport, rootFolder, function (e) {
-            if (e && e.toString().indexOf('EADDRINUSE') != -1) {
-                console.log('Test listening to used port succeeded');
-            } else {
-                console.log('Test listening to used port failed.');
-            }
-        });
+    huji.start(lport, rootFolder, function (e) {
+        if (e && e.toString().indexOf('EADDRINUSE') != -1) {
+            console.log('Test listening to used port succeeded');
+        } else {
+            console.log('Test listening to used port failed.');
+        }
+    });
 }
 
 

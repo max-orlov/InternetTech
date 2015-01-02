@@ -49,16 +49,19 @@ Request.prototype.is = function(type){
 Request.prototype.isKeepAlive = function() {
     //return false;
     if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {
-        return this.headers["connection"] && this.headers["connection"].toLowerCase() === "keep-alive";
+        return this.headers["connection"] &&
+            this.headers["connection"].toLowerCase() === "keep-alive";
     } else {
-        return !(this.headers["connection"] && this.headers["connection"].toLowerCase() === "close");
+        return !(this.headers["connection"] &&
+        this.headers["connection"].toLowerCase() === "close");
     }
 };
 
 
 Request.prototype.requestStatus = {
+    errorParsing    : "error parsing",
     initialized : "initialized",
-    separateMethod: 'seperatedMethod',
+    separateMethod: 'separatedMethod',
     parseMethod: 'parseMethod',
     validateMethod: 'validateMethod',
     separatedHeaders: "separatedHeaders",
