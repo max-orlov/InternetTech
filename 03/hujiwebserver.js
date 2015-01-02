@@ -4,6 +4,10 @@ var hujiNet         = require("./hujinet"),
 
 var runningServerID = 0;
 
+//TODO : Fix the numbering of uncreated servers
+//TODO : Check if the abs/rel path is working - check for upper level pathing.
+
+
 ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
     this.serverID = serverID;
     this.server = server;

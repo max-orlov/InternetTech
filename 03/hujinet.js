@@ -24,7 +24,7 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
             }
             if(request.status === request.requestStatus.done) {
                 var keepAlive = request.isKeepAlive();
-                var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
+                var response = new Response(request.httpVersion, 200);
                 var normPath = rootFolder + path.normalize(request.path);
 
                 //console.log(normPath);
@@ -57,8 +57,7 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 });
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
-                response = new Response(serverSettings.httpSupportedVersions['1.1'],
-                        request.statusCode, new(Date)().toUTCString());
+                response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode);
 
                 writeHeaders(response, socket);
                 socket.end();
