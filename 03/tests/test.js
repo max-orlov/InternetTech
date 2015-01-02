@@ -39,6 +39,27 @@ function testGetRequest() {
     });
 }
 
+/**
+ * Testing http v1.0 request.
+ */
+function testHttpOldVersion() {
+    var requestStr = 'GET tests/404.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
+        serverSettings.CRLF + 'Connection: keep-alive' + serverSettings.CRLF + serverSettings.CRLF;
+
+    var conn = net.createConnection(lPort);
+    conn.setNoDelay();
+    conn.on('data', function (data) {
+        if (data.toString().search('200')!= -1){
+            console.log('test http v1.0 succeeded!!');
+        }
+    });
+    conn.on('error', function (error) {
+        console.log('test http v1.0 failed');
+    });
+
+    conn.write(requestStr);
+}
+
 
 /**
  * Testing non existing file.
@@ -123,6 +144,7 @@ var serverID = huji.start(lPort,"/", upCallback);
 
 
 testGetRequest();
+testHttpOldVersion();
 testNonExistingFile();
 testNonHTTPFormat();
 testListeningToPotInUse();
