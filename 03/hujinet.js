@@ -25,9 +25,16 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
             if(request.status === request.requestStatus.done) {
                 var keepAlive = request.isKeepAlive();
                 var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
-                var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
-                //var normPath = (path.normalize(rootFolder + request.path)).replace(/\\/g,'/');
+
+                if (isRelative(rootFolder)) {
+                    var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
+                } else {
+                    normPath = path.join(rootFolder + request.path);
+                }
+                console.log(normPath);
+
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
+
                 fs.stat(normPath, function (err, stat) {
                     // no err was returned - so the file exists.
                     if (err == null) {
@@ -86,4 +93,10 @@ function writeHeaders(response, socket) {
 
 function writeFile(path, socket, keepAlive) {
     fs.createReadStream(path).pipe(socket, {end : !keepAlive});
+}
+
+function isRelative(rootDir) {
+    var normal = path.normalize(rootDir);
+    var absolute = path.resolve(rootDir);
+    return normal !== absolute;
 }
