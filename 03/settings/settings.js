@@ -36,6 +36,16 @@ var Settings = {
     httpSupportedVersions   : {
         "1.0"   : 'HTTP/1.0',
         "1.1"   : 'HTTP/1.1'
+    },
+    hasContentType          : function (value) {
+        for(var key in this.contentsTypes) {
+            if(this.contentsTypes.hasOwnProperty(key)) {
+                if(this.contentsTypes[key] === value) {
+                    return true
+                }
+            }
+        }
+        return false;
     }
 };
 

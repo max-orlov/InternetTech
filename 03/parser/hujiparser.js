@@ -1,5 +1,6 @@
 var url             = require('url'),
-    serverSettings  = require('./../settings/settings');
+    serverSettings  = require('./../settings/settings'),
+    queryString     = require('querystring');
 
 
 function parse(requestStr, request) {
@@ -52,18 +53,14 @@ function parseMethod(request) {
         throw new Error("Parsing Error: Request initial line syntax is invalid");
     }
 
-    var urlPath = url.parse(methodContent[1], true);
+    var urlPath = methodContent[1].trim().split(/\?/g);
 
     request.method = methodContent[0].trim();
-    request.path = urlPath.pathname;
+    request.path = urlPath[0];
     request.httpVersion = methodContent[2].trim();
+    request.query = urlPath[1] ? parseQuery(urlPath[1]) : {};
 
-    if (request.method === serverSettings.httpMethods.GET ||
-                request.method === serverSettings.httpMethods.HEAD) {
-        request.params = urlPath.query;
-    } else {
-        request.params = '';
-    }
+    console.log(request.query);
     request.status = request.requestStatus.parseMethod;
 }
 
@@ -116,6 +113,7 @@ function parseHeaders(request) {
                     separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
         }
     }
+    request.host = request.get('host');
     request.status = request.requestStatus.parsedHeaders;
 }
 
@@ -136,15 +134,40 @@ function parseBody(request) {
         var body = request.rawData.slice(request.parseIndex + 1,
                 request.headersEnd + 1 + contentLength);
 
-        request.body += body;
+        request.rawBody += body;
         request.parseIndex += body.length;
-        if (request.body.length >= contentLength) {
+        if (request.rawBody.length >= contentLength) {
             request.status = request.requestStatus.done;
         }
     } else {
-        request.body = "";
+        request.rawBody = "";
         request.status =  request.requestStatus.done;
     }
+}
+
+function parseQuery(queryStr) {
+    var query = {};
+    var couple;
+    var couplesRegex = /([^&=]+)=?([^&]*)/g;
+
+    while (couple = couplesRegex.exec(queryStr)) {
+        var name = couple[1];
+        var value = couple[2];
+
+        var nestedObjectRegex = /(\w+)\[(\w+)]/g;
+        var nestedObj = nestedObjectRegex.exec(name);
+        if (!nestedObj) {
+            query[name] = value;
+        } else {
+            var objName = nestedObj[1];
+            if (!query[objName]) {
+                query[objName] = {}
+            }
+            var objSecondName = nestedObj[2];
+            query[objName][objSecondName] = value;
+        }
+    }
+    return query;
 }
 
 function stringify(response) {
