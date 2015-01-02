@@ -1,12 +1,8 @@
-var url             = require('url'),
-    serverSettings  = require('./../settings/settings'),
-    queryString     = require('querystring');
-
+var serverSettings  = require('./../settings/settings');
 
 function parse(requestStr, request) {
     try {
         request.rawData += requestStr;
-
         if (request.status == request.requestStatus.initialized)
             separateMethod(request);
         if (request.status == request.requestStatus.separateMethod)
@@ -21,7 +17,6 @@ function parse(requestStr, request) {
             validateHeaders(request);
         if (request.status == request.requestStatus.validatedHeaders)
             parseBody(request);
-
         return request;
 
     } catch (e) {
@@ -60,7 +55,6 @@ function parseMethod(request) {
     request.httpVersion = methodContent[2].trim();
     request.query = urlPath[1] ? parseQuery(urlPath[1]) : {};
 
-    console.log(request.query);
     request.status = request.requestStatus.parseMethod;
 }
 
