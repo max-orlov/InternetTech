@@ -27,9 +27,9 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
 
                 if (isRelative(rootFolder)) {
-                    var normPath = path.join(__dirname, path.normalize(rootFolder + request.path));
+                    var normPath = path.join(__dirname, rootFolder + path.normalize('/' +request.path));
                 } else {
-                    normPath = path.join(rootFolder + request.path);
+                    normPath = rootFolder + path.normalize(request.path);
                 }
                 console.log(normPath);
 
