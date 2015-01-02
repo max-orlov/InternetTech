@@ -1,5 +1,6 @@
 var hujiNet         = require("./hujinet"),
-    serverSettings  = require("./settings/settings");
+    serverSettings  = require("./settings/settings"),
+    path = require('path');
 
 var runningServerID = 0;
 
@@ -14,8 +15,15 @@ ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
 var serverList = [];
 
 exports.start = function (port, rootFolder, callback) {
-    var server = hujiNet.getServer(port, serverSettings.hostAddress, rootFolder, callback);
-    serverList.push(new ServerShell(runningServerID, server, port, rootFolder, callback));
+
+    if (isRelative(rootFolder)) {
+        var absoluteRootFolder = path.join(__dirname, rootFolder);
+    } else {
+        absoluteRootFolder = rootFolder;
+    }
+
+    var server = hujiNet.getServer(port, serverSettings.hostAddress, absoluteRootFolder, callback);
+    serverList.push(new ServerShell(runningServerID, server, port, absoluteRootFolder, callback));
     runningServerID++;
     return serverList[serverList.length - 1].serverID;
 
@@ -35,3 +43,9 @@ exports.stop = function (serverID, callback) {
 exports.getServers = function () {
     return serverList;
 };
+
+function isRelative(rootDir) {
+    var normal = path.normalize(rootDir);
+    var absolute = path.resolve(rootDir);
+    return normal !== absolute;
+}

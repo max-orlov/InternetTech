@@ -26,11 +26,7 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 var keepAlive = request.isKeepAlive();
                 var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
 
-                if (isRelative(rootFolder)) {
-                    var normPath = path.join(__dirname, rootFolder + path.normalize('/' +request.path));
-                } else {
-                    normPath = rootFolder + path.normalize(request.path);
-                }
+                var normPath = rootFolder + path.normalize(request.path);
                 console.log(normPath);
 
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
