@@ -25,9 +25,9 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
             if(request.status === request.requestStatus.done) {
                 var keepAlive = request.isKeepAlive();
                 var response = new Response(request.httpVersion, 200, new (Date)().toUTCString());
-
                 var normPath = rootFolder + path.normalize(request.path);
-                console.log(normPath);
+
+                //console.log(normPath);
 
                 var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
 
@@ -89,10 +89,4 @@ function writeHeaders(response, socket) {
 
 function writeFile(path, socket, keepAlive) {
     fs.createReadStream(path).pipe(socket, {end : !keepAlive});
-}
-
-function isRelative(rootDir) {
-    var normal = path.normalize(rootDir);
-    var absolute = path.resolve(rootDir);
-    return normal !== absolute;
 }
