@@ -73,7 +73,7 @@ Response.prototype.cookie = function (name, value, options) {
             value = JSON.stringify(value);
         }
         name = name.toString().trim();
-        var cookie = name.toString().trim() + value;
+        var cookie = name.toString().trim() + '=' + value;
         var flags = '';
         for (var key in options) {
             if (options.hasOwnProperty(key)) {
