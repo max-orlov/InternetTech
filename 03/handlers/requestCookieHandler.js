@@ -4,14 +4,12 @@ function requestCookieHandler() {
         var cookie = request.get('cookie');
         if (cookie !== undefined) {
             var cookieCouples = cookie.split(/;/g);
-            for (var i = 0; i < cookieCouples; i++) {
+            for (var i = 0; i < cookieCouples.length; i++) {
                 var couple = cookieCouples[i].split(/=/g);
                 if (couple.length !== 2) {
                     throw new Error("Cookie format is invalid");
                 }
-                var key = couple[0].trim();
-                var value = couple[1].trim();
-                request.cookies[key] = value;
+                request.cookies[couple[0].trim()] = couple[1].trim();
             }
         }
         return next();
