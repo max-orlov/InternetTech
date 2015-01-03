@@ -23,12 +23,12 @@ Response.prototype.set = function (field, value) {
         if (typeof field === 'object') {
             for (var key in field) {
                 if (field.hasOwnProperty(key)) {
-                    Response.headers[key] = field[key];
+                    this.headers[key] = field[key];
                 }
             }
         }
     } else {
-        Response.headers[field] = value;
+        this.headers[field] = value;
     }
 };
 
@@ -63,7 +63,7 @@ Response.prototype.cookie = function (name, value, options) {
         }
         if ('maxAge' in options){
             var maxAge = options['maxAge'];
-            options['expires'] = new Date(Date.now + parseInt(maxAge)).toUTCString();
+            options['expires'] = new Date(Date.now() + parseInt(maxAge)).toUTCString();
             delete options['maxAge'];
         }
         if (!(('expires') in options)) {
@@ -77,8 +77,7 @@ Response.prototype.cookie = function (name, value, options) {
         var flags = '';
         for (var key in options) {
             if (options.hasOwnProperty(key)) {
-                var val = options[key];
-
+                var val = options[key].toString().trim();
                 if (val === 'false') {
                     continue;
                 }
