@@ -16,7 +16,8 @@ var Settings = {
         jpeg    : 'image/jpeg',
         gif     : 'image/gif',
         png     : 'image/png',
-        ico     : 'image/x-ico'
+        ico     : 'image/x-ico',
+        buffer  : 'application/octet-stream'
     },
     statusCodes             : {
         200     : 'OK',

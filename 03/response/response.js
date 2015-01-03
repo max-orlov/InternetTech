@@ -18,7 +18,7 @@ var Response = function (httpVersion, statusCode, socket) {
  */
 Response.prototype.set = function (field, value) {
     if (value === undefined) {
-        if (Object.prototype.toString.call(field) === "[object Object]") {
+        if (typeof field === 'object') {
             for (var key in field) {
                 if (field.hasOwnProperty(key)) {
                     Response.headers[key] = field[key];
@@ -46,14 +46,13 @@ Response.prototype.get = function (field) {
 
 /**
  * Set cookie name to value, which may be a string or object converted to JSON.
- * The options object can have the following properties.
  *
  * @param name
  * @param value
  * @param options
  */
 Response.prototype.cookie = function(name, value, options){
-    option = (typeof options === 'undefined') ? 'noOptions' : options;
+
 };
 
 /**
@@ -61,28 +60,26 @@ Response.prototype.cookie = function(name, value, options){
  * the Content-Length unless previously defined and providing automatic HEAD and HTTP cache freshness support.
  */
 Response.prototype.send = function(body){
-    body = (typeof body === 'undefined') ? 'noBody' : body;
-    if (body != 'noBody'){
-        if (body instanceof Buffer){
-            this.set('Content-Type', 'application/octet-stream');
-
+    if (typeof body === 'undefined') {
+        this.set('content-type', serverSettings.contentsTypes['txt']);
+    } else if (typeof body === 'string'){
+        this.set('content-type', serverSettings.contentsTypes['txt']);
+    } else if (typeof body === 'object'){
+        if (body === null) {
+            this.set('content-type', serverSettings.contentsTypes['txt']);
+        } else if (Buffer.isBuffer(body)) {
+            if (this.get('content-type') === undefined) {
+                this.set('content-type', serverSettings.contentsTypes['buffer']);
+            }
+        } else {
+            return this.json(body);
         }
-        else if (body instanceof String){
-            this.set('Content-Type', 'text/html');
-
-            if (this.headers['content-length'] != undefined && this.headers['content-length'] === null)
-                this.set('Content-Length', body.length);
-        }
-        else if (body instanceof Object){
-            if (this.headers['content-length'] != undefined && this.headers['content-length'] === null)
-                body = this.json(body);
-        }
-        else{
-            console.log("Incompatible body type");
-        }
-
     }
-}
+    if (this.get('content-length') === undefined) {
+        this.set('content-length', body.length);
+    }
+
+};
 
 /**
  * Send a JSON response. This method is identical to res.send() when an object or array is passed. However, it
