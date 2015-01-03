@@ -12,7 +12,7 @@ if (typeof a === 'object') {
 }
 var response = new Response();
 response.set('set-cookie', ['name=tom;']);
-response.cookie('rememberme', '1', { maxAge: 900000, httpOnly: true })
+response.cookie('rememberme', '1', { maxAge: 900000, httpOnly: true });
 console.log(response.headers);
 console.log(parser.stringify(response));
 //setTimeout(function(){webServer.stop(i);console.log("server stopped")}, 10000);
