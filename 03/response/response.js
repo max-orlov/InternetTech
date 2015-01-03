@@ -1,12 +1,14 @@
-var serverSettings  = require('./../settings/settings');
+var serverSettings  = require('./../settings/settings'),
+    parser          = require('./../parser/hujiparser');
 
-var Response = function (httpVersion, statusCode, socket) {
+var Response = function (httpVersion, statusCode, isKeepAlive, socket) {
     this.httpVersion = httpVersion;
     this.statusCode = statusCode;
     this.headers = {};
     this.headers['date'] = new(Date)().toUTCString();
     this.headers['server'] = serverSettings.serverVersion;
 
+    this.isKeepAlive = isKeepAlive;
     this.socket = socket;
 
 };
@@ -51,22 +53,80 @@ Response.prototype.get = function (field) {
  * @param value
  * @param options
  */
-Response.prototype.cookie = function(name, value, options){
+Response.prototype.cookie = function (name, value, options) {
+    if (name !== undefined && name !== null) {
+        if (options === undefined) {
+            options = {}
+        }
+        if (!('path' in options)) {
+            options['path'] = '/';
+        }
+        if ('maxAge' in options){
+            var maxAge = options['maxAge'];
+            options['expires'] = new Date(Date.now + parseInt(maxAge)).toUTCString();
+            delete options['maxAge'];
+        }
+        if (!(('expires') in options)) {
+            options['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
+        }
+        if (typeof value === 'object') {
+            value = JSON.stringify(value);
+        }
+        name = name.toString().trim();
+        var cookie = name.toString().trim() + value;
+        var flags = '';
+        for (var key in options) {
+            if (options.hasOwnProperty(key)) {
+                var val = options[key];
 
+                if (val === 'false') {
+                    continue;
+                }
+                if (val === 'true') {
+                    flags += '; ' + key;
+                }
+                else {
+                    cookie += '; ' + key.toString().trim() + '=' + val;
+                }
+
+            }
+        }
+        cookie += flags;
+        var currentCookie = this.get('set-cookie');
+        var cookies = currentCookie !== undefined ? currentCookie : [];
+        cookies.push(cookie);
+        this.set('set-cookie', cookies);
+
+    }
+};
+
+Response.prototype.sendHeaders = function () {
+    var responseStr = parser.stringify(this);
+    this.socket.write(responseStr);
 };
 
 /**
  * This method performs a myriad of useful tasks for simple non-streaming responses such as automatically assigning
  * the Content-Length unless previously defined and providing automatic HEAD and HTTP cache freshness support.
  */
-Response.prototype.send = function(body){
+Response.prototype.send = function (body) {
     if (typeof body === 'undefined') {
-        this.set('content-type', serverSettings.contentsTypes['txt']);
+        if (this.get('content-type') === undefined) {
+            this.set('content-type', serverSettings.contentsTypes['txt']);
+        }
+        body = '';
     } else if (typeof body === 'string'){
-        this.set('content-type', serverSettings.contentsTypes['txt']);
+        if (this.get('content-type') === undefined) {
+            this.set('content-type', serverSettings.contentsTypes['txt']);
+        }
     } else if (typeof body === 'object'){
         if (body === null) {
-            this.set('content-type', serverSettings.contentsTypes['txt']);
+            if (this.get('content-type') === undefined) {
+                this.set('content-type', serverSettings.contentsTypes['txt']);
+            }
+            if (this.get('content-length') === undefined) {
+                this.set('content-length', 0);
+            }
         } else if (Buffer.isBuffer(body)) {
             if (this.get('content-type') === undefined) {
                 this.set('content-type', serverSettings.contentsTypes['buffer']);
@@ -78,7 +138,7 @@ Response.prototype.send = function(body){
     if (this.get('content-length') === undefined) {
         this.set('content-length', body.length);
     }
-
+    return this.end(body);
 };
 
 /**
@@ -87,19 +147,31 @@ Response.prototype.send = function(body){
  * technically not valid JSON).
  * @param body
  */
-Response.prototype.json = function(body){
-    //TODO: stringify for JSON is not fully clear to me. for example, what should happen for body = null or undefined?
-    this.send(JSON.stringify(body, null,'\t'));
-
+Response.prototype.json = function (body) {
+    this.set('content-type', serverSettings.contentsTypes('json'));
+    this.send(JSON.stringify(body));
 };
 
 /**
  * Chainable alias of node's res.statusCode. Use this method to set the HTTP status for the response.
  * @param status
  */
-Response.prototype.status = function(status){
+Response.prototype.status = function (status) {
     this.statusCode = status;
     return this;
+};
+
+Response.prototype.end = function (data, encoding) {
+    if (data !== undefined && data != null) {
+        if(encoding !== undefined) {
+            this.socket.write(data, encoding);
+        } else {
+            this.socket.write(data);
+        }
+    }
+    if (!this.isKeepAlive) {
+        this.socket.close();
+    }
 };
 
 module.exports = Response;
