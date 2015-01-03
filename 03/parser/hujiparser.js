@@ -147,8 +147,8 @@ function parseQuery(queryStr) {
     var couplesRegex = /([^&=]+)=?([^&]*)/g;
 
     while (couple = couplesRegex.exec(queryStr)) {
-        var name = couple[1];
-        var value = couple[2];
+        var name = decodeURIComponent(couple[1].replace(/\+/g, ' '));
+        var value = decodeURIComponent(couple[2].replace(/\+/g, ' '));
 
         var nestedObjectRegex = /(\w+)\[(\w+)]/g;
         var nestedObj = nestedObjectRegex.exec(name);
