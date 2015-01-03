@@ -173,7 +173,14 @@ function stringify(response) {
     serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
     for (var key in response.headers) {
         if (response.headers.hasOwnProperty(key)) {
-            responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
+            if (Array.isArray(response.headers[key])) {
+                for (var i = 0; i < response.headers[key].length; i++) {
+                    responseStr += key + ":" + response.headers[key][i] + serverSettings.CRLF;
+                }
+            }
+            else {
+                responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
+            }
         }
     }
     return responseStr + serverSettings.CRLF;
