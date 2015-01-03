@@ -14,31 +14,39 @@ var Response = function (httpVersion, statusCode, socket) {
 /**
  * Set header field to value, or pass an object to set multiple fields at once.
  * @param field
+ * @param value
  */
-Response.prototype.set = function(field, value){
-    value = (typeof value === 'undefined') ? 'noValue' : value;
-    if (typeof value === 'undefined') {
-        if (typeof field === 'object') {
+Response.prototype.set = function (field, value) {
+    if (value === undefined) {
+        if (Object.prototype.toString.call(field) === "[object Object]") {
             for (var key in field) {
-                Response.headers[key] = field[key];
+                if (field.hasOwnProperty(key)) {
+                    Response.headers[key] = field[key];
+                }
             }
         }
-    }
-    else{
+    } else {
         Response.headers[field] = value;
     }
-}
+};
 
 /**
- * Set cookie name to value, which may be a string or object converted to JSON. The path option defaults to "/".
+ * Get the case-insensitive response header field.
  * @param field
  */
-Response.prototype.get = function(field){
-    return this[field];
-}
+Response.prototype.get = function (field) {
+    if (field) {
+        field = field.toLowerCase();
+        if (field in this.headers) {
+            return this.headers[field];
+        }
+    }
+    return undefined;
+};
 
 /**
- * Set cookie name to value, which may be a string or object converted to JSON. The path option defaults to "/".
+ * Set cookie name to value, which may be a string or object converted to JSON.
+ * The options object can have the following properties.
  *
  * @param name
  * @param value
@@ -46,7 +54,7 @@ Response.prototype.get = function(field){
  */
 Response.prototype.cookie = function(name, value, options){
     option = (typeof options === 'undefined') ? 'noOptions' : options;
-}
+};
 
 /**
  * This method performs a myriad of useful tasks for simple non-streaming responses such as automatically assigning
@@ -86,15 +94,16 @@ Response.prototype.json = function(body){
     //TODO: stringify for JSON is not fully clear to me. for example, what should happen for body = null or undefined?
     this.send(JSON.stringify(body, null,'\t'));
 
-}
+};
 
 /**
- * Redirect to the given url with optional status code defaulting to 302 "Found".
-
+ * Chainable alias of node's res.statusCode. Use this method to set the HTTP status for the response.
+ * @param status
  */
-Response.prototype.status = function(status, url){
-    status = (typeof status === 'undefined') ? '302' : status;
-}
+Response.prototype.status = function(status){
+    this.statusCode = status;
+    return this;
+};
 
 module.exports = Response;
 
