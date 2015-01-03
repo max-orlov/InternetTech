@@ -54,7 +54,6 @@ function parseMethod(request) {
     request.path = urlPath[0];
     request.httpVersion = methodContent[2].trim();
     request.query = urlPath[1] ? parseQuery(urlPath[1]) : {};
-
     request.status = request.requestStatus.parseMethod;
 }
 
@@ -143,24 +142,26 @@ function parseBody(request) {
 
 function parseQuery(queryStr) {
     var query = {};
-    var couple;
-    var couplesRegex = /([^&=]+)=?([^&]*)/g;
+    var couples = queryStr.split(/&/g);
 
-    while (couple = couplesRegex.exec(queryStr)) {
-        var name = decodeURIComponent(couple[1].replace(/\+/g, ' '));
-        var value = decodeURIComponent(couple[2].replace(/\+/g, ' '));
+    for (var i = 0; i < couples.length; i++) {
+        var couple = couples[i].split(/=/g);
+        if (couple.length === 2) {
+            var name = decodeURIComponent(couple[0].replace(/\+/g, ' '));
+            var value = decodeURIComponent(couple[1].replace(/\+/g, ' '));
 
-        var nestedObjectRegex = /(\w+)\[(\w+)]/g;
-        var nestedObj = nestedObjectRegex.exec(name);
-        if (!nestedObj) {
-            query[name] = value;
-        } else {
-            var objName = nestedObj[1];
-            if (!query[objName]) {
-                query[objName] = {}
+            var nestedObjectRegex = /(\w+)\[(\w+)]/g;
+            var nestedObj = nestedObjectRegex.exec(name);
+            if (!nestedObj) {
+                query[name] = value;
+            } else {
+                var objName = nestedObj[1];
+                if (!query[objName]) {
+                    query[objName] = {}
+                }
+                var objSecondName = nestedObj[2];
+                query[objName][objSecondName] = value;
             }
-            var objSecondName = nestedObj[2];
-            query[objName][objSecondName] = value;
         }
     }
     return query;
