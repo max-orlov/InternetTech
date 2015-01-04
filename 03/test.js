@@ -43,7 +43,7 @@ function testGetRequest() {
  * Testing http v1.0 request.
  */
 function testHttpOldVersion() {
-    var requestStr = 'GET tests/404.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
+    var requestStr = 'GET www/index.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
         serverSettings.CRLF + 'Connection: keep-alive' + serverSettings.CRLF + serverSettings.CRLF;
 
     var conn = net.createConnection(lPort);
@@ -119,7 +119,7 @@ function testListeningToPotInUse() {
  * Testing keep alive mechanism
  */
 function testKeepAlive(){
-    var requestStr = 'GET tests/404.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
+    var requestStr = 'GET www/index.html HTTP/1.1' + serverSettings.CRLF + 'Host:localhost' +
         serverSettings.CRLF + 'Connection: keep-alive' + serverSettings.CRLF + serverSettings.CRLF;
     var conn;
     conn = net.createConnection(lPort);

@@ -3,10 +3,10 @@ var serverSettings  = require("./settings/settings"),
     huji            = require('./hujiwebserver');
 
 
-var lPort = 8888,
-    numberOfRequests = 500,
-    upCallback      = function(e) {e ? (console.log(e)) : console.log('server is up. port' + lPort)},
-    downCallback    = function(e) {e ? (console.log(e)) : console.log('server is down')};
+var lPort               = 8888,
+    numberOfRequests    = 500,
+    upCallback          = function(e) {e ? (console.log(e)) : console.log('server is up. port' + lPort)},
+    downCallback        = function(e) {e ? (console.log(e)) : console.log('server is down')};
 
 
 function test(requestNumber) {
