@@ -17,6 +17,7 @@ var Request = function() {
     this.rawData = "";
     this.rawHeaders = "";
     this.rawBody = "";
+    this.rawQuery = "";
     this.parseIndex = 0;
 
 };
@@ -45,7 +46,7 @@ Request.prototype.get = function (field) {
 Request.prototype.param = function(name, defaultValue){
     if(name) {
         if (name in this.params) {
-            return this.params[name]
+            return this.params[name];
         } else if (name in this.body) {
             return this.body[name];
         } else if (name in this.query) {
@@ -60,7 +61,7 @@ Request.prototype.param = function(name, defaultValue){
  * @param type
  */
 Request.prototype.is = function(type){
-    var requestType = this.get('context-type');
+    var requestType = this.get('content-type');
     if (!type || !requestType) {
         return false;
     }

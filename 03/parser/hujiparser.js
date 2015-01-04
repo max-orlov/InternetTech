@@ -17,6 +17,7 @@ function parse(requestStr, request) {
             validateHeaders(request);
         if (request.status == request.requestStatus.validatedHeaders)
             parseBody(request);
+        console.log(request);
         return request;
 
     } catch (e) {
@@ -53,7 +54,7 @@ function parseMethod(request) {
     request.method = methodContent[0].trim();
     request.path = urlPath[0];
     request.httpVersion = methodContent[2].trim();
-    request.query = urlPath[1] ? parseQuery(urlPath[1]) : {};
+    request.rawQuery = urlPath[1] ? urlPath[1] : "";
     request.status = request.requestStatus.parseMethod;
 }
 
@@ -80,11 +81,11 @@ function separateHeaders(request) {
 
                 if ((request.rawData[i + 2] === serverSettings.CR) &&
                     (request.rawData[i + 3] === serverSettings.LF)) {
-
                     request.rawHeaders = request.rawData.slice(request.parseIndex, i);
                     request.headersEnd = i + 3;
                     request.status = request.requestStatus.separatedHeaders;
                     request.parseIndex = request.headersEnd;
+                    break;
                 }
             }
         }
@@ -140,33 +141,6 @@ function parseBody(request) {
     }
 }
 
-function parseQuery(queryStr) {
-    var query = {};
-    var couples = queryStr.split(/&/g);
-
-    for (var i = 0; i < couples.length; i++) {
-        var couple = couples[i].split(/=/g);
-        if (couple.length === 2) {
-            var name = decodeURIComponent(couple[0].replace(/\+/g, ' '));
-            var value = decodeURIComponent(couple[1].replace(/\+/g, ' '));
-
-            var nestedObjectRegex = /(\w+)\[(\w+)]/g;
-            var nestedObj = nestedObjectRegex.exec(name);
-            if (!nestedObj) {
-                query[name] = value;
-            } else {
-                var objName = nestedObj[1];
-                if (!query[objName]) {
-                    query[objName] = {}
-                }
-                var objSecondName = nestedObj[2];
-                query[objName][objSecondName] = value;
-            }
-        }
-    }
-    return query;
-}
-
 function stringify(response) {
     var responseStr = "";
 
@@ -186,6 +160,7 @@ function stringify(response) {
     }
     return responseStr + serverSettings.CRLF;
 }
+
 
 
 exports.parse = parse;

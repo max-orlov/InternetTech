@@ -18,7 +18,8 @@ var Settings = {
         png     : 'image/png',
         ico     : 'image/x-ico',
         buffer  : 'application/octet-stream',
-        json    : 'application/json'
+        json    : 'application/json',
+        xform   : 'application/x-www-form-urlencoded'
     },
     statusCodes             : {
         200     : 'OK',
