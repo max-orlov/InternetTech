@@ -1,7 +1,7 @@
 var http = require('http'),
-    serverSettings  = require('./../settings/settings'),
     net  = require('net'),
-    huji = require('../hujiwebserver');
+    serverSettings  = require('./settings/settings'),
+    huji = require('./hujiwebserver');
 
 var lPort           = 8888,
     rootFolder      = '/',

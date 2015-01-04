@@ -7,7 +7,7 @@ var hujiNet         = require("./hujinet"),
 //TODO : Check if the abs/rel path is working - check for upper level pathing.
 
 
-ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
+ServerShell = function (serverID, server, port, rootFolder, callbackFunction) {
     this.serverID = serverID;
     this.server = server;
     this.port= port;
@@ -18,11 +18,13 @@ ServerShell = function(serverID, server, port, rootFolder, callbackFunction){
 var serverList = [];
 
 exports.start = function (port, rootFolder, callback) {
-    var isServerExists = false
+    var isServerExists = false;
 
-    for (var serverIndex in serverList){
-        if (serverList[serverIndex].port === port){
-            isServerExists = true
+    for (var serverIndex in serverList) {
+        if (serverList.hasOwnProperty(serverIndex)) {
+            if (serverList[serverIndex].port === port) {
+                isServerExists = true
+            }
         }
     }
     if (isServerExists === false) {
@@ -35,9 +37,8 @@ exports.start = function (port, rootFolder, callback) {
         var server = hujiNet.getServer(port, serverSettings.hostAddress, absoluteRootFolder, callback);
         serverList.push(new ServerShell(serverList.length, server, port, absoluteRootFolder, callback));
         return serverList[serverList.length - 1].serverID;
-    }
-    else{
-        console.log("server is already up and listening on that port")
+    } else {
+        console.log("server is already up and listening on that port");
         return null;
     }
 
@@ -52,7 +53,6 @@ exports.stop = function (serverID, callback) {
             break;
         }
     }
-    console.log("No server with the specified port is running")
 };
 
 exports.getServers = function () {

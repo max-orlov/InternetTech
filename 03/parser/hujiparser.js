@@ -60,9 +60,9 @@ function parseMethod(request) {
 
     if (request.method === serverSettings.httpMethods.GET ||
                 request.method === serverSettings.httpMethods.HEAD) {
-        request.params = urlPath.query;
+        request.query = urlPath.query;
     } else {
-        request.params = '';
+        request.query = {};
     }
     request.status = request.requestStatus.parseMethod;
 }
@@ -105,15 +105,17 @@ function separateHeaders(request) {
 function parseHeaders(request) {
     var headersContent = request.rawHeaders.split(serverSettings.CRLF);
     for (var index in headersContent) {
-        var line = headersContent[index].trim();
-        if (line != '') {
-            var separator = line.indexOf(":");
-            if (separator === -1) {
-                request.statusCode = 500;
-                throw new Error("Parsing Error: Headers does not contain ':' separator");
-            }
-            request.headers[line.substr(0,
+        if (headersContent.hasOwnProperty(index)) {
+            var line = headersContent[index].trim();
+            if (line != '') {
+                var separator = line.indexOf(":");
+                if (separator === -1) {
+                    request.statusCode = 500;
+                    throw new Error("Parsing Error: Headers does not contain ':' separator");
+                }
+                request.headers[line.substr(0,
                     separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
+            }
         }
     }
     request.status = request.requestStatus.parsedHeaders;
@@ -154,7 +156,9 @@ function stringify(response) {
             serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
 
     for (var key in response.headers) {
-        responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
+        if (response.headers.hasOwnProperty(key)) {
+            responseStr += key + ":" + response.headers[key] + serverSettings.CRLF;
+        }
     }
     return responseStr + serverSettings.CRLF;
 }
