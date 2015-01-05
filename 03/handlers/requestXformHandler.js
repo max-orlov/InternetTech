@@ -1,13 +1,12 @@
 var queryParser     = require('./../parser/queryparser'),
     serverSettings  = require('./../settings/settings');
-function requestJsonHandler() {
+function requestXformHandler() {
     return function (request, response, next) {
-        if (request.is(serverSettings.contentsTypes['json'])) {
-            //TODO:: handle request the it's body is json
+        if (request.is(serverSettings.contentsTypes['xform'])) {
+            request.body = queryParser.parseQuery(request.rawBody);
         }
-
         return next();
     }
 }
 
-module.exports = requestJsonHandler;
+module.exports = requestXformHandler;
