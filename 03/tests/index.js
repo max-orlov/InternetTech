@@ -21,11 +21,7 @@ var i = webServer.start(8888,"/",function(e){debug.devlog(e)});
 ////console.log(response.headers);
 //console.log(parser.stringify(response));
 //
-//var request = new Request();
-//request.headers['cookie'] = 'name=tom;f=dana;ran=1';
-//RequestCookieHandler(request, new Response(), function () {
-//    return true;
-//});
+
 
 //console.log(request);
 //setTimeout(function(){webServer.stop(i);console.log("server stopped")}, 10000);

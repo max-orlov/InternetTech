@@ -7,4 +7,4 @@ function requestQueryHandler() {
     }
 }
 
-module.exports = requestQueryHandler();
+module.exports = requestQueryHandler;

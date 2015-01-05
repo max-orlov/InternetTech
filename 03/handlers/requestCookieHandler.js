@@ -16,4 +16,4 @@ function requestCookieHandler() {
     }
 }
 
-module.exports = requestCookieHandler();
+module.exports = requestCookieHandler;
