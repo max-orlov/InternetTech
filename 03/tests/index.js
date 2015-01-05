@@ -6,7 +6,30 @@ var webServer = require('./../hujiwebserver'),
     RequestCookieHandler = require('./../handlers/requestCookieHandler');
 
 
-var i = webServer.start(8888,"/",function(e){debug.devlog(e)});
+var fs = require('fs');
+var buf;
+fs.readFile('json_file','ASCII',function(err,data){
+    if (err){
+        console.log("error");
+        return;
+    }
+    buf = JSON.parse(data);
+    print(buf);
+});
+
+function print(buf){
+   for (var key_1 in buf){
+       if (buf[key_1].id === "123"){
+           console.log(buf[key_1])
+       }
+   }
+}
+
+
+
+
+
+//var i = webServer.start(8888,"/",function(e){debug.devlog(e)});
 //var a = [];
 //if (typeof a === 'object') {
 //    console.log(true)

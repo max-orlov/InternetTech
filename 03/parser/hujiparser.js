@@ -49,6 +49,7 @@ function parseMethod(request) {
         throw new Error("Parsing Error: Request initial line syntax is invalid");
     }
 
+    // TODO : Can '?' appear more than once in a query?
     var urlPath = methodContent[1].trim().split(/\?/g);
 
     request.method = methodContent[0].trim();

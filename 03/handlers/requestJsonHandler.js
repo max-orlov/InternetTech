@@ -1,5 +1,6 @@
 var queryParser     = require('./../parser/queryparser'),
     serverSettings  = require('./../settings/settings');
+
 function requestJsonHandler() {
     return function (request, response, next) {
         if (request.is(serverSettings.contentsTypes['json'])) {
