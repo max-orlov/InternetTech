@@ -1,7 +1,6 @@
 {
-  "stuff" : "stuff",
+  "basic" : "base",
   "p1" : {
-
     "name": "maxim",
     "lastName": "lastName",
     "id": "123",
@@ -12,16 +11,11 @@
     },
     "phone": "054-123456"
   },
-  "p2" : {
-        "name" : "tzvika",
-        "lastname": "last",
-        "id" : "123"
-  },
-  "p3" : {
 
+  "p2" :{
         "name": "tom",
         "lastName": "lastName",
-        "id" : "321",
+        "id" : "123",
         "address":
         {
           "street": "Heil ha himush",
