@@ -99,10 +99,10 @@ var Hujidynamicserver = function () {
 
         if (method in serverSettings.httpMethods && method !== serverSettings.httpMethods['HEAD']) {
             thisObj.route[method].push(
-                {   'method' : method.toLowerCase(),
-                    'path' : handlerResource,
-                    'handler' : [{}],
-                    'regexp' : handler.regexp});
+                {   'path'      : handlerResource,
+                    'method'    : method.toLowerCase(),
+                    'callbacks' : [{}],
+                    'regexp'    : handler.regexp});
         }
 
     };
