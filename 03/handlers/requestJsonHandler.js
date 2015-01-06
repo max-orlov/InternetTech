@@ -1,14 +1,20 @@
-var queryParser     = require('./../parser/queryparser'),
-    serverSettings  = require('./../settings/settings');
+var serverSettings  = require('./../settings/settings');
 
-function requestJsonHandler() {
+function RequestJsonHandler() {
     return function (request, response, next) {
         if (request.is(serverSettings.contentsTypes['json'])) {
-            //TODO:: handle request the it's body is json
+            if (request.rawBody.length > 0) {
+                var body = JSON.parse(request.rawBody.trim());
+                if (typeof body === 'object') {
+                    request.body = body;
+                } else {
+                    throw new Error("invalid body structure");
+                }
+            }
         }
 
         return next();
     }
 }
 
-module.exports = requestJsonHandler;
+module.exports = RequestJsonHandler;

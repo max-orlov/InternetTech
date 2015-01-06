@@ -25,5 +25,5 @@ ResourceShell.prototype.setURI = function(uri){
 
 ResourceShell.prototype.moveToNextURISegment = function(){
     this.myURI.splice(0,1);
-}
+};
 module.exports = ResourceShell;

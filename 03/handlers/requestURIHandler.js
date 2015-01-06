@@ -1,7 +1,7 @@
 var fs = require('fs'),
     ResourceShell = require('./../settings/resourceShell');
 
-function requestURIHandler() {
+function RequestURIHandler() {
     return function (request, response, next) {
         var path = request.path.split('/');
         // TODO : configure how to get the rootdir, at the moment it can just be __dirname
@@ -68,7 +68,7 @@ pathParser(luri,lresources, function(resources){
 });
 
 
-module.exports = requestURIHandler;
+module.exports = RequestURIHandler;
 
 
 //console.log(pathFinderHelper(["C:\\Users\\Maxim\\WebstormProjects\\InternetTechEx04\\03\\tests"],"restesting\\:x\\goodir\\json_file".split("\\")));

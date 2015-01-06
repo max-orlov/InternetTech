@@ -1,7 +1,7 @@
 var serverSettings  = require('./../settings/settings');
 
 
-function requestRecordHandler() {
+function RequestRecordHandler() {
     return function (request, response, next) {
             require('fs').readFile('json_file','utf8',function(err,data){
                 if (err){
@@ -14,11 +14,13 @@ function requestRecordHandler() {
 }
 
 function extractObjects(jsonResource, request, response, next){
-    response.body = {}
-    for (var key in jsonResource){
-        if (keysCheckupHelper(jsonResource[key], request.query[key])){
-            response.body[key] = jsonResource[key]
-            //break;
+    response.body = {};
+    for (var key in jsonResource) {
+        if (jsonResource.hasOwnProperty(key)) {
+            if (keysCheckupHelper(jsonResource[key], request.query[key])) {
+                response.body[key] = jsonResource[key];
+                //break;
+            }
         }
     }
     console.log(response.body);
@@ -36,12 +38,13 @@ function keysCheckupHelper(resourceJson, requestJson){
         if (resourceJson.hasOwnProperty(requestKey))
             if (resourceJson[requestKey] === requestJson[requestKey]) {
                 if (typeof requestJson[requestKey] === 'object') {
-                    for (var innerKey in requestJson[requestKey])
+                    for (var innerKey in requestJson[requestKey]) {
                         return keysCheckupHelper(resourceJson[innerKey], requestJson[innerKey])
+                    }
                 }
                 return true;
             }
     return false;
 }
 
-module.exports = requestRecordHandler;
+module.exports = RequestRecordHandler;

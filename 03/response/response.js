@@ -99,7 +99,7 @@ Response.prototype.cookie = function (name, value, options) {
     }
 };
 
-Response.prototype.sendHeaders = function () {
+Response.prototype.writeHeaders = function () {
     var responseStr = parser.stringify(this);
     this.socket.write(responseStr);
 };
@@ -137,7 +137,7 @@ Response.prototype.send = function (body) {
     if (this.get('content-length') === undefined) {
         this.set('content-length', body.length);
     }
-    return this.end(body);
+    return this.write(body);
 };
 
 /**
@@ -160,16 +160,21 @@ Response.prototype.status = function (status) {
     return this;
 };
 
-Response.prototype.end = function (data, encoding) {
-    if (data !== undefined && data != null) {
-        if(encoding !== undefined) {
-            this.socket.write(data, encoding);
-        } else {
-            this.socket.write(data);
+Response.prototype.write = function (data, encoding) {
+    this.writeHeaders();
+
+    if (this.method !== serverSettings.httpMethods['HEAD']) {
+
+        if (data !== undefined && data != null) {
+            if (encoding !== undefined) {
+                this.socket.write(data, encoding);
+            } else {
+                this.socket.write(data);
+            }
         }
     }
     if (!this.isKeepAlive) {
-        this.socket.close();
+        this.socket.end();
     }
 };
 

@@ -1,5 +1,5 @@
 
-function requestCookieHandler() {
+function RequestCookieHandler() {
     return function (request, response, next) {
         var cookie = request.get('cookie');
         if (cookie !== undefined) {
@@ -16,4 +16,4 @@ function requestCookieHandler() {
     }
 }
 
-module.exports = requestCookieHandler;
+module.exports = RequestCookieHandler;

@@ -1,7 +1,7 @@
-var parser = require('./parser/hujiparser'),
-    serverSettings  = require('./settings/settings'),
-    Request = require('./request/request'),
-    Response = require('./response/response'),
+var parser = require('./../parser/hujiparser'),
+    serverSettings  = require('./../settings/settings'),
+    Request = require('./../request/request'),
+    Response = require('./../response/response'),
     net = require('net'),
     fs = require("fs"),
     path = require('path');
@@ -18,7 +18,7 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 request = new Request();
             }
             if (request.status !== request.requestStatus.errorParsing ||
-                    request.status !== request.requestStatus.done) {
+                request.status !== request.requestStatus.done) {
 
                 parser.parse(dat, request);
             }
@@ -58,10 +58,10 @@ exports.getServer = function (lPort, hAddress, rootFolder, callback) {
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
                 response = new Response(serverSettings.httpSupportedVersions['1.1'],
-                        request.statusCode, false, socket);
+                    request.statusCode, false, socket);
 
                 writeHeaders(response, socket);
-                socket.end();
+                socket.write();
                 request = null;
             }
         });
@@ -88,5 +88,5 @@ function writeHeaders(response, socket) {
 }
 
 function writeFile(path, socket, keepAlive) {
-    fs.createReadStream(path).pipe(socket, {end : !keepAlive});
+    fs.createReadStream(path).pipe(socket, {write : !keepAlive});
 }

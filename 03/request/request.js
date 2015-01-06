@@ -17,7 +17,6 @@ var Request = function() {
     this.rawData = "";
     this.rawHeaders = "";
     this.rawBody = "";
-    this.rawQuery = "";
     this.parseIndex = 0;
 
 };

@@ -1,7 +1,14 @@
-var queryParser     = require('./../parser/queryparser'),
+var RequestJsonHandler  = require('./requestJsonHandler'),
+    RequestXformHandler  = require('./requestXformHandler'),
     serverSettings  = require('./../settings/settings');
-function requestBodyHandler() {
-    //TODO:: call requestXformHandler.js or requestJsonHandler.js (depends on the request content-type)
+function RequestBodyHandler() {
+    return function (request, response, next) {
+        if(request.is(serverSettings.serverVersion['json'])) {
+            return RequestJsonHandler()(request, response, next);
+        } else if (request.is(serverSettings.contentsTypes['xform'])) {
+            return RequestXformHandler()(request, response, next);
+        }
+    };
 }
 
-module.exports = requestBodyHandler;
+module.exports = RequestBodyHandler;
