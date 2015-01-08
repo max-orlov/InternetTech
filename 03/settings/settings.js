@@ -43,7 +43,7 @@ var Settings = {
     hasContentType          : function (value) {
         for(var key in this.contentsTypes) {
             if(this.contentsTypes.hasOwnProperty(key)) {
-                if(this.contentsTypes[key] === value) {
+                if(this.contentsTypes[key].toLowerCase() === value.toLowerCase()) {
                     return true
                 }
             }

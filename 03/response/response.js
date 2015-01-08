@@ -1,5 +1,6 @@
 var serverSettings  = require('./../settings/settings'),
-    parser          = require('./../parser/hujiparser');
+    parser          = require('./../parser/hujiparser'),
+    generalFuncs = require('./../settings/generalFuncs');
 
 var Response = function (httpVersion, statusCode, isKeepAlive, socket) {
     this.httpVersion = httpVersion;
@@ -39,8 +40,8 @@ Response.prototype.set = function (field, value) {
 Response.prototype.get = function (field) {
     if (field) {
         field = field.toLowerCase();
-        if (field in this.headers) {
-            return this.headers[field];
+        if (field in generalFuncs.objKeysToLowerCase(this.headers)) {
+            return generalFuncs.objKeysToLowerCase(this.headers)[field];
         }
     }
     return undefined;
@@ -54,20 +55,24 @@ Response.prototype.get = function (field) {
  * @param options
  */
 Response.prototype.cookie = function (name, value, options) {
+
     if (name !== undefined && name !== null) {
         if (options === undefined) {
             options = {}
         }
-        if (!('path' in options)) {
-            options['path'] = '/';
+
+        var optionsToLower = generalFuncs.objKeysToLowerCase(options);
+
+        if (!('path' in optionsToLower)) {
+            optionsToLower['path'] = '/';
         }
-        if ('maxAge' in options){
-            var maxAge = options['maxAge'];
-            options['expires'] = new Date(Date.now() + parseInt(maxAge)).toUTCString();
-            delete options['maxAge'];
+        if ('maxage' in optionsToLower){
+            var maxAge = optionsToLower['maxage'];
+            optionsToLower['expires'] = new Date(Date.now() + parseInt(maxAge)).toUTCString();
+            delete optionsToLower['maxAge'];
         }
-        if (!(('expires') in options)) {
-            options['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
+        if (!(('expires') in optionsToLower)) {
+            optionsToLower['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
         }
         if (typeof value === 'object') {
             value = JSON.stringify(value);
@@ -75,9 +80,9 @@ Response.prototype.cookie = function (name, value, options) {
 
         var cookie = name.toString().trim() + '=' + value;
         var flags = '';
-        for (var key in options) {
-            if (options.hasOwnProperty(key)) {
-                var val = options[key].toString().trim();
+        for (var key in optionsToLower) {
+            if (optionsToLower.hasOwnProperty(key)) {
+                var val = optionsToLower[key].toString().trim();
                 if (val === 'false') {
                     continue;
                 }

@@ -1,4 +1,5 @@
-var serverSettings  = require('./../settings/settings');
+var serverSettings  = require('./../settings/settings'),
+    generalFuncs = require('./../settings/generalFuncs');
 
 var Request = function() {
     this.headers = {};
@@ -29,8 +30,8 @@ var Request = function() {
 Request.prototype.get = function (field) {
     if (field) {
         field = field.toLowerCase();
-        if (field in this.headers) {
-            return this.headers[field];
+        if (field in generalFuncs.objKeysToLowerCase(this.headers)) {
+            return generalFuncs.objKeysToLowerCase(this.headers)[field];
         }
     }
     return undefined;
@@ -44,12 +45,13 @@ Request.prototype.get = function (field) {
  */
 Request.prototype.param = function(name, defaultValue){
     if(name) {
-        if (name in this.params) {
-            return this.params[name];
-        } else if (name in this.body) {
-            return this.body[name];
-        } else if (name in this.query) {
-            return this.query[name];
+        name = name.toLowerCase();
+        if (name in generalFuncs.objKeysToLowerCase(this.params)) {
+            return  generalFuncs.objKeysToLowerCase(this.params)[name];
+        } else if (name in generalFuncs.objKeysToLowerCase(this.body)) {
+            return  generalFuncs.objKeysToLowerCase(this.body)[name];
+        } else if (name in generalFuncs.objKeysToLowerCase(this.query)) {
+            return generalFuncs.objKeysToLowerCase(this.query)[name];
         }
     }
     return defaultValue;
@@ -64,8 +66,8 @@ Request.prototype.is = function(type){
     if (!type || !requestType) {
         return false;
     }
-    requestType = requestType.split(/;/g)[0].trim();
-    type = type.trim();
+    requestType = requestType.split(/;/g)[0].trim().toLowerCase();
+    type = type.trim().toLowerCase();
 
     if (!serverSettings.hasContentType(requestType)) {
         return false;
@@ -74,6 +76,7 @@ Request.prototype.is = function(type){
     if (requestType === type) {
         return true;
     }
+
     requestType = requestType.split(/\//g);
     type = type.split(/\//g);
 
