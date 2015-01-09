@@ -1,6 +1,12 @@
 var serverSettings  = require('./../settings/settings'),
     queryParser     = require('./queryparser');
 
+/**
+ * Parses an HTTP request string into an HTTP request object.
+ * @param requestStr HTTP request string.
+ * @param request HTTP request object.
+ * @returns {*} HTTP request object.
+ */
 function parse(requestStr, request) {
     try {
         request.rawData += requestStr;
@@ -26,6 +32,10 @@ function parse(requestStr, request) {
     }
 }
 
+/**
+ * Separates the initial line from the request.
+ * @param request HTTP request object.
+ */
 function separateMethod(request) {
     for (var i = request.parseIndex ; i < request.rawData.length ; i++){
         if ((request.rawData[i] === serverSettings.CR) &&
@@ -41,14 +51,20 @@ function separateMethod(request) {
     throw new Error("Parsing Error: There is no initial line");
 }
 
+/**
+ * Parses the initial line of the request.
+ * @param request HTTP request object.
+ */
 function parseMethod(request) {
     var methodContent = request.rawMethod.split(' ');
 
+    //initial line form is invalid.
     if (methodContent.length != 3) {
         request.statusCode = 500;
         throw new Error("Parsing Error: Request initial line syntax is invalid");
     }
 
+    //catch the first question mark in the url and separates it into urlPath and urlQuery.
     var fullPath = methodContent[1].trim();
     var firstQuestionMarkIndex = fullPath.indexOf('?');
     if (firstQuestionMarkIndex !== -1) {
@@ -66,13 +82,20 @@ function parseMethod(request) {
     request.status = request.requestStatus.parseMethod;
 }
 
+/**
+ * Performs validation of the initial line.
+ * @param request HTTP request object.
+ */
 function validateMethod(request) {
+
+    //check if the given http version is supported.
     if (request.httpVersion !== serverSettings.httpSupportedVersions['1.0'] &&
         request.httpVersion !== serverSettings.httpSupportedVersions['1.1']) {
         request.statusCode = 505;
         throw new Error("HTTP version is not supported");
     }
 
+    //checks if the given http method is supported.
     if (!(request.method in serverSettings.httpMethods)) {
         request.statusCode = 501;
         throw new Error("The required method is not supported");
@@ -80,6 +103,10 @@ function validateMethod(request) {
     request.status = request.requestStatus.validateMethod;
 }
 
+/**
+ * Separates the headers from the request. in order to do so, looks for double CRLF.
+ * @param request HTTP request object.
+ */
 function separateHeaders(request) {
     for (var i = request.parseIndex; i < request.rawData.length ; i++) {
         if ((request.rawData[i] === serverSettings.CR) &&
@@ -100,19 +127,23 @@ function separateHeaders(request) {
     }
 }
 
+/**
+ * Parses the headers of the request.
+ * @param request HTTP request object.
+ */
 function parseHeaders(request) {
     var headersContent = request.rawHeaders.split(serverSettings.CRLF);
     for (var index in headersContent) {
         if(headersContent.hasOwnProperty(index)) {
             var line = headersContent[index].trim();
+            //the form of the headers is invalid.
             if (line != '') {
                 var separator = line.indexOf(":");
                 if (separator === -1) {
                     request.statusCode = 500;
                     throw new Error("Parsing Error: Headers does not contain ':' separator");
                 }
-                request.headers[line.substr(0,
-                    separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
+                request.headers[line.substr(0, separator).trim().toLowerCase()] = line.substr(separator + 1).trim();
             }
         }
     }
@@ -120,7 +151,12 @@ function parseHeaders(request) {
     request.status = request.requestStatus.parsedHeaders;
 }
 
+/**
+ * Perform validation of the headers.
+ * @param request HTTP request object.
+ */
 function validateHeaders(request) {
+    //checks if the given request is v 1.1 and contains an host header.
     if (request.httpVersion === serverSettings.httpSupportedVersions['1.1']) {
         if (!("host" in request.headers)) {
             request.statusCode = 500;
@@ -131,6 +167,11 @@ function validateHeaders(request) {
 
 }
 
+
+/**
+ * Parses the body of the request.
+ * @param request HTTP request object.
+ */
 function parseBody(request) {
     if ('content-length' in request.headers) {
         var contentLength = parseInt(request.headers['content-length']);
@@ -148,13 +189,21 @@ function parseBody(request) {
     }
 }
 
+
+/**
+ * Return the string representation of a given HTTP response object. (without the body).
+ * @param response HTTP response object.
+ * @returns {string} string the string representation of a given HTTP response object.
+ */
 function stringify(response) {
     var responseStr = "";
 
     responseStr += response.httpVersion + " " + response.statusCode + " " +
     serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
+    //iterates over the headers
     for (var key in response.headers) {
         if (response.headers.hasOwnProperty(key)) {
+            //if the header value is an array (set-cookie case), iterates over the array values.
             if (Array.isArray(response.headers[key])) {
                 for (var i = 0; i < response.headers[key].length; i++) {
                     responseStr += key + ":" + response.headers[key][i] + serverSettings.CRLF;
@@ -167,7 +216,6 @@ function stringify(response) {
     }
     return responseStr + serverSettings.CRLF;
 }
-
 
 
 exports.parse = parse;

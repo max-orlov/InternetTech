@@ -24,8 +24,9 @@ var Request = function() {
 
 
 /**
- * Get the case-insensitive request header field. The Referrer and Referrer fields are interchangeable.
- * @param field
+ * Gets the case-insensitive request header field. The Referrer and Referrer fields are interchangeable.
+ * @param field the requested header field.
+ * @returns {*} the requested header field value if exists, otherwise returns undefined.
  */
 Request.prototype.get = function (field) {
     if (field) {
@@ -38,10 +39,11 @@ Request.prototype.get = function (field) {
 };
 
 /**
- * Return the value of param name when present.
- * @param name
- * @param defaultValue
- * @returns {*}
+ * Returns the value of param name when present.
+ * @param name param name.
+ * @param defaultValue one can specify defaultValue to set a default value if the
+ *        parameter is not found in any of the request objects.
+ * @returns {*} the value of param name when present, otherwise return defaultValue if defined, otherwise return undefined.
  */
 Request.prototype.param = function(name, defaultValue){
     if(name) {
@@ -59,16 +61,19 @@ Request.prototype.param = function(name, defaultValue){
 
 /**
  * Check if the incoming request contains the "Content-Type" header field, and if it matches the give mime type.
- * @param type
+ * @param type the given mime type.
+ * @returns {boolean} true if the given mime type matches the request content-type, otherwise false.
  */
 Request.prototype.is = function(type){
     var requestType = this.get('content-type');
+    //checks that the request contains the content-type header field.
     if (!type || !requestType) {
         return false;
     }
     requestType = requestType.split(/;/g)[0].trim().toLowerCase();
     type = type.trim().toLowerCase();
 
+    //checks whether we support the request content-type.
     if (!serverSettings.hasContentType(requestType)) {
         return false;
     }
@@ -85,7 +90,7 @@ Request.prototype.is = function(type){
 
 /**
  * Checks if the request is of keep-alive type.
- * @returns {*}
+ * @returns {*} true if the request is of keep-alive type, otherwise returns false.
  */
 Request.prototype.isKeepAlive = function() {
     if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {

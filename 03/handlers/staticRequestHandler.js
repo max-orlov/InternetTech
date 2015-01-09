@@ -1,5 +1,5 @@
 var fs              = require('fs'),
-    path              = require('path'),
+    path            = require('path'),
     serverSettings  = require('./../settings/settings');
 
 function StaticRequestHandler(rootFolder) {

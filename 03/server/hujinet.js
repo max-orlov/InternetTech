@@ -46,12 +46,13 @@ var Hujinet = function (handler, callback) {
             }
             if(request.status === request.requestStatus.done) {
                 var keepAlive = request.isKeepAlive();
-                var response = new Response(request.httpVersion, 200, keepAlive, socket);
+                var response = new Response(request.httpVersion, 200, keepAlive, request.method ,socket);
                 thisObj.emit('request', request, response);
                 request = null;
 
             } else if (request.status === request.requestStatus.errorParsing) {
-                response = new Response(serverSettings.httpSupportedVersions['1.1'], request.statusCode, false, socket);
+                response = new Response(serverSettings.httpSupportedVersions['1.1'],
+                    request.statusCode, false, request.method, socket);
                 response.send();
                 request = null;
             }
