@@ -94,6 +94,10 @@ var Hujidynamicserver = function () {
         this.server.close();
     };
 
+
+    //app.use = function (resouce, handler) {
+    //    this.addHandler('use', resouce, handler);
+    //};
     app.use = app.addHandler.bind(app, "use");
     app.get = app.addHandler.bind(app, "GET");
     app.post = app.addHandler.bind(app, "POST");
