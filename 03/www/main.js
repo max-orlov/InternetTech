@@ -243,7 +243,7 @@ profile_screen.style.display = "none";
 calculator_screen.style.display = "none";
 
 
-//event listener for the login button.
+//serverError listener for the login button.
 //validate username and password. if valid it transfer the user to the profile screen.
 // otherwise it prints an error message.
 document.getElementById("login_button").addEventListener("click", function () {
@@ -263,7 +263,7 @@ document.getElementById("login_button").addEventListener("click", function () {
 });
 
 
-//event listener for the calculator button.
+//serverError listener for the calculator button.
 //transfer the user to the calculator screen.
 document.getElementById("calculator_button").addEventListener("click", function () {
     profile_screen.style.display = "none";
@@ -272,7 +272,7 @@ document.getElementById("calculator_button").addEventListener("click", function 
 });
 
 
-//event listener for the logout button.
+//serverError listener for the logout button.
 //transfer the user to the login screen and prints an appropriate message.
 document.getElementById("logout_button").addEventListener("click", function () {
     var msg = document.getElementById("login_message");
@@ -284,7 +284,7 @@ document.getElementById("logout_button").addEventListener("click", function () {
 });
 
 
-//event listener for the login button (the one in calculator screen).
+//serverError listener for the login button (the one in calculator screen).
 //transfer the user to the login screen.
 document.getElementById("c_login_button").addEventListener("click", function () {
     var msg = document.getElementById("login_message");
@@ -297,7 +297,7 @@ document.getElementById("c_login_button").addEventListener("click", function () 
 });
 
 
-//event listener for the profile information button.
+//serverError listener for the profile information button.
 //transfer the user to the profile screen.
 document.getElementById("profile_info_button").addEventListener("click", function () {
     calculator_screen.style.display = "none";
@@ -305,7 +305,7 @@ document.getElementById("profile_info_button").addEventListener("click", functio
 });
 
 
-//event listeners for the profile images.
+//serverError listeners for the profile images.
 //switches between images upon mouse over.
 var image = document.getElementById("profile_image");
 image.addEventListener("mouseover", function () {
@@ -317,7 +317,7 @@ image.addEventListener("mouseover", function () {
 });
 
 
-//event listener for the clear button.
+//serverError listener for the clear button.
 //changes the value of the output screen to 0.
 document.getElementById("clear_button").addEventListener("click", function () {
     document.getElementById("output_screen").value = basic_calc.clear();
@@ -326,7 +326,7 @@ document.getElementById("clear_button").addEventListener("click", function () {
 });
 
 
-//event listener for the clear button.
+//serverError listener for the clear button.
 //add the input box content to the output screen.
 document.getElementById("add_button").addEventListener("click", function () {
     var input_box = document.getElementById("input_box");
@@ -338,7 +338,7 @@ document.getElementById("add_button").addEventListener("click", function () {
 });
 
 
-//event listener for the clear button.
+//serverError listener for the clear button.
 //multiply the input box content with the output screen content.
 document.getElementById("multiply_button").addEventListener("click", function () {
     var input_box = document.getElementById("input_box");
@@ -350,7 +350,7 @@ document.getElementById("multiply_button").addEventListener("click", function ()
 });
 
 
-//event listener for the input box.
+//serverError listener for the input box.
 //validates that one enters only positive integers or zero to the input box.
 //if the user enters something else it ignores it.
 document.getElementById("input_box").addEventListener("keypress", function (evt) {

@@ -1,4 +1,5 @@
 var serverSettings  = require('./../settings/settings'),
+    mimeTypes       = require('./../settings/mimeTypes'),
     queryParser     = require('./queryparser');
 
 /**
@@ -24,6 +25,8 @@ function parse(requestStr, request) {
             validateHeaders(request);
         if (request.status == request.requestStatus.validatedHeaders)
             parseBody(request);
+
+        console.log(request);
         return request;
 
     } catch (e) {
@@ -148,6 +151,10 @@ function parseHeaders(request) {
         }
     }
     request.host = request.get('host');
+
+
+
+
     request.status = request.requestStatus.parsedHeaders;
 }
 
@@ -187,6 +194,21 @@ function parseBody(request) {
         request.rawBody = "";
         request.status =  request.requestStatus.done;
     }
+
+    // If the body is of input type, parse it into
+    if(request.is(mimeTypes.getMimeType('json'))) {
+        if (request.rawBody.length > 0) {
+            var body = JSON.parse(request.rawBody.replace("'",'"').trim());
+            if (typeof body === 'object') {
+                request.body = body;
+            } else {
+                throw new Error("invalid body structure");
+            }
+        }
+    } else if (request.is(mimeTypes.getMimeType('xform'))) {
+        request.body = queryParser.parseQuery(request.rawBody.trim());
+    }
+
 }
 
 

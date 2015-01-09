@@ -1,4 +1,7 @@
-
+/**
+ * A handler for handling any request containing cookies - that is parsing cookies.
+ * @returns {Function} A handler for handling any request containing cookies.
+ */
 function RequestCookieHandler() {
     return function (request, response, next) {
         var cookie = request.get('cookie');

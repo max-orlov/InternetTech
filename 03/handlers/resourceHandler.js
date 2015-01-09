@@ -1,3 +1,10 @@
+/**
+ * A constructor for the resouce handler.
+ * @param method the method of access to the resource
+ * @param path the resource itself
+ * @param handler the handler to be called on the specified resource.
+ * @constructor
+ */
 var ResourceHandler = function (method, path, handler) {
     this.method = method;
     this.path = path;
@@ -5,17 +12,26 @@ var ResourceHandler = function (method, path, handler) {
     this.regexp = this.regex(path);
 };
 
-
+/**
+ * Utilizes the handler supplied previously in the constructor on the supplied arguments.
+ * @param req the request object for the handler.
+ * @param res the response object for the handler.
+ * @param next the next handler to be called.
+ * @returns {*}
+ */
 ResourceHandler.prototype.handle = function(req, res, next) {
     return this.handler(req, res, next);
 };
 
-
+/**
+ * Generates a regex representation of the given resource
+ * @param path the resource to be regexed.
+ * @returns {RegExp} the regex representation of the resource.
+ */
 ResourceHandler.prototype.regex = function (path) {
-    //TODO:: There is a bug here. for example: resource = "/root", request.path = "rooter.html", and the regex matches!
     var parts = path.split('/');
     var str= '^';
-    for (var i = 0; i < parts.length; i++) {
+    for (var i = 0; i < parts.length ; i++) {
         if (parts[i] === '') {
             continue;
         }
@@ -26,7 +42,9 @@ ResourceHandler.prototype.regex = function (path) {
             str += parts[i];
         }
     }
-    str += '\/?';
+
+    str += '\/' ;
+
     return new RegExp(str, 'i');
 };
 

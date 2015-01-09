@@ -1,0 +1,21 @@
+TODO ~ replace the bind.
+-   DONE.
+
+TODO ~ delete the bodyhandler, jsonhandler, urlEncodedhandler and put the in the parser.
+-   DONE.
+
+TODO ~ ResourceHandler - fix the regex (if needed).
+-   DONE. (iThinkSo)
+
+TODO ~ Check the stop works.
+-   DONE.
+
+TODO ~ Check that the huji webserver.start catches hujiErrors.
+-   DONE : We are now using the eventEmitter module, however we do need to catch any possible error, and emit it through the hujiEventEmitter and catch it in the hujiWebServer.
+
+TODO :: documentation.
+-   Done.
+
+TODO :: Write some new testers.
+-   NOT YET.
+
