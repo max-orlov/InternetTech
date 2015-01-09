@@ -1,5 +1,6 @@
 var serverSettings  = require('./../settings/settings'),
-    generalFuncs = require('./../settings/generalFuncs');
+    generalFuncs    = require('./../settings/generalFuncs'),
+    mimeTypes       = require('./../settings/mimeTypes');
 
 var Request = function() {
     this.headers = {};
@@ -74,7 +75,7 @@ Request.prototype.is = function(type){
     type = type.trim().toLowerCase();
 
     //checks whether we support the request content-type.
-    if (!serverSettings.hasContentType(requestType)) {
+    if (!mimeTypes.hasMimeType(requestType)) {
         return false;
     }
 

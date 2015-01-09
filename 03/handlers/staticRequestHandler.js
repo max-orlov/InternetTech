@@ -1,6 +1,7 @@
 var fs              = require('fs'),
     path            = require('path'),
-    serverSettings  = require('./../settings/settings');
+    serverSettings  = require('./../settings/settings'),
+    mimeTypes       = require('./../settings/mimeTypes');
 
 function StaticRequestHandler(rootFolder) {
     return function (request, response, next) {
@@ -13,7 +14,7 @@ function StaticRequestHandler(rootFolder) {
         fs.readFile(normPath, function(err, fileContent) {
             // no err was returned - so the file exists.
             if (err == null) {
-                response.set('content-type', serverSettings.contentsTypes[fileType]);
+                response.set('content-type', mimeTypes.getMimeType(fileType));
                 response.send(fileContent);
             }
 
@@ -23,7 +24,7 @@ function StaticRequestHandler(rootFolder) {
                 fs.readFile(pageNotFoundPath, function(err, pageNotFountFileContent) {
                     if (err == null) {
                         response.statusCode = 404;
-                        response.set('content-type', serverSettings.contentsTypes.html);
+                        response.set('content-type', mimeTypes.getMimeType('html'));
 
                         response.send(pageNotFountFileContent);
                     }

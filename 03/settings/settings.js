@@ -7,20 +7,6 @@ var Settings = {
     LF                      : '\n',
     CRLF                    : '\r\n',
     pageNotFoundPath   : '/tests/404.html',
-    contentsTypes           : {
-        js      : 'application/javascript',
-        txt     : 'text/plain',
-        html    : 'text/html',
-        css     : 'text/css',
-        jpg     : 'image/jpeg',
-        jpeg    : 'image/jpeg',
-        gif     : 'image/gif',
-        png     : 'image/png',
-        ico     : 'image/x-ico',
-        buffer  : 'application/octet-stream',
-        json    : 'application/json',
-        xform   : 'application/x-www-form-urlencoded'
-    },
     statusCodes             : {
         200     : 'OK',
         404     : 'Not Found',
@@ -39,16 +25,6 @@ var Settings = {
     httpSupportedVersions   : {
         "1.0"   : 'HTTP/1.0',
         "1.1"   : 'HTTP/1.1'
-    },
-    hasContentType          : function (value) {
-        for(var key in this.contentsTypes) {
-            if(this.contentsTypes.hasOwnProperty(key)) {
-                if(this.contentsTypes[key].toLowerCase() === value.toLowerCase()) {
-                    return true
-                }
-            }
-        }
-        return false;
     }
 };
 

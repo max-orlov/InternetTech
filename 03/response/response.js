@@ -1,6 +1,7 @@
 var serverSettings  = require('./../settings/settings'),
     parser          = require('./../parser/hujiparser'),
-    generalFuncs = require('./../settings/generalFuncs');
+    generalFuncs    = require('./../settings/generalFuncs'),
+    mimeTypes       = require('./../settings/mimeTypes');
 
 var Response = function (httpVersion, statusCode, isKeepAlive, method, socket) {
     this.httpVersion = httpVersion;
@@ -130,24 +131,24 @@ Response.prototype.send = function (body) {
     //before each set, checks that the content-type/content-length isn't already set.
     if (typeof body === 'undefined') {
         if (this.get('content-type') === undefined) {
-            this.set('content-type', serverSettings.contentsTypes['txt']);
+            this.set('content-type', mimeTypes.getMimeType('txt'));
         }
         body = '';
     } else if (typeof body === 'string'){
         if (this.get('content-type') === undefined) {
-            this.set('content-type', serverSettings.contentsTypes['txt']);
+            this.set('content-type', mimeTypes.getMimeType('txt'));
         }
     } else if (typeof body === 'object'){
         if (body === null) {
             if (this.get('content-type') === undefined) {
-                this.set('content-type', serverSettings.contentsTypes['txt']);
+                this.set('content-type', mimeTypes.getMimeType('txt'));
             }
             if (this.get('content-length') === undefined) {
                 this.set('content-length', 0);
             }
         } else if (Buffer.isBuffer(body)) {
             if (this.get('content-type') === undefined) {
-                this.set('content-type', serverSettings.contentsTypes['buffer']);
+                this.set('content-type', mimeTypes.getMimeType('buffer'));
             }
         } else {
             return this.json(body);
@@ -166,7 +167,7 @@ Response.prototype.send = function (body) {
  * @param body the response body.
  */
 Response.prototype.json = function (body) {
-    this.set('content-type', serverSettings.contentsTypes('json'));
+    this.set('content-type', mimeTypes.getMimeType('json'));
     this.send(JSON.stringify(body));
 };
 

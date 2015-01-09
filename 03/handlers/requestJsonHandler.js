@@ -1,8 +1,9 @@
-var serverSettings  = require('./../settings/settings');
+var serverSettings  = require('./../settings/settings'),
+    mimeTypes       = require('./../settings/mimeTypes');
 
 function RequestJsonHandler() {
     return function (request, response, next) {
-        if (request.is(serverSettings.contentsTypes['json'])) {
+        if (request.is(mimeTypes.getMimeType('json'))) {
             if (request.rawBody.length > 0) {
                 var body = JSON.parse(request.rawBody.trim());
                 if (typeof body === 'object') {
