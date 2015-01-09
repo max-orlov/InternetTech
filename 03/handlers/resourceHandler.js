@@ -1,4 +1,4 @@
-var Resource = function(method, path, handler) {
+var ResourceHandler = function (method, path, handler) {
     this.method = method;
     this.path = path;
     this.handler = handler;
@@ -6,14 +6,14 @@ var Resource = function(method, path, handler) {
 };
 
 
-Resource.prototype.handle = function(req, res, next) {
+ResourceHandler.prototype.handle = function(req, res, next) {
     return this.handler(req, res, next);
 };
 
 
-Resource.prototype.regex = function (path) {
+ResourceHandler.prototype.regex = function (path) {
+    //TODO:: There is a bug here. for example: resource = "/root", request.path = "rooter.html", and the regex matches!
     var parts = path.split('/');
-    console.log(parts);
     var str= '^';
     for (var i = 0; i < parts.length; i++) {
         if (parts[i] === '') {
@@ -31,4 +31,4 @@ Resource.prototype.regex = function (path) {
 };
 
 
-module.exports = Resource;
+module.exports = ResourceHandler;

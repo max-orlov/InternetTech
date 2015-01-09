@@ -1,1 +1,0 @@
-TODO:: Check about mocha in order to test the project (http://taylor.fausak.me/2013/02/17/testing-a-node-js-http-server-with-mocha/)

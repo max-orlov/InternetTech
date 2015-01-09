@@ -49,13 +49,20 @@ function parseMethod(request) {
         throw new Error("Parsing Error: Request initial line syntax is invalid");
     }
 
-    // TODO : Can '?' appear more than once in a query?
-    var urlPath = methodContent[1].trim().split(/\?/g);
+    var fullPath = methodContent[1].trim();
+    var firstQuestionMarkIndex = fullPath.indexOf('?');
+    if (firstQuestionMarkIndex !== -1) {
+        var urlPath = fullPath.substring(0, firstQuestionMarkIndex);
+        var urlQuery = fullPath.substring(firstQuestionMarkIndex + 1);
+    } else {
+        urlPath = fullPath;
+        urlQuery = "";
+    }
 
     request.method = methodContent[0].trim();
-    request.path = urlPath[0];
+    request.path = urlPath;
     request.httpVersion = methodContent[2].trim();
-    request.query = urlPath[1] ? queryParser.parseQuery(urlPath[1]) : {};
+    request.query = urlQuery ? queryParser.parseQuery(urlQuery) : {};
     request.status = request.requestStatus.parseMethod;
 }
 
@@ -91,7 +98,6 @@ function separateHeaders(request) {
             }
         }
     }
-    //TODO: Figure out if seperateheader throw is needed.
 }
 
 function parseHeaders(request) {

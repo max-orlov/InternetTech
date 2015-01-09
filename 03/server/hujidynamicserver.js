@@ -2,19 +2,12 @@ var serverSettings  = require('./../settings/settings'),
     Hujinet  = require('./hujinet.js'),
     Request = require('./../request/request'),
     Response = require('./../response/response'),
-    Resource = require('./../resource');
+    ResourceHandler = require('./../handlers/resourceHandler');
 
 var Hujidynamicserver = function () {
     var handlers = [];
-    var routes = {
-        'get'       : [],
-        'post'      : [],
-        'put'       : [],
-        'delete'    : []
-    };
-
-
-    var extractParams = function(request, resource){
+    
+    var extractParams = function(request, resource) {
         var params = {};
         var requestParts = request.path.split('/');
         var resourceParts = resource.path.split('/');
@@ -25,7 +18,6 @@ var Hujidynamicserver = function () {
             }
         }
         request.params = params;
-
     };
 
     var app = function(request, response, index) {
@@ -63,7 +55,6 @@ var Hujidynamicserver = function () {
         }
     };
 
-    app.route = routes;
     app.handlers = handlers;
     app.server = new Hujinet(app);
 
@@ -75,8 +66,7 @@ var Hujidynamicserver = function () {
         if ((method === undefined) && (resource === undefined) && (handler === undefined)) {
             return;
         }
-        var thisObj = this;
-        var handlerFunc = null;
+        var handlerFunction = null;
         var handlerResource = null;
 
         if (handler !== undefined) {
@@ -85,23 +75,14 @@ var Hujidynamicserver = function () {
             } else {
                 handlerResource = resource;
             }
-            handlerFunc = handler;
+            handlerFunction = handler;
         } else {
             handlerResource = '/';
-            handlerFunc = resource;
+            handlerFunction = resource;
         }
 
-        var newHandler = new Resource(method, handlerResource, handlerFunc);
+        var newHandler = new ResourceHandler(method, handlerResource, handlerFunction);
         this.handlers.push(newHandler);
-
-        if (method in serverSettings.httpMethods && method !== serverSettings.httpMethods['HEAD']) {
-            thisObj.route[method].push(
-                {   'path'      : handlerResource,
-                    'method'    : method.toLowerCase(),
-                    'callbacks' : [{}],
-                    'regexp'    : handler.regexp});
-        }
-
     };
 
     app.stop = function(){
