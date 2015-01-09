@@ -45,7 +45,6 @@ var Hujidynamicserver = function () {
                         }
                         app(request, response, index + 1);
                     };
-
                     response.path = request.path.replace(match[0], '');
                     extractParams(request, handlers[index]);
                     try {
@@ -57,11 +56,10 @@ var Hujidynamicserver = function () {
                     return;
                 }
             }
-
-            if (index === handlers.length) {
-                response.statusCode = 404;
-                response.send("404 - Page Not Found");
-            }
+        }
+        if (index === handlers.length) {
+            response.statusCode = 404;
+            response.send("404 - Page Not Found");
         }
     };
 

@@ -2,7 +2,7 @@ var Resource = function(method, path, handler) {
     this.method = method;
     this.path = path;
     this.handler = handler;
-    this.regexp = this.createRegex(path);
+    this.regexp = this.regex(path);
 };
 
 
@@ -11,20 +11,20 @@ Resource.prototype.handle = function(req, res, next) {
 };
 
 
-Resource.prototype.createRegex = function(path) {
+Resource.prototype.regex = function (path) {
     var parts = path.split('/');
+    console.log(parts);
     var str= '^';
     for (var i = 0; i < parts.length; i++) {
-        if (parts[i]=='') {
+        if (parts[i] === '') {
             continue;
         }
         str += '\/';
         if (parts[i].match(/:/g)) {
-            str += '(?:([^\/]+?))'
+            str += '(?:([^\/]+?))';
         } else {
             str += parts[i];
         }
-
     }
     str += '\/?';
     return new RegExp(str, 'i');

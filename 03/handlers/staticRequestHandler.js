@@ -20,7 +20,6 @@ function StaticRequestHandler(rootFolder) {
             // No file was found
             else if (err.code == 'ENOENT') {
                 var pageNotFoundPath = path.normalize(__dirname + '/../' + serverSettings.pageNotFoundPath);
-
                 fs.readFile(pageNotFoundPath, function(err, pageNotFountFileContent) {
                     if (err == null) {
                         response.statusCode = 404;

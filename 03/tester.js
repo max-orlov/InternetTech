@@ -1,6 +1,6 @@
 var http            = require('http'),
     net             = require('net'),
-    hujiwebserver   = require('hujiwebserver');
+    hujiwebserver   = require('./hujiwebserver');
 
 var lport           = 8888,
     rootFolder      = '/',
@@ -21,7 +21,7 @@ function generateOptions(host, port, path, method, connection) {
 
 
 function testStatic1() {
-    var options = generateOptions('localhost', 8888, ex2Dir + '/index.html', 'GET', 'close');
+    var options = generateOptions('localhost', lport, '/root/posthtml.html', 'GET', 'close');
     http.get(options, function (response) {
         response.on('data', function (data) {
             if (response.statusCode == 200) {
@@ -117,18 +117,21 @@ function testListeningToPortInUse() {
 
 
 
-hujiwebserver.start(8888, function (e, server) {
-    server.use('/root', hujiwebserver.static('/www/tom'));
+hujiwebserver.start(lport, function (e, server) {
+
+    if (e) {
+        console.log(e);
+    } else {
+        server.use('/root', hujiwebserver.static('/www/tom'));
+
+        testStatic1();
+
+
+
+        setTimeout(function () {
+            server.stop();
+        }, 4000);
+
+    }
 
 });
-
-
-testGetRequest();
-testNonExistingFile();
-testNonHTTPFormat();
-testListeningToPortInUse();
-
-
-setTimeout(function(){
-    huji.stop(serverID, downCallback);
-}, 4000);
