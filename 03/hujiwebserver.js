@@ -4,13 +4,12 @@ var Hujidynamicserver       = require("./server/hujidynamicserver"),
     StaticRequestHandler    = require('./handlers/staticRequestHandler');
 
 
-
 exports.start = function(port, callback) {
     var server = new Hujidynamicserver();
     try {
         server.listen(port);
     } catch (e) {
-        callback(e, server)
+        callback(e, server);
     }
     callback(undefined, server);
 };

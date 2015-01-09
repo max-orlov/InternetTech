@@ -13,7 +13,7 @@ var Hujinet = function (handler, callback) {
     var thisObj = this;
 
     this.server.on('error', function(e) {
-       callback(e);
+       throw new Error(e.message);
     });
 
     this.on('request', this.handler);

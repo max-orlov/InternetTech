@@ -38,7 +38,14 @@ function testStatic1() {
     });
 }
 
+var func1 = function(){
+    var a = 1;
+    func2();
+}
 
+var func2 = function(){
+    a = 2;
+}
 /**
  * Testing GET request.
  */

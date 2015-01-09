@@ -58,8 +58,13 @@ var Hujidynamicserver = function () {
     app.handlers = handlers;
     app.server = new Hujinet(app);
 
-    app.listen = function(port, callback) {
-        this.server.listen(port, callback);
+    app.listen = function(port) {
+        try {
+            this.server.listen(port);
+        }
+        catch (e){
+            throw new Error(e.message);
+        }
     };
 
     app.addHandler = function(method, resource, handler) {
