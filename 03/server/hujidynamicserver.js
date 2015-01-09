@@ -46,7 +46,6 @@ var Hujidynamicserver = function () {
                         app(request, response, index + 1);
                     };
 
-                    /*run the appropriate response function*/
                     response.path = request.path.replace(match[0], '');
                     extractParams(request, handlers[index]);
                     try {
@@ -61,7 +60,7 @@ var Hujidynamicserver = function () {
 
             if (index === handlers.length) {
                 response.statusCode = 404;
-                response.send();
+                response.send("404 - Page Not Found");
             }
         }
     };

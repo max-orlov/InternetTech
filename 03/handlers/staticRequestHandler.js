@@ -4,8 +4,11 @@ var fs              = require('fs'),
 
 function StaticRequestHandler(rootFolder) {
     return function (request, response, next) {
-        //TODO:: temporary working. fix the path.
-        var normPath =  __dirname + '\\..' + path.join(rootFolder, request.path);
+        if (request.path.indexOf("..") != -1) {
+            return next();
+        }
+
+        var normPath =  __dirname + '\\..' + path.join(rootFolder, response.path);
         var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
         fs.readFile(normPath, function(err, fileContent) {
             // no err was returned - so the file exists.
