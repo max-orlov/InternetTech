@@ -22,6 +22,6 @@ TODO ~ Write a new handler
 TODO ~ Write some new testers.
 -   SEMI Done left:
     * cookieHandler.
-    * recordsHandler for POST req.
 
 TODO ~ The record handler retrieves answers to the query from the uri line regardless to GET/POST
+-   Fixed.

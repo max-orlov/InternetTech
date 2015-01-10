@@ -80,7 +80,7 @@ function parseMethod(request) {
     request.method = methodContent[0].trim();
     request.path = urlPath;
     request.httpVersion = methodContent[2].trim();
-    request.query = urlQuery ? queryParser.parseQuery(urlQuery) : {};
+    request.query = request.method == serverSettings.httpMethods.GET ? queryParser.parseQuery(urlQuery) : {};
     request.status = request.requestStatus.parseMethod;
 }
 
@@ -206,6 +206,9 @@ function parseBody(request) {
         }
     } else if (request.is(mimeTypes.getMimeType('xform'))) {
         request.body = queryParser.parseQuery(request.rawBody.trim());
+    }
+    if (request.method == serverSettings.httpMethods.POST){
+        request.query = request.body;
     }
 
 }

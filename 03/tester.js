@@ -23,7 +23,7 @@ function basicStaticTest(callback) {
     console.log("Basic static request <basicStaticTest> began");
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
     http.get(options, function (response) {
-        response.on('data', function (data) {
+        response.on('data', function () {
             if (response.statusCode == 200) {
                 console.log('basicStaticTest passed!!');
                 next(callback)
@@ -140,52 +140,66 @@ function basicStaticCookieRequestTest(callback){
 
 }
 
-function basicResouredHandlerURITest(callback){
-    console.log("Getting a response to the query basic handler <basicRescordHandlerTest> began");
+function basicRecorddHandlerURITest(callback){
+    console.log("Getting a response to the query basic handler <basicRecorddHandlerURITest> began");
     var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'GET', 'close');
     http.get(options, function (response) {
+        var buffer = "";
         response.on('data', function (data) {
-            if (response.statusCode == 200 && data.toString().indexOf("name: tom") == -1) {
-                console.log('basicResouredHandlerURITest passed!!');
+            buffer += data;
+        });
+        response.on('error', function (error) {
+            console.log('Error running basicRecorddHandlerURITest. '+ error);
+        });
+        response.on('end', function(){
+            if (response.statusCode == 200 && buffer.indexOf('"name":"tom"') != -1) {
+                console.log('basicRecorddHandlerURITest passed!!');
                 next(callback)
 
             }
             else {
                 if (response.statusCode != 200)
-                    console.log('basicResouredHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
+                    console.log('basicRecorddHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
                 else{
                     console.log("The records wasn't found at all");
                 }
             }
-        });
-        response.on('error', function (error) {
-            console.log('Error running basicResouredHandlerURITest. '+ error);
-        });
+        })
     });
 }
 
-function basicRescordHandlerBodyTest(callback){
-    console.log("Getting a response to the query basic handler <basicRescordHandlerTest> began");
+function basicRecordHandlerBodyTest(callback){
+    console.log("Getting a response to the query basic handler <basicRecordHandlerBodyTest> began");
     var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'POST', 'close');
-    http.get(options, function (response) {
-        response.on('data', function (data) {
-            if (response.statusCode == 200 && data.toString().indexOf("name: tom") == -1) {
-                console.log('basicResouredHandlerURITest passed!!');
+    var bodyQuery = 'name=maxim';
+    var queryResponse = '"name":"maxim"';
+    options.headers['Content-length'] = bodyQuery.length;
+    options.headers['Content-type'] = 'application/x-www-form-urlencoded';
+    var req = http.request(options, function (response) {
+        var body = "";
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+        response.on('error', function (error) {
+            console.log('Error running basicRecorddHandlerURITest. '+ error);
+        });
+        response.on('end', function(){
+            if (response.statusCode == 200 && body.indexOf(queryResponse) != -1) {
+                console.log('basicRecorddHandlerURITest passed!!');
                 next(callback)
-
             }
             else {
                 if (response.statusCode != 200)
-                    console.log('basicResouredHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
+                    console.log('basicRecordHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
                 else{
                     console.log("The records wasn't found at all");
                 }
             }
-        });
-        response.on('error', function (error) {
-            console.log('Error running basicResouredHandlerURITest. '+ error);
-        });
+        })
     });
+
+    req.write(bodyQuery+serverSetting.CRLF);
+    req.end();
 
 }
 
@@ -216,7 +230,7 @@ function postAndGetCrossTest(callback){
 
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
     var req = http.get(options, function (response) {
-        response.on('data', function (data) {
+        response.on('data', function () {
             if (response.statusCode == 404) {
                 console.log('postAndGetCrossTest passed!!');
                 next(callback)
@@ -325,15 +339,15 @@ function testSuite4(callback){
         if (e) {
             console.log(e);
         } else {
-            server.get('/root', hujiwebserver.recordsHandler());
+            server.use('/root', hujiwebserver.recordsHandler());
             function stopServerAndTest(callback){
                 server.stop(function(){
                     basicServerShutdown(callback)
                 })
             };
             var orderedTesters = [
-                basicResouredHandlerURITest,
-                //basicResouredHandlerBodyTest
+                basicRecorddHandlerURITest,
+                basicRecordHandlerBodyTest,
                 stopServerAndTest,
                 callback
             ];
@@ -364,4 +378,3 @@ function testSequence(funcs){
 var firstFunc = testSequence([testSuite1,testSuite2, testSuite3,testSuite4]);
 
 firstFunc()
-
