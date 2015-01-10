@@ -20,7 +20,7 @@ function generateOptions(host, port, path, method, connection) {
 }
 
 function basicStaticTest(callback) {
-    console.log("basicStaticTest began");
+    console.log("Basic static request <basicStaticTest> began");
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
     http.get(options, function (response) {
         response.on('data', function (data) {
@@ -40,7 +40,7 @@ function basicStaticTest(callback) {
 }
 
 function basicStaticNonExistingFileTest(callback) {
-    console.log("basicStaticNonExistingFileTest began");
+    console.log("A basic non existing file request <basicStaticNonExistingFileTest> began");
 
     var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
     http.get(options, function (response) {
@@ -61,7 +61,23 @@ function basicStaticNonExistingFileTest(callback) {
 }
 
 function basicStaticServerStopTest(callback){
-    console.log("basicStaticServerStopTest began");
+    console.log("Basic server stop test <basicStaticServerStopTest> began");
+    var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
+    http.get(options, function (response) {
+
+    }).on('error', function(e){
+        if (e.code == 'ECONNREFUSED'){
+            console.log('basicStaticServerStopTest passed!!');
+            next(callback)
+        }
+        else{
+            console.log('basicStaticServerStopTest did not manage to stop the server');
+        }
+    });
+}
+
+function basicServerShutdown(callback){
+    console.log("Basic server stop test <basicStaticServerStopTest> began");
     var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
     http.get(options, function (response) {
 
@@ -80,7 +96,7 @@ function basicStaticServerStopTest(callback){
  * Testing Non HTTP format.
  */
 function basicStaticNonHttpFormatTest(callback){
-    console.log("basicStaticNonHttpFormatTest began");
+    console.log("Testing a non http request format <basicStaticNonHttpFormatTest> began");
 
     var message = 'bla bla blaa';
     var conn = net.createConnection(lport);
@@ -97,7 +113,7 @@ function basicStaticNonHttpFormatTest(callback){
 }
 
 function basicStaticHeadTest(callback){
-    console.log("basicStaticPostTest began");
+    console.log("Server receives a HEAD request <basicStaticPostTest> begen");
     var headOptions = generateOptions('localhost', lport, '/root/test.html', 'HEAD', 'close');
     var bodySize = 0;
 
@@ -107,11 +123,11 @@ function basicStaticHeadTest(callback){
         })
         headResponse.on('end', function(){
             if (bodySize == 0 && headResponse.statusCode == 200 && headResponse.headers['Content-length'] != '0') {
-                console.log('basicStaticPostTest passed!!');
+                console.log('basicStaticHeadTest passed!!');
                 next(callback)
             }
             else {
-                console.log("basicStaticPostTest didn't get status 200.");
+                console.log("basicStaticHeadTest didn't get status 200.");
             }
         })
     });
@@ -124,56 +140,228 @@ function basicStaticCookieRequestTest(callback){
 
 }
 
-// TODO :: write it up
-function basicRescordHandlerTest(callback){
+function basicResouredHandlerURITest(callback){
+    console.log("Getting a response to the query basic handler <basicRescordHandlerTest> began");
+    var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'GET', 'close');
+    http.get(options, function (response) {
+        response.on('data', function (data) {
+            if (response.statusCode == 200 && data.toString().indexOf("name: tom") == -1) {
+                console.log('basicResouredHandlerURITest passed!!');
+                next(callback)
+
+            }
+            else {
+                if (response.statusCode != 200)
+                    console.log('basicResouredHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
+                else{
+                    console.log("The records wasn't found at all");
+                }
+            }
+        });
+        response.on('error', function (error) {
+            console.log('Error running basicResouredHandlerURITest. '+ error);
+        });
+    });
+}
+
+function basicRescordHandlerBodyTest(callback){
+    console.log("Getting a response to the query basic handler <basicRescordHandlerTest> began");
+    var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'POST', 'close');
+    http.get(options, function (response) {
+        response.on('data', function (data) {
+            if (response.statusCode == 200 && data.toString().indexOf("name: tom") == -1) {
+                console.log('basicResouredHandlerURITest passed!!');
+                next(callback)
+
+            }
+            else {
+                if (response.statusCode != 200)
+                    console.log('basicResouredHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
+                else{
+                    console.log("The records wasn't found at all");
+                }
+            }
+        });
+        response.on('error', function (error) {
+            console.log('Error running basicResouredHandlerURITest. '+ error);
+        });
+    });
 
 }
 
-function main(){
+function getAndPostCrossTest(callback){
+    console.log("Server is up ont GET request and a receives POST request <getAndPostCrossTest> began");
+
+    var options = generateOptions('localhost', lport, '/root/test.html', 'POST', 'close');
+    var req = http.request(options, function (response) {
+        response.on('data', function (data) {
+            if (response.statusCode == 404) {
+                console.log('getAndPostCrossTest passed!!');
+                next(callback)
+
+            }
+            else {
+                console.log('getAndPostCrossTest failed. expected : 404 |  actual :' + response.statusCode);
+            }
+        });
+        response.on('error', function (error) {
+            console.log('Error running getAndPostCrossTest. '+ error);
+        });
+    });
+    req.end();
+}
+
+function postAndGetCrossTest(callback){
+    console.log("Server is up ont POST request and receives a GET request <postAndGetCrossTest> began");
+
+    var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
+    var req = http.get(options, function (response) {
+        response.on('data', function (data) {
+            if (response.statusCode == 404) {
+                console.log('postAndGetCrossTest passed!!');
+                next(callback)
+
+            }
+            else {
+                console.log('postAndGetCrossTest failed. expected : 404 |  actual :' + response.statusCode);
+            }
+        });
+        response.on('error', function (error) {
+            console.log('Error running postAndGetCrossTest. '+ error);
+        });
+    });
+    req.end();
+}
+
+function testSuite1(callback){
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('~~~Starting suite 1 tests~~~');
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+
     hujiwebserver.start(lport, function (e, server) {
 
         if (e) {
             console.log(e);
         } else {
             server.use('/root', hujiwebserver.static('/tests/'));
-
-            function stopServerAndTest(){
+            function stopServerAndTest(callback){
                 server.stop(function(){
-                    basicStaticServerStopTest()
+                    basicStaticServerStopTest(callback)
                 })
             };
-
             var orderedTesters = [
                 basicStaticTest,
                 basicStaticNonExistingFileTest,
                 basicStaticNonHttpFormatTest,
                 basicStaticHeadTest,
-                stopServerAndTest
+                stopServerAndTest,
+                callback
             ];
-
-            testRoll(orderedTesters);
-
-
+            var first = testSequence(orderedTesters);
+            first();
         }
-
     });
+}
 
+function testSuite2(callback){
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('~~~Starting suite 2 tests~~~');
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    hujiwebserver.start(lport, function (e, server) {
+
+        if (e) {
+            console.log(e);
+        } else {
+            server.post('/root', hujiwebserver.static('/tests/'));
+            function stopServerAndTest(callback){
+                server.stop(function(){
+                    basicStaticServerStopTest(callback)
+                })
+            };
+            var orderedTesters = [
+                postAndGetCrossTest,
+                stopServerAndTest,
+                callback
+            ];
+            var first = testSequence(orderedTesters);
+            first();
+        }
+    });
+}
+
+function testSuite3(callback){
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('~~~Starting suite 3 tests~~~');
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    hujiwebserver.start(lport, function (e, server) {
+
+        if (e) {
+            console.log(e);
+        } else {
+            server.get('/root', hujiwebserver.static('/tests/'));
+            function stopServerAndTest(callback){
+                server.stop(function(){
+                    basicStaticServerStopTest(callback)
+                })
+            };
+            var orderedTesters = [
+                getAndPostCrossTest,
+                stopServerAndTest,
+                callback
+            ];
+            var first = testSequence(orderedTesters);
+            first();
+        }
+    });
+}
+
+function testSuite4(callback){
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('~~~Starting suite 4 tests~~~');
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+
+    hujiwebserver.start(lport, function (e, server) {
+
+        if (e) {
+            console.log(e);
+        } else {
+            server.get('/root', hujiwebserver.recordsHandler());
+            function stopServerAndTest(callback){
+                server.stop(function(){
+                    basicServerShutdown(callback)
+                })
+            };
+            var orderedTesters = [
+                basicResouredHandlerURITest,
+                //basicResouredHandlerBodyTest
+                stopServerAndTest,
+                callback
+            ];
+            var firstFunc = testSequence(orderedTesters);
+            firstFunc();
+        }
+    });
 }
 
 function next(callback){
     if (callback != undefined)
         callback();
-    else
-        console.log("No more tests to run");
-
+    else{
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        console.log("Testing was finished and all tests passed");
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
 }
 
-function testRoll(funcs){
+function testSequence(funcs){
     for (var i = funcs.length - 1 ; i > 0  ; --i){
         funcs[i-1] = funcs[i-1].bind(funcs[i-1], funcs[i]);
     }
-    funcs[0]();
+    return funcs[0];
 }
 
-main();
+// TESTING SUITES - the order between them doesn't really matter.
+var firstFunc = testSequence([testSuite1,testSuite2, testSuite3,testSuite4]);
+
+firstFunc()
 

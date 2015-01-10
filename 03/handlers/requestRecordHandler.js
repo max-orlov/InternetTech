@@ -1,7 +1,7 @@
 var path            = require('path');
 
 /**
- * A build in record handler for JSON querys
+ * A built-in record handler for JSON queries
  * @returns {Function}
  */
 function RequestRecordHandler() {
