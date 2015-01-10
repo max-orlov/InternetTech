@@ -1,5 +1,5 @@
 /**
- * A constructor for the resouce handler.
+ * A constructor for the resource handler.
  * @param method the method of access to the resource
  * @param path the resource itself
  * @param handler the handler to be called on the specified resource.

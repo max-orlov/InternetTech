@@ -1,50 +1,59 @@
-var serverSettings  = require('./../settings/settings');
+var path            = require('path');
 
-
+/**
+ * A build in record handler for JSON querys
+ * @returns {Function}
+ */
 function RequestRecordHandler() {
     return function (request, response, next) {
-            require('fs').readFile('json_file','utf8',function(err,data){
+        var normPath =  path.join(__dirname + '\\..', response.path);
+        require('fs').readFile(normPath,'utf8',function(err,data){
                 if (err){
                     console.log("error");
                     return;
                 }
-                extractObjects(JSON.parse(data), request, response, next);
+                else{
+                    response.body = extractObjects(JSON.parse(data), request.query)[0];
+                    response.send(response.body);
+                    next();
+                }
             });
     }
 }
 
-function extractObjects(jsonResource, request, response, next){
-    response.body = {};
-    for (var key in jsonResource) {
-        if (jsonResource.hasOwnProperty(key)) {
-            if (keysCheckupHelper(jsonResource[key], request.query[key])) {
-                response.body[key] = jsonResource[key];
-                //break;
-            }
-        }
+/**
+ * A helper function which helps find the exact path of the query
+ * @param jsonResource the json resource to check
+ * @param request the request itself
+ * @param response the response itself.
+ */
+function extractObjects(jsonRes, jsonReq){
+    var objects = [];
+    for (var key in jsonReq) {
+        objects.push(getObjects(jsonRes, key, jsonReq[key]));
     }
-    console.log(response.body);
-    //response.body = JSON.stringify(jsonObjects);
-    //console.log(response.body)
-    next();
+    return objects;
 }
 
-function keysCheckupHelper(resourceJson, requestJson){
-    if (resourceJson === requestJson){
-        return true;
+/**
+ * A recursive helper function which searches the sepcified key and val in the object
+ * @param resObject the objects to search in
+ * @param key the key to search for
+ * @param val the val for that key
+ * @returns {Array} an array of objects
+ */
+function getObjects(resObject, key, val) {
+    var objects = [];
+    for (var i in resObject) {
+        if (!resObject.hasOwnProperty(i)) continue;
+        if (typeof resObject[i] == 'object') {
+            objects = objects.concat(getObjects(resObject[i], key, val));
+        } else if (i == key && resObject[key] == val) {
+            objects.push(resObject);
+        }
     }
-    else
-    for (var requestKey in requestJson)
-        if (resourceJson.hasOwnProperty(requestKey))
-            if (resourceJson[requestKey] === requestJson[requestKey]) {
-                if (typeof requestJson[requestKey] === 'object') {
-                    for (var innerKey in requestJson[requestKey]) {
-                        return keysCheckupHelper(resourceJson[innerKey], requestJson[innerKey])
-                    }
-                }
-                return true;
-            }
-    return false;
+    return objects;
 }
+
 
 module.exports = RequestRecordHandler;

@@ -26,9 +26,10 @@ var Settings = {
         "1.0"   : 'HTTP/1.0',
         "1.1"   : 'HTTP/1.1'
     },
-    hujiErrors  : {
+    hujiEvent  : {
         "EADDRINUSE" : 'Huji Server Error',              // Address is already in use.
-        "socketError" : 'Huji Socket Error'
+        "socketError" : 'Huji Socket Error',
+        "serverClosed" : 'Huji Server has closed'
     }
 
 };

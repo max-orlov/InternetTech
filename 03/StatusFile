@@ -13,9 +13,11 @@ TODO ~ Check the stop works.
 TODO ~ Check that the huji webserver.start catches hujiErrors.
 -   DONE : We are now using the eventEmitter module, however we do need to catch any possible error, and emit it through the hujiEventEmitter and catch it in the hujiWebServer.
 
-TODO :: documentation.
+TODO ~ documentation.
 -   Done.
 
-TODO :: Write some new testers.
--   NOT YET.
+TODO ~ Write a new handler
+-   Done : The record handler.
 
+TODO ~ Write some new testers.
+-   SEMI Done.

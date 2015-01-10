@@ -1,5 +1,6 @@
 var Hujinet  = require('./hujinet.js'),
     Response = require('./../response/response'),
+    serverSetting   = require('./../settings/settings'),
     ResourceHandler = require('./../handlers/resourceHandler');
 
 /**
@@ -73,6 +74,7 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
     };
 
 
+    app.eventEmitter = hujiEvenetEmitter;
     app.server = new Hujinet(app, hujiEvenetEmitter);
     app.handlers = handlers;
 
@@ -106,6 +108,7 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
             handlerFunction = handler;
         } else {
             handlerResource = '/';
+            // TODO : what does this mean? the handler becomes the resource? how should this work?
             handlerFunction = resource;
         }
 
@@ -116,7 +119,11 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
     /**
      * Stops the current server.
      */
-    app.stop = function(){
+    app.stop = function(callback){
+        if (callback != undefined)
+            app.eventEmitter.on(serverSetting.hujiEvent.serverClosed, function(){
+                callback();
+            });
         app.server.close();
     };
 

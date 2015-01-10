@@ -1,14 +1,23 @@
 var webServer = require('./hujiwebserver');
 
+
+
+//webServer.start(8888, function(e,server){
+//   server.use('/root', webServer.recordsHandler());
+//});
+
+
+
 webServer.start(8888, function (e, server) {
-   //server.use('/:y/1/2', webServer.static('/www'));
-   server.use('/root', webServer.static('/www/tom/plain/'));
+   //server.use('/:y/res/2', webServer.static('/www'));
+   server.use('/root', webServer.static('/'));
 
 });
 
+/*
 setTimeout(function(){
    webServer.start(8888, function (e, server) {
-      //server.use('/:y/1/2', webServer.static('/www'));
+      //server.use('/:y/res/2', webServer.static('/www'));
       server.use('/root', webServer.static('/www/tom/plain/'));
 
       //console.log(e);
@@ -16,3 +25,4 @@ setTimeout(function(){
    })}, 1000);
 
 
+*/

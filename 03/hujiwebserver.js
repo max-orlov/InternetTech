@@ -1,8 +1,9 @@
-var Hujidynamicserver       = require("./server/hujidynamicserver"),
+var Hujidynamicserver       = require('./server/hujidynamicserver'),
     path                    = require('path'),
     StaticRequestHandler    = require('./handlers/staticRequestHandler'),
     serverSettings          = require('./settings/settings'),
-    EventEmitter            = require("events").EventEmitter;
+    EventEmitter            = require('events').EventEmitter,
+    RequestResourceHandler  = require('./handlers/requestRecordHandler');
 
 /**
  * Starts up the webServer with the specified port and the callback function
@@ -15,7 +16,7 @@ exports.start = function(port, callback) {
     var server = new Hujidynamicserver(hujiEventEmiiter);
     server.listen(port);
 
-    hujiEventEmiiter.on(serverSettings.hujiErrors.EADDRINUSE, function(err){
+    hujiEventEmiiter.on(serverSettings.hujiEvent.EADDRINUSE, function(err){
         callback(err, server)
     });
 
@@ -30,3 +31,11 @@ exports.start = function(port, callback) {
 exports.static = function(rootFolderPath) {
     return StaticRequestHandler(rootFolderPath);
 };
+
+/**
+ * Provides a build in static webServer support (used as handler) and passed the root folder.
+ * @returns {*|exports} a handler for the static web server.
+ */
+exports.recordsHandler = function(){
+    return RequestResourceHandler();
+}

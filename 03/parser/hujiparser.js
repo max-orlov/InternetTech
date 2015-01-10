@@ -26,7 +26,6 @@ function parse(requestStr, request) {
         if (request.status == request.requestStatus.validatedHeaders)
             parseBody(request);
 
-        console.log(request);
         return request;
 
     } catch (e) {
@@ -163,11 +162,11 @@ function parseHeaders(request) {
  * @param request HTTP request object.
  */
 function validateHeaders(request) {
-    //checks if the given request is v 1.1 and contains an host header.
-    if (request.httpVersion === serverSettings.httpSupportedVersions['1.1']) {
+    //checks if the given request is v res.res and contains an host header.
+    if (request.httpVersion === serverSettings.httpSupportedVersions['res.res']) {
         if (!("host" in request.headers)) {
             request.statusCode = 500;
-            throw new Error("HTTP version is v1.1 and doesn't contain 'host' key");
+            throw new Error("HTTP version is v1.res and doesn't contain 'host' key");
         }
     }
     request.status = request.requestStatus.validatedHeaders;

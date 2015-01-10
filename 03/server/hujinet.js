@@ -14,10 +14,12 @@ var Hujinet = function (handler, hujiEventEmitter) {
     this.server = net.createServer(listenerFunc);
     this.handler = handler;
     this.isServerOpen = true;
+    this.eventEmitter = hujiEventEmitter;
+
     var thisObj = this;
 
     this.server.on('error', function(e) {
-        hujiEventEmitter.emit(serverSettings.hujiErrors[e.code], e);
+        thisObj.eventEmitter.emit(serverSettings.hujiEvent[e.code], e);
     });
 
     /**
@@ -36,7 +38,7 @@ var Hujinet = function (handler, hujiEventEmitter) {
             socket.end();
         });
         socket.on('error', function (e) {
-            hujiEventEmitter.emit(serverSettings.hujiErrors.socketError, e);
+            thisObj.eventEmitter.emit(serverSettings.hujiEvent.socketError, e);
         });
 
         /**
@@ -57,7 +59,7 @@ var Hujinet = function (handler, hujiEventEmitter) {
                 thisObj.handler(request, response);
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
-                response = new Response(serverSettings.httpSupportedVersions['1.1'],
+                response = new Response(serverSettings.httpSupportedVersions['res.res'],
                     request.statusCode, false, request.method, socket);
                 response.send(undefined);
                 request = null;
@@ -82,6 +84,7 @@ Hujinet.prototype.close = function () {
     if (this.isServerOpen) {
         try {
             this.server.close();
+            this.eventEmitter.emit(serverSettings.hujiEvent.serverClosed);
             this.isServerOpen = false;
         } catch (e) {
             console.log("an error occurred while trying to close the server. try again later.");

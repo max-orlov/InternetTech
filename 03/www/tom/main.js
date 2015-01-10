@@ -143,7 +143,7 @@ var images_div = document.createElement("div");
 images_div.setAttribute("id", "images");
 profile_screen_div.appendChild(images_div);
 
-//image 1
+//image res
 var profile_image = document.createElement("img");
 profile_image.setAttributes({id: "profile_image", src: "http://thumbs.dreamstime.com/x/logo-internet-4720961.jpg", alt: "Internet"});
 images_div.appendChild(profile_image);
