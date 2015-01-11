@@ -19,22 +19,24 @@ TODO ~ documentation.
 TODO ~ Write a new handler
 -   Done : The record handler.
 
-TODO ~ Write some new testers.
--   SEMI Done left:
-    * cookie.
-
-TODO ~ Move the cookiehandler to the parser.
-
 TODO ~ The record handler retrieves answers to the query from the uri line regardless to GET/POST
 -   Fixed.
 
 TODO ~ fix recordHandler. support body and query.
-
-TODO ~ check if app.listen is a good solution.
--   Switch back to thisObj
+-   Done.
 
 TODO ~ maybe remove file send of 404.html file from staticRequestHandler.js.
 -   Done.
 
 TODO ~ He said that the rootFolder is www. (Add Ex2 to the zip under “www” folder, make sure your server can serve it perfectly. (where ‘www’ is the root folder)).
 -   Ask
+
+TODO ~ check if app.listen is a good solution.
+-   Switch back to thisObj
+
+TODO ~ Move the cookiehandler to the parser.
+-   To be done.
+
+TODO ~ Write some new testers.
+-   SEMI Done left:
+    * cookie.

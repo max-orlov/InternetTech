@@ -16,7 +16,7 @@ function RequestRecordHandler() {
                 if (request.method == serverSettings.httpMethods.GET) {
                     response.body = extractObjects(JSON.parse(data), request.query)[0];
                 }
-                else{
+                else if (request.method == serverSettings.httpMethods.POST){
                     response.body = extractObjects(JSON.parse(data), request.body)[0];
                 }
 
