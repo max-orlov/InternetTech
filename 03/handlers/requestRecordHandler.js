@@ -1,4 +1,5 @@
-var path = require('path');
+var path = require('path'),
+    serverSettings = require('./../settings/settings');
 
 /**
  * A built-in record handler for JSON queries
@@ -12,7 +13,13 @@ function RequestRecordHandler() {
                 console.log("error");
             }
             else{
-                response.body = extractObjects(JSON.parse(data), request.query)[0];
+                if (request.method == serverSettings.httpMethods.GET) {
+                    response.body = extractObjects(JSON.parse(data), request.query)[0];
+                }
+                else{
+                    response.body = extractObjects(JSON.parse(data), request.body)[0];
+                }
+
                 response.send(response.body);
                 return next();
             }
