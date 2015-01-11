@@ -94,7 +94,7 @@ Request.prototype.is = function (type) {
  * @returns {*} true if the request is of keep-alive type, otherwise returns false.
  */
 Request.prototype.isKeepAlive = function () {
-    if (this.httpVersion === serverSettings.httpSupportedVersions['res.0']) {
+    if (this.httpVersion === serverSettings.httpSupportedVersions['1.0']) {
         return this.headers["connection"] &&
             this.headers["connection"].toLowerCase() === "keep-alive";
     } else {

@@ -59,7 +59,7 @@ var Hujinet = function (handler, hujiEventEmitter) {
                 thisObj.handler(request, response);
                 request = null;
             } else if (request.status === request.requestStatus.errorParsing) {
-                response = new Response(serverSettings.httpSupportedVersions['res.res'],
+                response = new Response(serverSettings.httpSupportedVersions['1.1'],
                     request.statusCode, false, request.method, socket);
                 response.send(undefined);
                 request = null;
@@ -87,7 +87,7 @@ Hujinet.prototype.close = function () {
             this.eventEmitter.emit(serverSettings.hujiEvent.serverClosed);
             this.isServerOpen = false;
         } catch (e) {
-            console.log("an error occurred while trying to close the server. try again later.");
+            console.log("an error occurred while trying to close the server.");
         }
     }
 };
