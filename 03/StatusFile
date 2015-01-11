@@ -31,3 +31,6 @@ TODO ~ fix recordHandler. support body and query.
 TODO ~ check if app.listen is a good solution.
 
 TODO ~ maybe remove file send of 404.html file from staticRequestHandler.js.
+
+TODO ~ He said that the rootFolder is www. (Add Ex2 to the zip under “www” folder, make sure your server can serve it perfectly. (where ‘www’ is the root folder)).
+
