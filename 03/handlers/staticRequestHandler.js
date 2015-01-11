@@ -23,18 +23,8 @@ function StaticRequestHandler(rootFolder) {
                 response.set('content-type', mimeTypes.getMimeType(fileType));
                 response.send(fileContent);
             }
-
-            // No file was found
-            else if (err.code == 'ENOENT') {
-                var pageNotFoundPath = path.normalize(__dirname + '/../' + serverSettings.pageNotFoundPath);
-                fs.readFile(pageNotFoundPath, function(err, pageNotFountFileContent) {
-                    if (err == null) {
-                        response.status(404);
-                        response.set('content-type', mimeTypes.getMimeType('html'));
-                        response.send(pageNotFountFileContent);
-                    }
-                });
-            }
+            else
+                return next();
         });
     }
 }

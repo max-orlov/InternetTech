@@ -3,11 +3,7 @@ var http            = require('http'),
     serverSetting   = require('./settings/settings'),
     hujiwebserver   = require('./hujiwebserver');
 
-var lport           = 8888,
-    rootFolder      = '/',
-    ex2Dir          = '/www',
-    headRequest     = 'HEAD /root/test.html HTTP/1.1' + serverSetting.CRLF +
-        'Content-Type: application/x-www-form-urlencoded' + serverSetting.CRLF + serverSetting.CRLF;
+var lport           = 8888;
 
 function generateOptions(host, port, path, method, connection) {
     return {

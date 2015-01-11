@@ -107,7 +107,6 @@ var Hujidynamicserver = function (hujiEventEmitter) {
             handlerFunction = handler;
         } else {
             handlerResource = '/';
-            // TODO : what does this mean? the handler becomes the resource? how should this work?
             handlerFunction = resource;
         }
 

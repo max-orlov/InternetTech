@@ -14,7 +14,7 @@ function RequestRecordHandler() {
             else{
                 response.body = extractObjects(JSON.parse(data), request.query)[0];
                 response.send(response.body);
-                next();
+                return next();
             }
         });
     }
