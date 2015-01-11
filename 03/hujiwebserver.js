@@ -12,11 +12,11 @@ var Hujidynamicserver       = require('./server/hujidynamicserver'),
  *        error occurred)
  */
 exports.start = function(port, callback) {
-    var hujiEventEmiiter = new EventEmitter();
-    var server = new Hujidynamicserver(hujiEventEmiiter);
+    var hujiEventEmitter = new EventEmitter();
+    var server = new Hujidynamicserver(hujiEventEmitter);
     server.listen(port);
 
-    hujiEventEmiiter.on(serverSettings.hujiEvent.EADDRINUSE, function(err){
+    hujiEventEmitter.on(serverSettings.hujiEvent.EADDRINUSE, function(err){
         callback(err, server)
     });
 
@@ -38,4 +38,4 @@ exports.static = function(rootFolderPath) {
  */
 exports.recordsHandler = function(){
     return RequestResourceHandler();
-}
+};

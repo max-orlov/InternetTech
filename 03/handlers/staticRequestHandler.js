@@ -29,7 +29,7 @@ function StaticRequestHandler(rootFolder) {
                 var pageNotFoundPath = path.normalize(__dirname + '/../' + serverSettings.pageNotFoundPath);
                 fs.readFile(pageNotFoundPath, function(err, pageNotFountFileContent) {
                     if (err == null) {
-                        response.statusCode = 404;
+                        response.status(404);
                         response.set('content-type', mimeTypes.getMimeType('html'));
                         response.send(pageNotFountFileContent);
                     }

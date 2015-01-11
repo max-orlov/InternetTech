@@ -1,16 +1,15 @@
-var Hujinet  = require('./hujinet.js'),
-    Response = require('./../response/response'),
+var Hujinet         = require('./hujinet'),
     serverSetting   = require('./../settings/settings'),
     ResourceHandler = require('./../handlers/resourceHandler');
 
 /**
- * The main dynamic server function (class) which manages the differnet handlers supplied for
+ * The main dynamic server function (class) which manages the different handlers supplied for
  * a specified resource
- * @param hujiEvenetEmitter a custom emitter to keep track of custom events.
+ * @param hujiEventEmitter a custom emitter to keep track of custom events.
  * @returns {Function}
  * @constructor
  */
-var Hujidynamicserver = function (hujiEvenetEmitter) {
+var Hujidynamicserver = function (hujiEventEmitter) {
     var handlers = [];
 
     /**
@@ -50,7 +49,7 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
                 if (match) {
                     var next = function (err) {
                         if (err) {
-                            response.statusCode = 500;
+                            response.status(500);
                             return response.send();
                         }
                         app(request, response, index + 1);
@@ -60,7 +59,7 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
                     try {
                         handlers[index].handle(request, response, next);
                     } catch (e) {
-                        response.statusCode = 500;
+                        response.status(500);
                         response.send();
                     }
                     return;
@@ -68,14 +67,14 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
             }
         }
         if (index === handlers.length) {
-            response.statusCode = 404;
+            response.status(404);
             response.send("404 - Page Not Found");
         }
     };
 
 
-    app.eventEmitter = hujiEvenetEmitter;
-    app.server = new Hujinet(app, hujiEvenetEmitter);
+    app.eventEmitter = hujiEventEmitter;
+    app.server = new Hujinet(app, hujiEventEmitter);
     app.handlers = handlers;
 
     /**
@@ -83,7 +82,7 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
      * @param port the port to listen to.
      */
     app.listen = function(port) {
-            app.server.listen(port);
+        app.server.listen(port);
     };
 
     /**
@@ -119,11 +118,12 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
     /**
      * Stops the current server.
      */
-    app.stop = function(callback){
-        if (callback != undefined)
-            app.eventEmitter.on(serverSetting.hujiEvent.serverClosed, function(){
+    app.stop = function(callback) {
+        if (callback != undefined) {
+            app.eventEmitter.on(serverSetting.hujiEvent.serverClosed, function () {
                 callback();
             });
+        }
         app.server.close();
     };
 
@@ -140,37 +140,35 @@ var Hujidynamicserver = function (hujiEvenetEmitter) {
      * @param resource the resource to be matched with the specified handler.
      * @param handler the handler for the specified resource.
      */
-    app.get = function (resource, handler){
-        app.addHandler('GET', resource, handler)
+    app.get = function (resource, handler) {
+        app.addHandler('GET', resource, handler);
     };
     /**
      * A shell function for the addHandler for the 'POST' method.
      * @param resource the resource to be matched with the specified handler.
      * @param handler the handler for the specified resource.
      */
-    app.post = function (resource, handler){
-        app.addHandler('POST', resource, handler)
+    app.post = function (resource, handler) {
+        app.addHandler('POST', resource, handler);
     };
     /**
      * A shell function for the addHandler for the 'PUT' method.
      * @param resource the resource to be matched with the specified handler.
      * @param handler the handler for the specified resource.
      */
-    app.put = function (resource, handler){
-        app.addHandler('PUT', resource, handler)
+    app.put = function (resource, handler) {
+        app.addHandler('PUT', resource, handler);
     };
     /**
      * A shell function for the addHandler for the 'DELETE' method.
      * @param resource the resource to be matched with the specified handler.
      * @param handler the handler for the specified resource.
      */
-    app.delete = function (resource, handler){
-        app.addHandler('DELETE', resource, handler)
+    app.delete = function (resource, handler) {
+        app.addHandler('DELETE', resource, handler);
     };
 
-
     return app;
-
 };
 
 module.exports = Hujidynamicserver;

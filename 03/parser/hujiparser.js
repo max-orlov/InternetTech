@@ -197,7 +197,7 @@ function parseBody(request) {
     // If the body is of input type, parse it into
     if(request.is(mimeTypes.getMimeType('json'))) {
         if (request.rawBody.length > 0) {
-            var body = JSON.parse(request.rawBody.replace("'",'"').trim());
+            body = JSON.parse(request.rawBody.replace("'",'"').trim());
             if (typeof body === 'object') {
                 request.body = body;
             } else {
@@ -206,9 +206,6 @@ function parseBody(request) {
         }
     } else if (request.is(mimeTypes.getMimeType('xform'))) {
         request.body = queryParser.parseQuery(request.rawBody.trim());
-    }
-    if (request.method == serverSettings.httpMethods.POST){
-        request.query = request.body;
     }
 
 }

@@ -46,7 +46,7 @@ Request.prototype.get = function (field) {
  *        parameter is not found in any of the request objects.
  * @returns {*} the value of param name when present, otherwise return defaultValue if defined, otherwise return undefined.
  */
-Request.prototype.param = function(name, defaultValue){
+Request.prototype.param = function (name, defaultValue) {
     if(name) {
         name = name.toLowerCase();
         if (name in generalFuncs.objKeysToLowerCase(this.params)) {
@@ -65,7 +65,7 @@ Request.prototype.param = function(name, defaultValue){
  * @param type the given mime type.
  * @returns {boolean} true if the given mime type matches the request content-type, otherwise false.
  */
-Request.prototype.is = function(type){
+Request.prototype.is = function (type) {
     var requestType = this.get('content-type');
     //checks that the request contains the content-type header field.
     if (!type || !requestType) {
@@ -93,7 +93,7 @@ Request.prototype.is = function(type){
  * Checks if the request is of keep-alive type.
  * @returns {*} true if the request is of keep-alive type, otherwise returns false.
  */
-Request.prototype.isKeepAlive = function() {
+Request.prototype.isKeepAlive = function () {
     if (this.httpVersion === serverSettings.httpSupportedVersions['res.0']) {
         return this.headers["connection"] &&
             this.headers["connection"].toLowerCase() === "keep-alive";

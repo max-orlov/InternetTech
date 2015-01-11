@@ -25,3 +25,9 @@ TODO ~ Write some new testers.
 
 TODO ~ The record handler retrieves answers to the query from the uri line regardless to GET/POST
 -   Fixed.
+
+TODO ~ fix recordHandler. support body and query.
+
+TODO ~ check if app.listen is a good solution.
+
+TODO ~ maybe remove file send of 404.html file from staticRequestHandler.js.
