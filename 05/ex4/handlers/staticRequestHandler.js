@@ -15,7 +15,7 @@ function StaticRequestHandler(rootFolder) {
             return next();
         }
 
-        var normPath =  __dirname + '\\..' + path.join(rootFolder, response.path);
+        var normPath =  __dirname + '\\..\\..' + path.join(rootFolder, response.path);
         var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
         fs.readFile(normPath, function(err, fileContent) {
             // no err was returned - so the file exists.
