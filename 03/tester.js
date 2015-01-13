@@ -37,7 +37,6 @@ function basicCookieTest(callback){
             console.log('Error running basicCookieTest. ' + error);
         });
     });
-
 }
 
 function basicStaticTest(callback) {
@@ -148,11 +147,6 @@ function basicStaticHeadTest(callback) {
     req.end();
 }
 
-// TODO :: write it up
-function basicStaticCookieRequestTest(callback) {
-
-}
-
 function basicRecordHandlerURITest(callback) {
     console.log("Getting a response to the query basic handler <basicRecordHandlerURITest> began");
     var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'GET', 'close');
@@ -254,42 +248,47 @@ function postAndGetCrossTest(callback) {
 }
 
 function testSuite1(callback) {
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('~~~Starting suite 1 tests~~~');
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    printSuiteStart('suite 1')
 
     hujiwebserver.start(lport, function (e, server) {
 
         if (e) {
             console.log(e);
         } else {
-            server.use('/root', hujiwebserver.myUse());
-            server.use('/root', hujiwebserver.static('/tests/'));
-
-            function stopServerAndTest(callback){
-                server.stop(function(){
-                    basicStaticServerStopTest(callback)
-                });
+            var myUseStr = hujiwebserver.myUse().toString();
+            if (myUseStr === undefined || myUseStr === '') {
+                console.log("The toString for myUse failed")
             }
-            var orderedTesters = [
-                basicStaticTest,
-                basicStaticNonExistingFileTest,
-                basicStaticNonHttpFormatTest,
-                basicStaticHeadTest,
-                basicCookieTest,
-                stopServerAndTest,
-                callback
-            ];
-            var first = testSequence(orderedTesters);
-            first();
+            else {
+                console.log("The toString for myUse passed!!\nAnd it's:\n"+myUseStr+"\n~~~~~~~~~~~~~~~");
+                server.use('/root', hujiwebserver.myUse());
+                server.use('/root', hujiwebserver.static('/tests/'));
+
+                function stopServerAndTest(callback) {
+                    server.stop(function () {
+                        basicStaticServerStopTest(callback)
+                    });
+                }
+
+                var orderedTesters = [
+                    basicStaticTest,
+                    basicStaticNonExistingFileTest,
+                    basicStaticNonHttpFormatTest,
+                    basicStaticHeadTest,
+                    basicCookieTest,
+                    stopServerAndTest,
+                    callback
+                ];
+                var first = testSequence(orderedTesters);
+                first();
+            }
         }
     });
 }
 
 function testSuite2(callback){
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('~~~Starting suite 2 tests~~~');
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    printSuiteStart('suite 2')
+
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
             console.log(e);
@@ -312,9 +311,8 @@ function testSuite2(callback){
 }
 
 function testSuite3(callback) {
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('~~~Starting suite 3 tests~~~');
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    printSuiteStart('suite 3')
+
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
             console.log(e);
@@ -337,9 +335,7 @@ function testSuite3(callback) {
 }
 
 function testSuite4(callback) {
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('~~~Starting suite 4 tests~~~');
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    printSuiteStart('suite 4')
 
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
@@ -373,6 +369,12 @@ function next(callback) {
     }
 }
 
+function printSuiteStart(suite){
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('~~~Starting ' + suite + ' tests~~~');
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+}
+
 function testSequence(funcs) {
     for (var i = funcs.length - 1 ; i > 0  ; --i) {
         funcs[i - 1] = funcs[i - 1].bind(funcs[i -1], funcs[i]);
@@ -384,4 +386,3 @@ function testSequence(funcs) {
 var firstFunc = testSequence([testSuite1, testSuite2, testSuite3, testSuite4]);
 
 firstFunc();
-
