@@ -72,7 +72,6 @@ var Hujidynamicserver = function (hujiEventEmitter) {
         }
     };
 
-
     app.eventEmitter = hujiEventEmitter;
     app.server = new Hujinet(app, hujiEventEmitter);
     app.handlers = handlers;
@@ -82,7 +81,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
      * @param port the port to listen to.
      */
     app.listen = function(port) {
-        app.server.listen(port);
+        this.server.listen(port);
     };
 
     /**
@@ -111,7 +110,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
         }
 
         var newHandler = new ResourceHandler(method, handlerResource, handlerFunction);
-        app.handlers.push(newHandler);
+        this.handlers.push(newHandler);
     };
 
     /**
@@ -123,7 +122,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
                 callback();
             });
         }
-        app.server.close();
+        this.server.close();
     };
 
     /**

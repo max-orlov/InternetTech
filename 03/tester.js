@@ -15,9 +15,35 @@ function generateOptions(host, port, path, method, connection) {
     }
 }
 
+function basicCookieTest(callback){
+    console.log("Basic static cookie test <basicCookieTest> began");
+    var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
+    options.headers['Cookie'] = 'name=tom; id=123';
+    http.get(options, function (response) {
+        response.on('data', function (dat) {
+            if (response.statusCode === 200 && response.headers['set-cookie'][0].substr('name=tom') != -1 &&
+            response.headers['set-cookie'][1].substr('id=123') != -1) {
+                console.log('basicCookieTest passed!!');
+                next(callback);
+            } else {
+                if (response.statusCode != 200)
+                    console.log('basicCookieTest failed. expected : 200 |  actual :' + response.statusCode);
+                else{
+                    console.log('The cookie failed to arrive');
+                }
+            }
+        });
+        response.on('error', function (error) {
+            console.log('Error running basicCookieTest. ' + error);
+        });
+    });
+
+}
+
 function basicStaticTest(callback) {
     console.log("Basic static request <basicStaticTest> began");
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
+    options.headers['Cookie'] = 'name=tom; id=123';
     http.get(options, function (response) {
         response.on('data', function () {
             if (response.statusCode === 200) {
@@ -28,7 +54,7 @@ function basicStaticTest(callback) {
             }
         });
         response.on('error', function (error) {
-            console.log('Error running TestStatic1. ' + error);
+            console.log('Error running basicStaticTest. ' + error);
         });
     });
 }
@@ -237,7 +263,9 @@ function testSuite1(callback) {
         if (e) {
             console.log(e);
         } else {
+            server.use('/root', hujiwebserver.cookieHandler());
             server.use('/root', hujiwebserver.static('/tests/'));
+
             function stopServerAndTest(callback){
                 server.stop(function(){
                     basicStaticServerStopTest(callback)
@@ -248,6 +276,7 @@ function testSuite1(callback) {
                 basicStaticNonExistingFileTest,
                 basicStaticNonHttpFormatTest,
                 basicStaticHeadTest,
+                basicCookieTest,
                 stopServerAndTest,
                 callback
             ];
@@ -351,7 +380,8 @@ function testSequence(funcs) {
     return funcs[0];
 }
 
-// TESTING SUITES - the order between them doesn't really matter.
+//TESTING SUITES - the order between them doesn't really matter.
 var firstFunc = testSequence([testSuite1, testSuite2, testSuite3, testSuite4]);
 
 firstFunc();
+

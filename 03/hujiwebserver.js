@@ -1,9 +1,10 @@
 var Hujidynamicserver       = require('./server/hujidynamicserver'),
     path                    = require('path'),
     StaticRequestHandler    = require('./handlers/staticRequestHandler'),
+    requestCookieHandler    = require('./handlers/requestCookieHandler'),
     serverSettings          = require('./settings/settings'),
     EventEmitter            = require('events').EventEmitter,
-    RequestResourceHandler  = require('./handlers/requestRecordHandler');
+    RequestResourceHandler  = require('./handlers/myUse');
 
 /**
  * Starts up the webServer with the specified port and the callback function
@@ -39,3 +40,7 @@ exports.static = function(rootFolderPath) {
 exports.recordsHandler = function(){
     return RequestResourceHandler();
 };
+
+exports.cookieHandler = function(){
+    return requestCookieHandler();
+}

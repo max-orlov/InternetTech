@@ -1,14 +1,22 @@
 var path = require('path'),
+    fs = require('fs'),
     serverSettings = require('./../settings/settings');
 
 /**
  * A built-in record handler for JSON queries
  * @returns {Function}
  */
-function RequestRecordHandler() {
+function myUse(rootDir) {
     return function (request, response, next) {
-        var normPath =  path.join(__dirname + '\\..', response.path);
-        require('fs').readFile(normPath, 'utf8', function (err, data) {
+        var root;
+        if (rootDir == undefined){
+            root = __dirname
+        }
+        else{
+            root = rootDir;
+        }
+        var normPath =  path.join(root + '\\..', response.path);
+        fs.readFile(normPath, 'utf8', function (err, data) {
             if (err) {
                 console.log("error");
             }
@@ -25,6 +33,15 @@ function RequestRecordHandler() {
             }
         });
     }
+}
+
+// TODO : implement
+myUse.toString = function(){
+    return  "This handler handles a query both in GET and POST format for a record in some " +
+            "JSON file spcified by the path. For example if you'd like to retrieve the record " +
+            "of a person with id=123 from the file people, all the client needs to do is the " +
+            "following '/people?id=123' in the path. You can specify the rootfolder or leave it " +
+            "blank, and the root folder of the handler will be used."
 }
 
 /**
@@ -65,4 +82,4 @@ function getObjects(resObject, key, val) {
 }
 
 
-module.exports = RequestRecordHandler;
+module.exports = myUse;

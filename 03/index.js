@@ -10,6 +10,7 @@ var webServer = require('./hujiwebserver');
 
 webServer.start(8888, function (e, server) {
    //server.use('/:y/res/2', webServer.static('/www'));
+   server.use('/root', webServer.cookieHandler());
    server.use('/root', webServer.static('/tests'));
 
 });
