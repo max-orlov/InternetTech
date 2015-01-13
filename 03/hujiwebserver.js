@@ -4,7 +4,7 @@ var Hujidynamicserver       = require('./server/hujidynamicserver'),
     requestCookieHandler    = require('./handlers/requestCookieHandler'),
     serverSettings          = require('./settings/settings'),
     EventEmitter            = require('events').EventEmitter,
-    RequestResourceHandler  = require('./handlers/myUse');
+    RequestResourceHandler  = require('./handlers/requestRecordHandler');
 
 /**
  * Starts up the webServer with the specified port and the callback function
@@ -41,6 +41,6 @@ exports.recordsHandler = function(){
     return RequestResourceHandler();
 };
 
-exports.cookieHandler = function(){
+exports.myUse = function(){
     return requestCookieHandler();
 }

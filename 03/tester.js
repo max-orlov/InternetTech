@@ -263,7 +263,7 @@ function testSuite1(callback) {
         if (e) {
             console.log(e);
         } else {
-            server.use('/root', hujiwebserver.cookieHandler());
+            server.use('/root', hujiwebserver.myUse());
             server.use('/root', hujiwebserver.static('/tests/'));
 
             function stopServerAndTest(callback){

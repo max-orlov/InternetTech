@@ -165,6 +165,8 @@ function parseHeaders(request) {
     }
 
     request.host = request.get('host');
+
+
     request.status = request.requestStatus.parsedHeaders;
 }
 

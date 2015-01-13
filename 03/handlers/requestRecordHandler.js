@@ -33,7 +33,6 @@ function myUse(rootDir) {
     }
 }
 
-// TODO : implement
 myUse.toString = function(){
     return  "This handler handles a query both in GET and POST format for a record in some " +
             "JSON file spcified by the path. For example if you'd like to retrieve the record " +
