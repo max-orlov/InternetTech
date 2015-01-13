@@ -192,7 +192,7 @@ Response.prototype.write = function (data, encoding) {
 
     if (this.method !== serverSettings.httpMethods['HEAD']) {
 
-        if (data !== undefined && data != null) {
+        if (data !== undefined && data !== null) {
             if (encoding !== undefined) {
                 this.socket.write(data, encoding);
             } else {

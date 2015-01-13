@@ -26,7 +26,7 @@ function basicCookieTest(callback){
                 console.log('basicCookieTest passed!!');
                 next(callback);
             } else {
-                if (response.statusCode != 200)
+                if (response.statusCode !== 200)
                     console.log('basicCookieTest failed. expected : 200 |  actual :' + response.statusCode);
                 else{
                     console.log('The cookie failed to arrive');
@@ -219,7 +219,7 @@ function getAndPostCrossTest(callback) {
     var options = generateOptions('localhost', lport, '/root/test.html', 'POST', 'close');
     var req = http.request(options, function (response) {
         response.on('data', function (data) {
-            if (response.statusCode == 404) {
+            if (response.statusCode === 404) {
                 console.log('getAndPostCrossTest passed!!');
                 next(callback);
             } else {
@@ -336,7 +336,7 @@ function testSuite3(callback) {
     });
 }
 
-function testSuite4(callback){
+function testSuite4(callback) {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     console.log('~~~Starting suite 4 tests~~~');
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');

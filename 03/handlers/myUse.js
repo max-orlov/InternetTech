@@ -19,12 +19,10 @@ function myUse(rootDir) {
         fs.readFile(normPath, 'utf8', function (err, data) {
             if (err) {
                 console.log("error");
-            }
-            else{
-                if (request.method == serverSettings.httpMethods.GET) {
+            } else {
+                if (request.method === serverSettings.httpMethods.GET) {
                     response.body = extractObjects(JSON.parse(data), request.query)[0];
-                }
-                else if (request.method == serverSettings.httpMethods.POST){
+                } else if (request.method === serverSettings.httpMethods.POST) {
                     response.body = extractObjects(JSON.parse(data), request.body)[0];
                 }
 
@@ -72,9 +70,9 @@ function getObjects(resObject, key, val) {
         if (!resObject.hasOwnProperty(i)) {
             continue;
         }
-        if (typeof resObject[i] == 'object') {
+        if (typeof resObject[i] === 'object') {
             objects = objects.concat(getObjects(resObject[i], key, val));
-        } else if (i == key && resObject[key] == val) {
+        } else if (i === key && resObject[key] === val) {
             objects.push(resObject);
         }
     }

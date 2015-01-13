@@ -11,19 +11,19 @@ var serverSettings  = require('./../settings/settings'),
 function parse(requestStr, request) {
     try {
         request.rawData += requestStr;
-        if (request.status == request.requestStatus.initialized)
+        if (request.status === request.requestStatus.initialized)
             separateMethod(request);
-        if (request.status == request.requestStatus.separateMethod)
+        if (request.status === request.requestStatus.separateMethod)
             parseMethod(request);
-        if (request.status == request.requestStatus.parseMethod)
+        if (request.status === request.requestStatus.parseMethod)
             validateMethod(request);
-        if (request.status == request.requestStatus.validateMethod)
+        if (request.status === request.requestStatus.validateMethod)
             separateHeaders(request);
-        if (request.status == request.requestStatus.separatedHeaders)
+        if (request.status === request.requestStatus.separatedHeaders)
             parseHeaders(request);
-        if (request.status == request.requestStatus.parsedHeaders)
+        if (request.status === request.requestStatus.parsedHeaders)
             validateHeaders(request);
-        if (request.status == request.requestStatus.validatedHeaders)
+        if (request.status === request.requestStatus.validatedHeaders)
             parseBody(request);
 
         return request;
@@ -61,7 +61,7 @@ function parseMethod(request) {
     var methodContent = request.rawMethod.split(' ');
 
     //initial line form is invalid.
-    if (methodContent.length != 3) {
+    if (methodContent.length !== 3) {
         request.statusCode = 500;
         throw new Error("Parsing Error: Request initial line syntax is invalid");
     }
@@ -139,7 +139,7 @@ function parseHeaders(request) {
         if(headersContent.hasOwnProperty(index)) {
             var line = headersContent[index].trim();
             //the form of the headers is invalid.
-            if (line != '') {
+            if (line !== '') {
                 var separator = line.indexOf(":");
                 if (separator === -1) {
                     request.statusCode = 500;
@@ -157,6 +157,7 @@ function parseHeaders(request) {
         for (var i = 0; i < cookieCouples.length; i++) {
             var couple = cookieCouples[i].split(/=/g);
             if (couple.length !== 2) {
+                request.statusCode = 500;
                 throw new Error("Cookie format is invalid");
             }
             request.cookies[couple[0].trim()] = couple[1].trim();
@@ -164,8 +165,6 @@ function parseHeaders(request) {
     }
 
     request.host = request.get('host');
-
-
     request.status = request.requestStatus.parsedHeaders;
 }
 
