@@ -18,7 +18,8 @@ A2. It was fun figuring out, how could an actual dynamic server work. The concep
 
 A3.
     First 'bad' handler:
-        badFunc1(){
+        badFunc1(request, response){
+            response.status(200).send('DOS underway');
             while (true);
         }
         This handler will make the server go into busy waiting, and actually no other request could be serviced
@@ -29,7 +30,7 @@ A3.
     Second 'bad' handler:
            badFunc2(request, response){
 
-              response.status(200).send('HackInProgress');
+              response.status(200).send('DOS underway');
               var load = request.param('load', 10);
               var att = request.host.split(':');
               var op = {
