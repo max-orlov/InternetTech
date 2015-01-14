@@ -5,6 +5,15 @@ var http            = require('http'),
 
 var lport           = 8888;
 
+/**
+ * Generates the options for an http request
+ * @param host the host of the request
+ * @param port the port of the request
+ * @param path the path required
+ * @param method the method of the request
+ * @param connection the connection of the request
+ * @returns {{host: *, port: *, path: *, method: *, headers: {Connection: *}}}
+ */
 function generateOptions(host, port, path, method, connection) {
     return {
         host: host,
@@ -15,14 +24,18 @@ function generateOptions(host, port, path, method, connection) {
     }
 }
 
+/**
+ * Tests the cookie handler - send a request with cookies, and checks for cookies in the response.
+ * @param callback the next test to be called (if exists).
+ */
 function basicCookieTest(callback){
     console.log("Basic static cookie test <basicCookieTest> began");
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
     options.headers['Cookie'] = 'name=tom; id=123';
     http.get(options, function (response) {
-        response.on('data', function (dat) {
-            if (response.statusCode === 200 && response.headers['set-cookie'][0].substr('name=tom') != -1 &&
-            response.headers['set-cookie'][1].substr('id=123') != -1) {
+        response.on('data', function () {
+            if (response.statusCode === 200 && response.headers['set-cookie'][0].substr('name=tom') !== -1 &&
+            response.headers['set-cookie'][1].substr('id=123') !== -1) {
                 console.log('basicCookieTest passed!!');
                 next(callback);
             } else {
@@ -39,6 +52,10 @@ function basicCookieTest(callback){
     });
 }
 
+/**
+ * Basic tester for the static handler
+ * @param callback the next test to be called (if exists).
+ */
 function basicStaticTest(callback) {
     console.log("Basic static request <basicStaticTest> began");
     var options = generateOptions('localhost', lport, '/root/test.html', 'GET', 'close');
@@ -58,12 +75,16 @@ function basicStaticTest(callback) {
     });
 }
 
+/**
+ * Basic test for static non existing file.
+ * @param callback the next test to be called (if exists).
+ */
 function basicStaticNonExistingFileTest(callback) {
     console.log("A basic non existing file request <basicStaticNonExistingFileTest> began");
 
     var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
     http.get(options, function (response) {
-        response.on('data', function (data) {
+        response.on('data', function () {
             if (response.statusCode === 404) {
                 console.log('basicStaticNonExistingFileTest passed!!');
                 next(callback);
@@ -77,21 +98,10 @@ function basicStaticNonExistingFileTest(callback) {
     });
 }
 
-function basicStaticServerStopTest(callback) {
-    console.log("Basic server stop test <basicStaticServerStopTest> began");
-    var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
-    http.get(options, function (response) {
-
-    }).on('error', function (e) {
-        if (e.code === 'ECONNREFUSED') {
-            console.log('basicStaticServerStopTest passed!!');
-            next(callback);
-        } else {
-            console.log('basicStaticServerStopTest did not manage to stop the server');
-        }
-    });
-}
-
+/**
+ * Basic test for stopping the server
+ * @param callback the next test to be called (if exists).
+ */
 function basicServerShutdown(callback) {
     console.log("Basic server stop test <basicStaticServerStopTest> began");
     var options = generateOptions('localhost', lport, '/root/noFile.html', 'GET', 'close');
@@ -108,7 +118,8 @@ function basicServerShutdown(callback) {
 }
 
 /**
- * Testing Non HTTP format.
+ * Testing a request of non http format.
+ * @param callback the next test to be called (if exists).
  */
 function basicStaticNonHttpFormatTest(callback) {
     console.log("Testing a non http request format <basicStaticNonHttpFormatTest> began");
@@ -126,6 +137,10 @@ function basicStaticNonHttpFormatTest(callback) {
     });
 }
 
+/**
+ * Tests a static head request.
+ * @param callback the next test to be called (if exists).
+ */
 function basicStaticHeadTest(callback) {
     console.log("Server receives a HEAD request <basicStaticPostTest> began");
     var headOptions = generateOptions('localhost', lport, '/root/test.html', 'HEAD', 'close');
@@ -147,6 +162,10 @@ function basicStaticHeadTest(callback) {
     req.end();
 }
 
+/**
+ * Tests the basic record handler, where query is received through the path.
+ * @param callback the next test to be called (if exists).
+ */
 function basicRecordHandlerURITest(callback) {
     console.log("Getting a response to the query basic handler <basicRecordHandlerURITest> began");
     var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'GET', 'close');
@@ -173,6 +192,10 @@ function basicRecordHandlerURITest(callback) {
     });
 }
 
+/**
+ * Tests the basic record handler, where query is received through the body.
+ * @param callback the next test to be called (if exists).
+ */
 function basicRecordHandlerBodyTest(callback) {
     console.log("Getting a response to the query basic handler <basicRecordHandlerBodyTest> began");
     var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'POST', 'close');
@@ -207,12 +230,16 @@ function basicRecordHandlerBodyTest(callback) {
 
 }
 
+/**
+ * Tests if the server responds to POST requests if it is set up as GET.
+ * @param callback the next test to be called (if exists).
+ */
 function getAndPostCrossTest(callback) {
     console.log("Server is up ont GET request and a receives POST request <getAndPostCrossTest> began");
 
     var options = generateOptions('localhost', lport, '/root/test.html', 'POST', 'close');
     var req = http.request(options, function (response) {
-        response.on('data', function (data) {
+        response.on('data', function () {
             if (response.statusCode === 404) {
                 console.log('getAndPostCrossTest passed!!');
                 next(callback);
@@ -227,6 +254,10 @@ function getAndPostCrossTest(callback) {
     req.end();
 }
 
+/**
+ * Tests if the server responds to GET requests if it is set up as POST
+ * @param callback the next test to be called (if exists).
+ */
 function postAndGetCrossTest(callback) {
     console.log("Server is up ont POST request and receives a GET request <postAndGetCrossTest> began");
 
@@ -247,8 +278,12 @@ function postAndGetCrossTest(callback) {
     req.end();
 }
 
+/**
+ * The first test suite to be run. it runs with basic cookie handler, and static handler.
+ * @param callback the next suite to be called (if exists).
+ */
 function testSuite1(callback) {
-    printSuiteStart('suite 1')
+    printSuiteStart('suite 1');
 
     hujiwebserver.start(lport, function (e, server) {
 
@@ -266,7 +301,7 @@ function testSuite1(callback) {
 
                 function stopServerAndTest(callback) {
                     server.stop(function () {
-                        basicStaticServerStopTest(callback)
+                        basicServerShutdown(callback)
                     });
                 }
 
@@ -286,8 +321,12 @@ function testSuite1(callback) {
     });
 }
 
+/**
+ * The second suite, tests a GET type server.
+ * @param callback the next suite to be called (if exists).
+ */
 function testSuite2(callback){
-    printSuiteStart('suite 2')
+    printSuiteStart('suite 2');
 
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
@@ -296,7 +335,7 @@ function testSuite2(callback){
             server.post('/root', hujiwebserver.static('/tests/'));
             function stopServerAndTest(callback) {
                 server.stop(function () {
-                    basicStaticServerStopTest(callback);
+                    basicServerShutdown(callback);
                 });
             }
             var orderedTesters = [
@@ -310,8 +349,12 @@ function testSuite2(callback){
     });
 }
 
+/**
+ * The third suite, tests a POST type server.
+ * @param callback the next suite to be called (if exists).
+ */
 function testSuite3(callback) {
-    printSuiteStart('suite 3')
+    printSuiteStart('suite 3');
 
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
@@ -320,7 +363,7 @@ function testSuite3(callback) {
             server.get('/root', hujiwebserver.static('/tests/'));
             function stopServerAndTest(callback) {
                 server.stop(function () {
-                    basicStaticServerStopTest(callback);
+                    basicServerShutdown(callback);
                 });
             }
             var orderedTesters = [
@@ -334,8 +377,12 @@ function testSuite3(callback) {
     });
 }
 
+/**
+ * Tests the different functionalities of the records handler.
+ * @param callback
+ */
 function testSuite4(callback) {
-    printSuiteStart('suite 4')
+    printSuiteStart('suite 4');
 
     hujiwebserver.start(lport, function (e, server) {
         if (e) {
@@ -359,6 +406,10 @@ function testSuite4(callback) {
     });
 }
 
+/**
+ * Calls for the next test to be run
+ * @param callback the next function to run.
+ */
 function next(callback) {
     if (callback !== undefined) {
         callback();
@@ -369,12 +420,21 @@ function next(callback) {
     }
 }
 
+/**
+ * Keeps print format
+ * @param suite the suite name
+ */
 function printSuiteStart(suite){
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     console.log('~~~Starting ' + suite + ' tests~~~');
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 }
 
+/**
+ * Creates a test sequence by creating a callback chain.
+ * @param funcs the functions to chain together.
+ * @returns {*}
+ */
 function testSequence(funcs) {
     for (var i = funcs.length - 1 ; i > 0  ; --i) {
         funcs[i - 1] = funcs[i - 1].bind(funcs[i -1], funcs[i]);
