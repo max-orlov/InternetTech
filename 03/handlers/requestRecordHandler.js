@@ -6,7 +6,7 @@ var path = require('path'),
  * A built-in record handler for JSON queries
  * @returns {Function}
  */
-function myUse(rootDir) {
+function requestRecordHandler(rootDir) {
     return function (request, response, next) {
         var root;
         if (rootDir == undefined){
@@ -33,7 +33,7 @@ function myUse(rootDir) {
     }
 }
 
-myUse.toString = function(){
+requestRecordHandler.toString = function(){
     return  "This handler handles a query both in GET and POST format for a record in some " +
             "JSON file spcified by the path. For example if you'd like to retrieve the record " +
             "of a person with id=123 from the file people, all the client needs to do is the " +
@@ -79,4 +79,4 @@ function getObjects(resObject, key, val) {
 }
 
 
-module.exports = myUse;
+module.exports = requestRecordHandler;

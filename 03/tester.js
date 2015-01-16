@@ -292,10 +292,10 @@ function testSuite1(callback) {
         } else {
             var myUseStr = hujiwebserver.myUse().toString();
             if (myUseStr === undefined || myUseStr === '') {
-                console.log("The toString for myUse failed")
+                console.log("The toString for requestRecordHandler failed")
             }
             else {
-                console.log("The toString for myUse passed!!\nAnd it's:\n"+myUseStr+"\n~~~~~~~~~~~~~~~");
+                console.log("The toString for requestRecordHandler passed!!\nAnd it's:\n"+myUseStr+"\n~~~~~~~~~~~~~~~");
                 server.use('/root', hujiwebserver.myUse());
                 server.use('/root', hujiwebserver.static('/tests/'));
 
