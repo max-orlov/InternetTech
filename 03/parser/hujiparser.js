@@ -232,9 +232,8 @@ function parseBody(request) {
  */
 function stringify(response) {
     var responseStr = "";
-
     responseStr += response.httpVersion + " " + response.statusCode + " " +
-    response.statusText === null ? serverSettings.statusCodes[response.statusCode] : response.statusText
+    (response.statusText === null ? serverSettings.statusCodes[response.statusCode] : response.statusText)
     + serverSettings.CRLF;
     //iterates over the headers
     for (var key in response.headers) {

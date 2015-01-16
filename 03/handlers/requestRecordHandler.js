@@ -39,7 +39,7 @@ requestRecordHandler.toString = function(){
             "of a person with id=123 from the file people, all the client needs to do is the " +
             "following '/people?id=123' in the path. You can specify the rootfolder or leave it " +
             "blank, and the root folder of the handler will be used."
-}
+};
 
 /**
  * A helper function which helps find the exact path of the query
