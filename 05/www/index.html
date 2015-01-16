@@ -4,12 +4,34 @@
     <meta charset="utf-8">
     <title>VanillaJS • TodoMVC</title>
     <link rel="stylesheet" href="bower_components/todomvc-common/base.css">
+    <link rel="stylesheet" href="bower_components/todomvc-common/style.css">
 </head>
 <body>
+
+
+<section id="register">
+    <h1>Register Todo App</h1>
+    <input type="text" class="box" id="registerFullname" placeholder="Fullname" autofocus> <br>
+    <input type="text" class="box" id="registerUsername" placeholder="Username"> <br>
+    <input type="text" class="box" id="registerPassword" placeholder="Password"> <br>
+    <input type="text" class="box" id="registerPasswordValidation" placeholder="Password Validation"> <br>
+    <input type="button" id="registerSubmit" onclick="register()" value="Register">
+    <a href="#" id="goToLoginLink" onclick="displayLoginScreen()">Already a Member? Login</a>
+</section>
+
+<section id="login">
+    <h1>Login Todo App</h1>
+    <input type="text" id="loginUsername" placeholder="Username" autofocus>
+    <input type="text" id="loginPassword" placeholder="Password">
+    <input type="button" id="loginSubmit" onclick="login()" value="Login">
+    <a href="#" id="goToRegisterLink" onclick="displayRegisterScreen()">Not a Member? Register</a>
+</section>
+
 <section id="todoapp">
     <header id="header">
         <h1>todos</h1>
-        <input id="new-todo" placeholder="What needs to be done?" autofocus>
+        <input id="new-todo" onkeydown="if (event.keyCode == 13) addTodo()" onblur="addTodo()"
+               placeholder="What needs to be done?" autofocus>
     </header>
     <section id="main">
         <input id="toggle-all" type="checkbox">
@@ -32,6 +54,8 @@
         <button id="clear-completed">Clear completed</button>
     </footer>
 </section>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="js/Controllers/main.js"></script>
 <script src="bower_components/todomvc-common/base.js"></script>
 <script src="js/helpers.js"></script>
 <script src="js/store.js"></script>

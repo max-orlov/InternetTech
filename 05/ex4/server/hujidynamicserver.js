@@ -49,8 +49,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
                 if (match) {
                     var next = function (err) {
                         if (err) {
-                            response.status(500);
-                            return response.send();
+                            return response.status(500).send('');
                         }
                         app(request, response, index + 1);
                     };
@@ -59,19 +58,16 @@ var Hujidynamicserver = function (hujiEventEmitter) {
                     try {
                         handlers[index].handle(request, response, next);
                     } catch (e) {
-                        response.status(500);
-                        response.send();
+                        response.status(500).send('');
                     }
                     return;
                 }
             }
         }
         if (index === handlers.length) {
-            response.status(404);
-            response.send("404 - Page Not Found");
+            response.status(404).send("404 - Page Not Found");
         }
     };
-
 
     app.eventEmitter = hujiEventEmitter;
     app.server = new Hujinet(app, hujiEventEmitter);
@@ -82,7 +78,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
      * @param port the port to listen to.
      */
     app.listen = function(port) {
-        app.server.listen(port);
+        this.server.listen(port);
     };
 
     /**
@@ -111,19 +107,19 @@ var Hujidynamicserver = function (hujiEventEmitter) {
         }
 
         var newHandler = new ResourceHandler(method, handlerResource, handlerFunction);
-        app.handlers.push(newHandler);
+        this.handlers.push(newHandler);
     };
 
     /**
      * Stops the current server.
      */
     app.stop = function(callback) {
-        if (callback != undefined) {
+        if (callback !== undefined) {
             app.eventEmitter.on(serverSetting.hujiEvent.serverClosed, function () {
                 callback();
             });
         }
-        app.server.close();
+        this.server.close();
     };
 
     /**

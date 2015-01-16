@@ -2,11 +2,12 @@ var uuid = require('uuid');
 
 
 var Data = function () {
+    this.numberOfTodos = 0;
     this.todos = {};
 };
 
 
-Data.list = function () {
+Data.prototype.list = function () {
     var list = [];
     for (var id in this.todos) {
         if (this.todos.hasOwnProperty(id)) {
@@ -16,10 +17,21 @@ Data.list = function () {
     return list;
 };
 
-Data.create = function (dataObj) {
+Data.prototype.create = function (dataObj) {
+    var newTodo = {
+        id: this.numberOfTodos++,
+        title: dataObj.title,
+        status: dataObj.status,
+        owner: dataObj.owner
+    };
+    this.todos[newTodo.id] = newTodo;
+    return {status: 0};
+};
+
+Data.prototype.update = function (dataObj) {
     var stat = {};
-    if (dataObj.id in this.todos) {
-        stat = {status: 1, msg: "record already exists"};
+    if (!(dataObj.id in this.todos)) {
+        stat = {status: 1, msg: "record does not exists"};
     } else {
         stat = {status: 0};
         this.todos[dataObj.id] = dataObj;
@@ -27,29 +39,23 @@ Data.create = function (dataObj) {
     return stat;
 };
 
-Data.update = function (dataObj) {
-    var stat = {};
-    if (!(dataObj.id in this.todos)) {
-        stat = {status: 1, msg: "record does not exists"};
-    } else {
-        stat = {status: 0};
-        this.todos[dataObj.id] = dataObj;
+Data.prototype.delete = function (todoId) {
+    if (todoId === -1) {
+        this.deleteAllCompleted();
+        return {status: 0};
     }
-    return stat;
+    for (var todo in this.todos) {
+        if (this.todos.hasOwnProperty(todo)) {
+            if (todo.id === todoId) {
+                this.todos.delete(todo);
+                return {status: 0};
+            }
+        }
+    }
+    return {status: 1, msg: "record does not exists"};
 };
 
-Data.delete = function (dataObj) {
-    var stat = {};
-    if (!(dataObj.id in this.todos)) {
-        stat = {status: 1, msg: "record does not exists"};
-    } else {
-        stat = {status: 0};
-        delete this.todos[dataObj.id];
-    }
-    return stat;
-};
-
-Data.deleteAllCompleted = function () {
+Data.prototype.deleteAllCompleted = function () {
     for (var id in this.todos) {
         if (this.todos.hasOwnProperty(id) && this.todos[id].completed) {
             delete this.todos[id];

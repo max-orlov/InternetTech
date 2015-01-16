@@ -6,6 +6,7 @@ var serverSettings  = require('./../settings/settings'),
 var Response = function (httpVersion, statusCode, isKeepAlive, method, socket) {
     this.httpVersion = httpVersion;
     this.statusCode = statusCode;
+    this.statusText = null;
     this.headers = {};
     this.headers['date'] = new(Date)().toUTCString();
     this.headers['server'] = serverSettings.serverVersion;
@@ -192,7 +193,7 @@ Response.prototype.write = function (data, encoding) {
 
     if (this.method !== serverSettings.httpMethods['HEAD']) {
 
-        if (data !== undefined && data != null) {
+        if (data !== undefined && data !== null) {
             if (encoding !== undefined) {
                 this.socket.write(data, encoding);
             } else {

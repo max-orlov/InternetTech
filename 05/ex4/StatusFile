@@ -35,8 +35,7 @@ TODO ~ check if app.listen is a good solution.
 -   Switch back to thisObj
 
 TODO ~ Move the cookiehandler to the parser.
--   To be done.
+-   Done.
 
 TODO ~ Write some new testers.
--   SEMI Done left:
-    * cookie.
+-   Done.

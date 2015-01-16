@@ -1,6 +1,7 @@
 var Hujidynamicserver       = require('./server/hujidynamicserver'),
     path                    = require('path'),
     StaticRequestHandler    = require('./handlers/staticRequestHandler'),
+    requestCookieHandler    = require('./handlers/requestCookieHandler'),
     serverSettings          = require('./settings/settings'),
     EventEmitter            = require('events').EventEmitter,
     RequestResourceHandler  = require('./handlers/requestRecordHandler');
@@ -39,3 +40,7 @@ exports.static = function(rootFolderPath) {
 exports.recordsHandler = function(){
     return RequestResourceHandler();
 };
+
+exports.myUse = function(){
+    return requestCookieHandler();
+}

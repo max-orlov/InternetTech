@@ -1,6 +1,5 @@
 var fs              = require('fs'),
     path            = require('path'),
-    serverSettings  = require('./../settings/settings'),
     mimeTypes       = require('./../settings/mimeTypes');
 
 /**
@@ -11,7 +10,7 @@ var fs              = require('fs'),
  */
 function StaticRequestHandler(rootFolder) {
     return function (request, response, next) {
-        if (request.path.indexOf("..") != -1) {
+        if (request.path.indexOf("..") !== -1) {
             return next();
         }
 
@@ -19,7 +18,7 @@ function StaticRequestHandler(rootFolder) {
         var fileType = request.path.substr(request.path.lastIndexOf('.') + 1);
         fs.readFile(normPath, function(err, fileContent) {
             // no err was returned - so the file exists.
-            if (err == null) {
+            if (err === null) {
                 response.set('content-type', mimeTypes.getMimeType(fileType));
                 response.send(fileContent);
             }

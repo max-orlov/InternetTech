@@ -1,22 +1,28 @@
 var path = require('path'),
+    fs = require('fs'),
     serverSettings = require('./../settings/settings');
 
 /**
  * A built-in record handler for JSON queries
  * @returns {Function}
  */
-function RequestRecordHandler() {
+function requestRecordHandler(rootDir) {
     return function (request, response, next) {
-        var normPath =  path.join(__dirname + '\\..', response.path);
-        require('fs').readFile(normPath, 'utf8', function (err, data) {
+        var root;
+        if (rootDir == undefined){
+            root = __dirname
+        }
+        else{
+            root = rootDir;
+        }
+        var normPath =  path.join(root + '\\..', response.path);
+        fs.readFile(normPath, 'utf8', function (err, data) {
             if (err) {
                 console.log("error");
-            }
-            else{
-                if (request.method == serverSettings.httpMethods.GET) {
+            } else {
+                if (request.method === serverSettings.httpMethods.GET) {
                     response.body = extractObjects(JSON.parse(data), request.query)[0];
-                }
-                else if (request.method == serverSettings.httpMethods.POST){
+                } else if (request.method === serverSettings.httpMethods.POST) {
                     response.body = extractObjects(JSON.parse(data), request.body)[0];
                 }
 
@@ -26,6 +32,14 @@ function RequestRecordHandler() {
         });
     }
 }
+
+requestRecordHandler.toString = function(){
+    return  "This handler handles a query both in GET and POST format for a record in some " +
+            "JSON file spcified by the path. For example if you'd like to retrieve the record " +
+            "of a person with id=123 from the file people, all the client needs to do is the " +
+            "following '/people?id=123' in the path. You can specify the rootfolder or leave it " +
+            "blank, and the root folder of the handler will be used."
+};
 
 /**
  * A helper function which helps find the exact path of the query
@@ -55,9 +69,9 @@ function getObjects(resObject, key, val) {
         if (!resObject.hasOwnProperty(i)) {
             continue;
         }
-        if (typeof resObject[i] == 'object') {
+        if (typeof resObject[i] === 'object') {
             objects = objects.concat(getObjects(resObject[i], key, val));
-        } else if (i == key && resObject[key] == val) {
+        } else if (i === key && resObject[key] === val) {
             objects.push(resObject);
         }
     }
@@ -65,4 +79,4 @@ function getObjects(resObject, key, val) {
 }
 
 
-module.exports = RequestRecordHandler;
+module.exports = requestRecordHandler;

@@ -16,8 +16,12 @@ hujiwebserver.start(8888, function (e, server) {
         });
 
         server.post('/item', function (request, response) {
-            var stat = data.create(request.body);
-            response.status(stat.status === 0 ? 200 : 500).json(stat);
+            var user = users.getUserBySessionId(request.cookies['sessionId']);
+            if (user) {
+                request.body.owner = user.id;
+                var stat = data.create(request.body);
+                response.status(stat.status === 0 ? 200 : 500).json(stat);
+            }
         });
 
         server.put('/item', function (request, response) {
@@ -35,7 +39,7 @@ hujiwebserver.start(8888, function (e, server) {
         server.post('/register', function (request, response) {
             var stat = users.register(request.body);
             if (stat.status === 0) {
-                response.cookie('sessionId',users.getUser(request.body.username));
+                response.cookie('sessionId', users.getUserByUsername(request.body.username).session.sessionId);
             }
             response.status(stat.status === 0 ? 200 : 500).json(stat);
         });
@@ -43,7 +47,7 @@ hujiwebserver.start(8888, function (e, server) {
         server.post('/login', function (request, response) {
             var stat = users.login(request.body);
             if (stat.status === 0) {
-                response.cookie('sessionId', users.getUser(request.body.username));
+                response.cookie('sessionId', users.getUserByUsername(request.body.username).session.sessionId);
             }
             response.status(stat.status === 0 ? 200 : 500).json(stat);
         });
