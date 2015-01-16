@@ -21,7 +21,7 @@ function login() {
             displayTodoScreen();
         },
         error: function (xhr, status, error) {
-            alert(xhr);
+            alert(error);
         }
     });
 }
@@ -62,16 +62,30 @@ function addTodo() {
             type: 'POST',
             data: newTodo,
             success: function (result, status, xhr) {
-                populateList();
+                getList();
             },
             error: function (xhr, status, error) {
-                if (error=='please login first'){
-                    logout();
-                }
                 alert(error);
             }
         });
     }
+}
+
+function getList() {
+    $.ajax({
+        url: '/item',
+        type: 'GET',
+        success: function (result, status, xhr) {
+            var todos = JSON.parse(result);
+            todoList.innerHTML = "";
+            for (var i = 0; i <= todos.length - 1; i++) {
+                    injectTodo(todos[i])
+            }
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
 }
 
 function editTodo() {
@@ -84,6 +98,8 @@ function deleteTodo() {
 
 
 function injectTodo(todo) {
+    var completedStatus = '';
+    var checkedStatus = '';
     var newTodo
         =	'<li data-id="{{id}}" class="{{completed}}">'
     +		'<div class="view">'
@@ -93,10 +109,15 @@ function injectTodo(todo) {
     +		'</div>'
     +	'</li>';
 
+    if (todo.status === completed) {
+        completedStatus = 'completed';
+        checkedStatus = 'checked';
+    }
+
     newTodo = newTodo.replace('{{id}}', todo.id);
     newTodo = newTodo.replace('{{title}}', todo.title);
-    newTodo = newTodo.replace('{{completed}}', '');
-    newTodo = newTodo.replace('{{checked}}', '');
+    newTodo = newTodo.replace('{{completed}}', completedStatus);
+    newTodo = newTodo.replace('{{checked}}', checkedStatus);
 
     todoList.innerHTML += newTodo;
 }

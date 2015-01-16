@@ -26,30 +26,44 @@ hujiwebserver.start(8888, function (e, server) {
 
         server.put('/item', function (request, response) {
             var stat = data.update(request.body);
-            response.status(stat.status === 0 ? 200 : 500).json(stat);
+            var responseStatus = stat.status === 0 ? 200 : 500;
+            if (responseStatus === 500) {
+                response.statusText = stat.msg;
+            }
+            response.status(responseStatus).json(stat);
         });
 
         server.delete('/item', function (request, response) {
             var stat = data.delete(request.body);
-            response.status(stat.status === 0 ? 200 : 500).json(stat);
+            var responseStatus = stat.status === 0 ? 200 : 500;
+            if (responseStatus === 500) {
+                response.statusText = stat.msg;
+            }
+            response.status(responseStatus).json(stat);
         });
 
 
 
         server.post('/register', function (request, response) {
             var stat = users.register(request.body);
-            if (stat.status === 0) {
+            var responseStatus = stat.status === 0 ? 200 : 500;
+            if (responseStatus === 200) {
                 response.cookie('sessionId', users.getUserByUsername(request.body.username).session.sessionId);
+            } else if (responseStatus === 500) {
+                response.statusText = stat.msg;
             }
-            response.status(stat.status === 0 ? 200 : 500).json(stat);
+            response.status(responseStatus).json(stat);
         });
 
         server.post('/login', function (request, response) {
             var stat = users.login(request.body);
-            if (stat.status === 0) {
+            var responseStatus = stat.status === 0 ? 200 : 500;
+            if (responseStatus === 200) {
                 response.cookie('sessionId', users.getUserByUsername(request.body.username).session.sessionId);
+            } else if (responseStatus === 500) {
+                response.statusText = stat.msg;
             }
-            response.status(stat.status === 0 ? 200 : 500).json(stat);
+            response.status(responseStatus).json(stat);
         });
 
     }

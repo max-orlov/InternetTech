@@ -31,7 +31,7 @@ Data.prototype.create = function (dataObj) {
 Data.prototype.update = function (dataObj) {
     var stat = {};
     if (!(dataObj.id in this.todos)) {
-        stat = {status: 1, msg: "record does not exists"};
+        stat = {status: 1, msg: "Record does not exists"};
     } else {
         stat = {status: 0};
         this.todos[dataObj.id] = dataObj;
@@ -52,7 +52,7 @@ Data.prototype.delete = function (todoId) {
             }
         }
     }
-    return {status: 1, msg: "record does not exists"};
+    return {status: 1, msg: "Record does not exists"};
 };
 
 Data.prototype.deleteAllCompleted = function () {
