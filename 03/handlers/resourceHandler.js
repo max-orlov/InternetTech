@@ -31,7 +31,7 @@ ResourceHandler.prototype.handle = function(req, res, next) {
 ResourceHandler.prototype.regex = function (path) {
     var parts = path.split('/');
     var str= '^';
-    for (var i = 0; i < parts.length ; i++) {
+    for (var i = 0; i < parts.length; i++) {
         if (parts[i] === '') {
             continue;
         }
@@ -42,11 +42,10 @@ ResourceHandler.prototype.regex = function (path) {
             str += parts[i];
         }
     }
-
-    str += '\/' ;
-
+    str += '\/?';
     return new RegExp(str, 'i');
 };
 
 
 module.exports = ResourceHandler;
+

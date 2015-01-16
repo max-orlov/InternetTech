@@ -6,6 +6,7 @@ var serverSettings  = require('./../settings/settings'),
 var Response = function (httpVersion, statusCode, isKeepAlive, method, socket) {
     this.httpVersion = httpVersion;
     this.statusCode = statusCode;
+    this.statusText = null;
     this.headers = {};
     this.headers['date'] = new(Date)().toUTCString();
     this.headers['server'] = serverSettings.serverVersion;
