@@ -58,6 +58,7 @@ var Hujidynamicserver = function (hujiEventEmitter) {
                     try {
                         handlers[index].handle(request, response, next);
                     } catch (e) {
+                        console.log(e.message);
                         response.status(500).send('');
                     }
                     return;

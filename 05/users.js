@@ -15,7 +15,7 @@ Users.prototype.getUserBySessionId = function (sessionId) {
         if (this.activeUsers.hasOwnProperty(user)) {
             if (this.activeUsers[user].session.sessionId === sessionId &&
                 this.activeUsers[user].session.expirationDate >= Date.now()) {
-                return user;
+                return this.activeUsers[user];
             }
         }
     }

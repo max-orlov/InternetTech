@@ -11,12 +11,12 @@
 }
 
 #login {
-    display: block;
+    display: none;
 }
 
 
 #register {
-    display: none;
+    display: block;
 }
 
 #login h1, #register h1 {

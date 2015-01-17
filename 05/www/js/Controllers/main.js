@@ -54,10 +54,11 @@ function addTodo() {
     var todo = document.getElementById('new-todo');
     if (todo.value !== '') {
         var newTodo = {
-            title: todo,
+            title: todo.value,
             status: active
         };
-        $.ajax({
+        todo.value = '';
+        $.ajax( {
             url: '/item',
             type: 'POST',
             data: newTodo,
@@ -76,13 +77,14 @@ function getList() {
         url: '/item',
         type: 'GET',
         success: function (result, status, xhr) {
-            var todos = JSON.parse(result);
+            var todos = result;
             todoList.innerHTML = "";
             for (var i = 0; i <= todos.length - 1; i++) {
                     injectTodo(todos[i])
             }
         },
         error: function (xhr, status, error) {
+
             alert(error);
         }
     });
@@ -91,8 +93,19 @@ function getList() {
 function editTodo() {
 }
 
-function deleteTodo() {
+function deleteTodo(todId) {
+    $.ajax({
+        url: '/item',
+        type: 'DELETE',
+        data: {id: todId},
+        success: function (result, status, xhr) {
+            getList();
+        },
+        error: function (xhr, status, error) {
 
+            alert(error);
+        }
+    });
 }
 
 
@@ -105,7 +118,7 @@ function injectTodo(todo) {
     +		'<div class="view">'
     +			'<input class="toggle" type="checkbox" {{checked}}>'
     +			'<label>{{title}}</label>'
-    +			'<button class="destroy"></button>'
+    +			'<button class="destroy" onclick="deleteTodo(' + "{{id}}" + ')"></button>'
     +		'</div>'
     +	'</li>';
 
@@ -114,12 +127,12 @@ function injectTodo(todo) {
         checkedStatus = 'checked';
     }
 
-    newTodo = newTodo.replace('{{id}}', todo.id);
+    newTodo = newTodo.replace(/\{\{id}}/g, todo.id);
     newTodo = newTodo.replace('{{title}}', todo.title);
     newTodo = newTodo.replace('{{completed}}', completedStatus);
     newTodo = newTodo.replace('{{checked}}', checkedStatus);
 
-    todoList.innerHTML += newTodo;
+    todoList.innerHTML = newTodo + todoList.innerHTML;
 }
 
 function displayLoginScreen() {

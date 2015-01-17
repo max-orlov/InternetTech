@@ -7,10 +7,10 @@ var Data = function () {
 };
 
 
-Data.prototype.list = function () {
+Data.prototype.list = function (owner) {
     var list = [];
     for (var id in this.todos) {
-        if (this.todos.hasOwnProperty(id)) {
+        if (this.todos.hasOwnProperty(id) && this.todos[id].owner === owner) {
             list.push(this.todos[id]);
         }
     }
@@ -39,20 +39,19 @@ Data.prototype.update = function (dataObj) {
     return stat;
 };
 
-Data.prototype.delete = function (todoId) {
+Data.prototype.delete = function (todoId, owner) {
     if (todoId === -1) {
         this.deleteAllCompleted();
         return {status: 0};
     }
-    for (var todo in this.todos) {
-        if (this.todos.hasOwnProperty(todo)) {
-            if (todo.id === todoId) {
-                this.todos.delete(todo);
-                return {status: 0};
-            }
-        }
+    if (todoId in this.todos && this.todos[todoId].owner === owner) {
+        delete this.todos[todoId];
+        return {status: 0};
+    } else if (!(todoId in this.todos)){
+        return {status: 1, msg: "Record does not exists"};
+    } else {
+        return {status: 1, msg: "User cannot delete other user's todo"};
     }
-    return {status: 1, msg: "Record does not exists"};
 };
 
 Data.prototype.deleteAllCompleted = function () {
