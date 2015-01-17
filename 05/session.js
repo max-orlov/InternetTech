@@ -1,4 +1,6 @@
-var Session = function(sessionId, expirationDate) {
+
+
+var Session = function (sessionId, expirationDate) {
     this.sessionId = sessionId;
     this.expirationDate = expirationDate;
 };
