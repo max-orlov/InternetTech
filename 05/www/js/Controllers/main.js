@@ -90,7 +90,56 @@ function getList() {
     });
 }
 
-function editTodo() {
+function updateTodo(todoId) {
+    var listTodo = document.querySelector('[data-id="' + todoId + '"]');
+
+    if (!listTodo) {
+        return;
+    }
+
+    var input = listTodo.querySelector('input.edit');
+    var inputValue = input.value;
+
+    var todo = {id: todoId, title: inputValue};
+
+    $.ajax( {
+        url: '/item',
+        type: 'PUT',
+        data: todo,
+        success: function (result, status, xhr) {
+
+            listTodo.removeChild(input);
+            listTodo.className = listTodo.className.replace('editing', '');
+            listTodo.getElementsByTagName('label')[0].firstChild.data = inputValue;
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+
+
+
+}
+
+function editTodo(todoId) {
+    var listTodo = document.querySelector('[data-id="' + todoId + '"]');
+
+    if (!listTodo) {
+        return;
+    }
+    var labelValue = listTodo.getElementsByTagName('label')[0].firstChild.data;
+
+    listTodo.className = listTodo.className + ' editing';
+
+    var input = document.createElement('input');
+    input.className = 'edit';
+    input.setAttribute('onkeydown', 'if (event.keyCode == 13) updateTodo(' + todoId + ')');
+    input.setAttribute('onblur', 'updateTodo(' + todoId + ')');
+
+    listTodo.appendChild(input);
+    input.focus();
+    input.value = labelValue;
+
 }
 
 function deleteTodo(todId) {
@@ -117,7 +166,7 @@ function injectTodo(todo) {
         =	'<li data-id="{{id}}" class="{{completed}}">'
     +		'<div class="view">'
     +			'<input class="toggle" type="checkbox" {{checked}}>'
-    +			'<label>{{title}}</label>'
+    +			'<label ondblclick="editTodo(' + "{{id}}" + ')">{{title}}</label>'
     +			'<button class="destroy" onclick="deleteTodo(' + "{{id}}" + ')"></button>'
     +		'</div>'
     +	'</li>';
@@ -139,16 +188,19 @@ function displayLoginScreen() {
     loginScreen.style.display = 'block';
     registerScreen.style.display = 'none';
     todoScreen.style.display = 'none';
+    document.getElementById("loginUsername").focus();
 }
 
 function displayRegisterScreen() {
     loginScreen.style.display = 'none';
     registerScreen.style.display = 'block';
     todoScreen.style.display = 'none';
+    document.getElementById("registerFullname").focus();
 }
 
 function displayTodoScreen() {
     loginScreen.style.display = 'none';
     registerScreen.style.display = 'none';
     todoScreen.style.display = 'block';
+    document.getElementById("new-todo").focus();
 }

@@ -28,13 +28,17 @@ Data.prototype.create = function (dataObj) {
     return {status: 0};
 };
 
-Data.prototype.update = function (dataObj) {
+Data.prototype.update = function (dataObj, owner) {
     var stat = {};
     if (!(dataObj.id in this.todos)) {
         stat = {status: 1, msg: "Record does not exists"};
     } else {
+        if (this.todos[dataObj.id].owner !== owner) {
+            stat =  {status: 1, msg: "User cannot update other user's todo"};
+        } else {
         stat = {status: 0};
-        this.todos[dataObj.id] = dataObj;
+        this.todos[dataObj.id].title = dataObj.title;
+        }
     }
     return stat;
 };

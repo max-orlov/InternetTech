@@ -40,12 +40,20 @@ hujiwebserver.start(8888, function (e, server) {
         });
 
         server.put('/item', function (request, response) {
-            var stat = data.update(request.body);
-            var responseStatus = stat.status === 0 ? 200 : 500;
-            if (responseStatus === 500) {
+            var user = users.getUserBySessionId(request.cookies['sessionId']);
+            if (user) {
+                var stat = data.update(request.body, user.id);
+                var responseStatus = stat.status === 0 ? 200 : 500;
+                if (responseStatus === 500) {
+                    response.statusText = stat.msg;
+                }
+                response.status(responseStatus).json(stat);
+            } else {
+                stat = {status: 1, msg: "User is not logged in"};
                 response.statusText = stat.msg;
+                response.status(400).json(stat);
             }
-            response.status(responseStatus).json(stat);
+
         });
 
         server.delete('/item', function (request, response) {
@@ -64,7 +72,6 @@ hujiwebserver.start(8888, function (e, server) {
                 response.status(400).json(stat);
             }
         });
-
 
 
         server.post('/register', function (request, response) {
