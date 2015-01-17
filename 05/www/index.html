@@ -2,29 +2,28 @@
 <html lang="en" data-framework="javascript">
 <head>
     <meta charset="utf-8">
-    <title>VanillaJS • TodoMVC</title>
+    <title>Todo App</title>
     <link rel="stylesheet" href="bower_components/todomvc-common/base.css">
     <link rel="stylesheet" href="bower_components/todomvc-common/style.css">
 </head>
 <body>
 
-
 <section id="register">
     <h1>Register Todo App</h1>
-    <input type="text" class="box" id="registerFullname" placeholder="Fullname" autofocus> <br>
-    <input type="text" class="box" id="registerUsername" placeholder="Username"> <br>
-    <input type="text" class="box" id="registerPassword" placeholder="Password"> <br>
-    <input type="text" class="box" id="registerPasswordValidation" placeholder="Password Validation"> <br>
-    <input type="button" id="registerSubmit" onclick="register()" value="Register">
-    <a href="#" id="goToLoginLink" onclick="displayLoginScreen()">Already a Member? Login</a>
+    <input type="text" class="box" id="register_fullname" placeholder="Fullname" autofocus> <br>
+    <input type="text" class="box" id="register_username" placeholder="Username"> <br>
+    <input type="password" class="box" id="register_password" placeholder="Password"> <br>
+    <input type="password" class="box" id="register_password_validation" placeholder="Password Validation"> <br>
+    <input type="button" id="register_submit" onclick="register()" value="Register">
+    <a href="#" id="go_to_login_link" onclick="displayLoginScreen()">Already a Member? Login</a>
 </section>
 
 <section id="login">
     <h1>Login Todo App</h1>
-    <input type="text" id="loginUsername" placeholder="Username" autofocus>
-    <input type="text" id="loginPassword" placeholder="Password">
-    <input type="button" id="loginSubmit" onclick="login()" value="Login">
-    <a href="#" id="goToRegisterLink" onclick="displayRegisterScreen()">Not a Member? Register</a>
+    <input type="text" id="login_username" placeholder="Username" autofocus>
+    <input type="password" id="login_password" placeholder="Password">
+    <input type="button" id="login_submit" onclick="login()" value="Login">
+    <a href="#" id="go_to_register_link" onclick="displayRegisterScreen()">Not a Member? Register</a>
 </section>
 
 <section id="todoapp">
@@ -40,9 +39,16 @@
     </section>
     <footer id="footer">
         <span id="todo-count"></span>
+
+        <ul id="filters">
+            <li>
+                <a href="#/" onclick="logout()">Logout</a>
+            </li>
+        </ul>
         <button id="clear-completed" onclick="clearCompleted()">Clear completed</button>
     </footer>
 </section>
+
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="js/Controllers/main.js"></script>
 <!--<script src="bower_components/todomvc-common/base.js"></script>-->

@@ -10,8 +10,8 @@ var loginScreen = document.getElementById('login'),
  * Performs user login.
  */
 function login() {
-    var username = document.getElementById('loginUsername');
-    var password = document.getElementById('loginPassword');
+    var username = document.getElementById('login_username');
+    var password = document.getElementById('login_password');
     var user = {
         username: username.value,
         password: password.value
@@ -21,7 +21,9 @@ function login() {
         type: 'POST',
         data: user,
         success: function (result, status, xhr) {
+            clearLoginInfo();
             displayTodoScreen();
+            getList();
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -33,10 +35,10 @@ function login() {
  * Performs user registration.
  */
 function register() {
-    var fullname = document.getElementById('registerFullname');
-    var username = document.getElementById('registerUsername');
-    var password = document.getElementById('registerPassword');
-    var passwordValidation = document.getElementById('registerPasswordValidation');
+    var fullname = document.getElementById('register_fullname');
+    var username = document.getElementById('register_username');
+    var password = document.getElementById('register_password');
+    var passwordValidation = document.getElementById('register_password_validation');
     var user = {
         fullname: fullname.value,
         username: username.value,
@@ -48,6 +50,7 @@ function register() {
         type: 'POST',
         data: user,
         success: function (result, status, xhr) {
+            clearRegistrationInfo();
             displayTodoScreen();
         },
         error: function (xhr, status, error) {
@@ -259,18 +262,23 @@ function injectTodo(todo) {
     todoList.innerHTML += newTodo;
 }
 
+function logout() {
+    document.cookie = 'sessionId=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    displayLoginScreen();
+}
+
 function displayLoginScreen() {
     loginScreen.style.display = 'block';
     registerScreen.style.display = 'none';
     todoScreen.style.display = 'none';
-    document.getElementById("loginUsername").focus();
+    document.getElementById("login_username").focus();
 }
 
 function displayRegisterScreen() {
     loginScreen.style.display = 'none';
     registerScreen.style.display = 'block';
     todoScreen.style.display = 'none';
-    document.getElementById("registerFullname").focus();
+    document.getElementById("register_fullname").focus();
 }
 
 function displayTodoScreen() {
@@ -278,4 +286,16 @@ function displayTodoScreen() {
     registerScreen.style.display = 'none';
     todoScreen.style.display = 'block';
     document.getElementById("new-todo").focus();
+}
+
+function clearRegistrationInfo() {
+    document.getElementById("register_fullname").value = "";
+    document.getElementById("register_username").value = "";
+    document.getElementById("register_password").value = "";
+    document.getElementById("register_password_validation").value = "";
+}
+
+function clearLoginInfo() {
+    document.getElementById("login_username").value = "";
+    document.getElementById("login_password").value = "";
 }

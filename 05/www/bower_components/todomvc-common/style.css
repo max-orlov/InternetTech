@@ -11,12 +11,12 @@
 }
 
 #login {
-    display: none;
+    display: block;
 }
 
 
 #register {
-    display: block;
+    display: none;
 }
 
 #login h1, #register h1 {
@@ -37,14 +37,7 @@
 }
 
 
-#loginMsg{
-    padding-top: 20px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-
-#loginUsername, #loginPassword, #registerUsername, #registerFullname, #registerPassword, #registerPasswordValidation {
+#login_username, #login_password, #register_username, #register_fullname, #register_password, #register_password_validation {
     width: 98%;
     height: 34px;
     padding-left: 5px;
@@ -58,7 +51,7 @@
 }
 
 
-#loginSubmit, #registerSubmit {
+#login_submit, #register_submit {
     width: 98%;
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(132, 110, 100, 0.8)),to(rgba(101, 84, 76, 0.8)));
     background: -webkit-linear-gradient(top, rgba(132, 110, 100, 0.8), rgba(101, 84, 76, 0.8));
@@ -71,30 +64,27 @@
     outline-color: rgba(132, 110, 100, 0.8);
 }
 
-#loginSubmit {
+#login_submit {
     margin-top: 40%;
     margin-bottom: 15%;
 }
 
-#registerSubmit {
+#register_submit {
     margin-top: 9%;
     margin-bottom: 15%;
 }
 
 
-#goToRegisterLink, #goToLoginLink {
+#go_to_register_link, #go_to_login_link {
     color: black
 }
 
-#goToRegisterLink.visited, #goToLoginLink.visited {
+#go_to_register_link.visited, #go_to_login_link.visited {
     color: black
 }
 
 
-
-
-
-#loginSubmit:hover{
+#login_submit:hover{
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(132, 110, 100, 0.8)),to(rgba(101, 84, 76, 0.8)));
     background: -webkit-linear-gradient(top, rgba(132, 110, 100, 0.8), rgba(101, 84, 76, 0.8));
     background: linear-gradient(top, rgba(132, 110, 100, 0.8), rgba(101, 84, 76, 0.8));
