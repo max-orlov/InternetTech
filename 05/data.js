@@ -73,7 +73,7 @@ Data.prototype.update = function (dataObj, owner) {
  */
 Data.prototype.delete = function (todoId, owner) {
     //in case todoId === -1 deletes all the todos of thisUser
-    if (todoId === -1) {
+    if (todoId == -1) {
         this.deleteAllCompleted(owner);
         return {status: 0};
     }

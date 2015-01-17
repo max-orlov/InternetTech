@@ -2,10 +2,13 @@ var loginScreen = document.getElementById('login'),
     registerScreen = document.getElementById('register'),
     todoScreen = document.getElementById('todoapp'),
     todoList = document.getElementById('todo-list'),
-    active = 1,
-    completed = 0;
+    active = 0,
+    completed = 1;
 
 
+/**
+ * Performs user login.
+ */
 function login() {
     var username = document.getElementById('loginUsername');
     var password = document.getElementById('loginPassword');
@@ -26,6 +29,9 @@ function login() {
     });
 }
 
+/**
+ * Performs user registration.
+ */
 function register() {
     var fullname = document.getElementById('registerFullname');
     var username = document.getElementById('registerUsername');
@@ -50,11 +56,15 @@ function register() {
     });
 }
 
+/**
+ * Adds a new todo.
+ */
 function addTodo() {
     var todo = document.getElementById('new-todo');
-    if (todo.value !== '') {
+    //add the new todo only if it's not empty
+    if (todo.value.trim() !== '') {
         var newTodo = {
-            title: todo.value,
+            title: todo.value.trim(),
             status: active
         };
         todo.value = '';
@@ -80,11 +90,10 @@ function getList() {
             var todos = result;
             todoList.innerHTML = "";
             for (var i = 0; i <= todos.length - 1; i++) {
-                    injectTodo(todos[i])
+                injectTodo(todos[i])
             }
         },
         error: function (xhr, status, error) {
-
             alert(error);
         }
     });
@@ -117,8 +126,6 @@ function updateTodo(todoId) {
         }
     });
 
-
-
 }
 
 function editTodo(todoId) {
@@ -142,16 +149,84 @@ function editTodo(todoId) {
 
 }
 
-function deleteTodo(todId) {
+function deleteTodo(todoId) {
     $.ajax({
         url: '/item',
         type: 'DELETE',
-        data: {id: todId},
+        data: {id: todoId},
         success: function (result, status, xhr) {
             getList();
         },
         error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+}
 
+function completeTodo(todoId) {
+    var listTodo = document.querySelector('[data-id="' + todoId + '"]');
+    if (!listTodo) {
+        return;
+    }
+
+    var title = listTodo.getElementsByTagName('label')[0].firstChild.data;
+    var oldStatus = listTodo.className;
+    var newStatus = oldStatus === '' ? 'completed' : '';
+
+    var todoStatus = newStatus === '' ? active : completed;
+
+    $.ajax({
+        url: '/item',
+        type: 'PUT',
+        data: {id: todoId, title: title, status: todoStatus},
+        success: function (result, status, xhr) {
+            listTodo.className = newStatus;
+            listTodo.querySelector('input').checked = todoStatus;
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+}
+
+function completeAll() {
+    $.ajax({
+        url: '/item',
+        type: 'GET',
+        success: function (result, status, xhr) {
+            var todos = result;
+            var isAllCompleted = true;
+            for (var i = 0; i <= todos.length - 1; i++) {
+                if (todos[i].status != 1) {
+                    isAllCompleted = false;
+                }
+            }
+
+            for (i = 0; i <= todos.length - 1; i++) {
+                if (isAllCompleted) {
+                    completeTodo(todos[i].id);
+                } else {
+                    if (todos[i].status !== '1') {
+                        completeTodo(todos[i].id);
+                    }
+                }
+            }
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+}
+
+function clearCompleted() {
+    $.ajax({
+        url: '/item',
+        type: 'DELETE',
+        data: {id : -1},
+        success: function (result, status, xhr) {
+            getList()
+        },
+        error: function (xhr, status, error) {
             alert(error);
         }
     });
@@ -164,12 +239,12 @@ function injectTodo(todo) {
     var checkedStatus = '';
     var newTodo
         =	'<li data-id="{{id}}" class="{{completed}}">'
-    +		'<div class="view">'
-    +			'<input class="toggle" type="checkbox" {{checked}}>'
-    +			'<label ondblclick="editTodo(' + "{{id}}" + ')">{{title}}</label>'
-    +			'<button class="destroy" onclick="deleteTodo(' + "{{id}}" + ')"></button>'
-    +		'</div>'
-    +	'</li>';
+        +		'<div class="view">'
+        +			'<input class="toggle" onclick="completeTodo(' + "{{id}}" + ')" type="checkbox" {{checked}}>'
+        +			'<label ondblclick="editTodo(' + "{{id}}" + ')">{{title}}</label>'
+        +			'<button class="destroy" onclick="deleteTodo(' + "{{id}}" + ')"></button>'
+        +		'</div>'
+        +	'</li>';
 
     if (todo.status === completed) {
         completedStatus = 'completed';
@@ -181,7 +256,7 @@ function injectTodo(todo) {
     newTodo = newTodo.replace('{{completed}}', completedStatus);
     newTodo = newTodo.replace('{{checked}}', checkedStatus);
 
-    todoList.innerHTML = newTodo + todoList.innerHTML;
+    todoList.innerHTML += newTodo;
 }
 
 function displayLoginScreen() {
