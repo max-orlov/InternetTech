@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>Ex4</title>
+    <link rel="stylesheet" type="text/css" href="docStyle.css">
+</head>
+<body>
+<div style="text-align: center; font-size: large;">Internet Technologies - Ex04 test guide</div>
+<div style="text-align: center;">
+    In our tests we have several different suites, each suite represents a
+    different server setup, that is different handler are loaded on the server,
+    The following list will describe what is the characterization of each suite, and which
+    tests are tested on that setup.
+</div>
+<ul>
+    <li>
+        <A href="#Suite1"><H3>Suite 1</H3></A>
+        <ul>
+            <li><A href="#basicStaticTest">Basic static test</A></li>
+            <li><A href="#basicStaticNonExistingFileTest">Basic static non existing file test</A></li>
+            <li><A href="#basicStaticNonHttpFormatTest">Basic static non http format test</A> </li>
+            <li><A href="#basicStaticHeadTest">Basic static head test</A></li>
+            <li><A href="#basicCookieTest">Basic cookie test</A> </li>
+            <li><A href="#stopServerAndTest">Stop server test</A> </li>
+        </ul>
+        <A href="#Suite2"><H3>Suite 2</H3></A>
+        <ul>
+            <li><A href="#postAndGetCrossTest">Post server and a get request test</A></li>
+            <li><A href="#stopServerAndTest">Stop server test</A> </li>
+        </ul>
+
+        <A href="#Suite3"><H3>Suite 3</H3></A>
+        <ul>
+            <li><A href="#getAndPostCrossTest">Get server and a post request test</A></li>
+            <li><A href="#stopServerAndTest">Stop server test</A> </li>
+        </ul>
+
+        <A href="#Suite4"><H3>Suite 4</H3></A>
+        <ul>
+            <li><A href="#basicRecordHandlerURITest">A basic test for URI query</A> </li>
+            <li><A href="#basicRecordHandlerBodyTest">A basic test for body query</A></li>
+            <li><A href="#stopServerAndTest">Stop server test</A> </li>
+        </ul>
+    </li>
+</ul>
+<div style="text-align: left">
+    The tests are launched sequentially (mainly that a server wouldn't stop before all the requests were handled
+    (although the server does reply to all currently handled request), when the tests are concurrent, many different
+    issues may arise (mainly because of the shutdown check). In the test we though it will be more logical to test
+    each function as on its own, and not mix several tests apart (this will generally should provide consistency
+    in the test results).
+</div>
+<hr>
+<H2 style="color: darkblue">Suites</H2>
+<ul>
+    <li>
+        <H3><A name="Suite1">Suite 1</A></H3>
+        This suite tests the basic static server handler and the cookie handler, both loaded on the '/root' resource
+        <hr>
+    </li>
+    <li>
+        <H3><A name="Suite2">Suite 2</A></H3>
+        This suite tests the basic static server handler when loaded only for POST requests, the handler is loaded
+        with the '/root' resource.
+        <hr>
+    </li>
+    <li>
+        <H3><A name="Suite3">Suite 3</A></H3>
+        This suite tests the basic static server handler when loaded only for GET requests, the handler is loaded
+        with the '/root' resource.
+        <hr>
+    </li>
+    <li>
+        <H3><A name="Suite4">Suite 4</A></H3>
+        This suite test our own extra handler for records (mainly for access to json files and queries), the handler is loaded
+        with the '/root' resource.
+    </li>
+</ul>
+<hr>
+
+<H2 style="color: maroon">Tests</H2>
+<ul>
+    <li>
+        <H4><A name="basicStaticTest">Basic static test</A></H4>
+        This basic test tests, if a proper response is replied upon a valid file request.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicStaticNonExistingFileTest"></A>Basic static non existing file test</H4>
+        A basic test for a non existing file, a status code of 404 should be returned.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicStaticNonHttpFormatTest"></A>Basic static non http format test </H4>
+        This test test how is a non http format request handled. The answer should contain 500 code.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicStaticHeadTest"></A>Basic static head test </H4>
+        This test sends a basic head request, and assert that only the heads were returned, and they are the same
+        as the get request for the same file.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicCookieTest"></A>Basic cookie test</H4>
+        This test sends a request containing a cookie, and expects to receive this cookie back in the response.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="stopServerAndTest"></A>Stop server test</H4>
+        This test will stop the server, and than assert the server has been stopped.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="postAndGetCrossTest"></A>Post server and a get request test</H4>
+        This test loads up a static server for POST requests and try to approach this server through a GET request
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="getAndPostCrossTest">Get server and a post request test</A></H4>
+        This test loads up a static server for GET requests and try to approach this server through a POST request
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicRecordHandlerURITest">A basic test for getting a record through a URI query</A></H4>
+        This basic test, tests if a query is received through the path, whether a response containing the appropriate object
+        from the supplied by path json file.
+        <hr>
+    </li>
+
+    <li>
+        <H4><A name="basicRecordHandlerBodyTest">A basic test for getting a record through a body</A> </H4>
+        This basic test, tests if a query is received through the body, whether a response containing the appropriate object
+        from the supplied by path json file.
+        <hr>
+    </li>
+</ul>
+</body>
+</html>
