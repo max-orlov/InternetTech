@@ -58,8 +58,12 @@ Data.prototype.update = function (dataObj, owner) {
             //everything is fine.
         } else {
             stat = {status: 0};
-            this.todos[dataObj.id].title = dataObj.title;
-            this.todos[dataObj.id].status = dataObj.status;
+            if (dataObj.title !== undefined) {
+                this.todos[dataObj.id].title = dataObj.title;
+            }
+            if (dataObj.status !== undefined) {
+                this.todos[dataObj.id].status = dataObj.status;
+            }
         }
     }
     return stat;
