@@ -19,7 +19,9 @@
     display: none;
 }
 
-#login h1, #register h1 {
+
+
+#login h1, #register h1, {
 
     width: 100%;
     font-size: 40px;

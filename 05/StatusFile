@@ -1,31 +1,39 @@
 TODO ~ When the user is already logged in, redirect him to the todoapp section.
 - Done.
 
-TODO ~ Check if the return value of all the function (outer main.js file) matches the exercise description (I guess there are few fixes to be done).
-
-
 TODO ~ Show 'clear completed' button only when at least one todo is completed.
 - Done.
 
 TODO ~ Check toggle-all checkbox when all the todos are marked as completed (when we mark them one by one it doesn't happen).
+- Done.
+
+TODO ~ Check if the return value of all the function (outer main.js file) matches the exercise description (I guess there are few fixes to be done).
+- Done : double check is needed.
 
 TODO ~ Show the number of completed todos (near 'clear completed' button) - see the how the original app acts.
+- Done.
 
-TODO ~ Clean and document code of both main.js files.
-
-TODO ~ When we are done, delete unnecessary files, and reorganize the www subtree.
-
-TODO ~ Write personal.txt file.
-
-TODO ~ Write some tests for all the HTTP APIs (test.js).
-
-TODO ~ Write description of the tests (tester.txt).
-
-TODO ~ the change the data into value in the 'data.js', both in the client side and in the 'data.js'
-
-TODO ~ Maybe change errors from alert into an html span/label tag.
-
-TODO ~ Maybe change the location of the logout button (probably should be in other html zone).
+TODO ~ the change the data into value in the 'Value.js', both in the client side and in the 'Value.js'
+- Done.
 
 TODO ~ BONUS - Run the app on top of express js instead of on top of our Ex4 (I added a folder named express containing the express module files).
+
+
+TODO :: ONLY COSMETICS:
+
+        TODO ~ Clean and document code of both main.js files.
+
+        TODO ~ When we are done, delete unnecessary files, and reorganize the www subtree.
+
+        TODO ~ Write personal.txt file.
+
+        TODO ~ Write some tests for all the HTTP APIs (test.js).
+
+        TODO ~ Write description of the tests (tester.txt).
+
+        TODO ~ Maybe change errors from alert into an html span/label tag.
+        -
+        TODO ~ Maybe change the location of the logout button (probably should be in other html zone).
+        - that to touch, the location was set by the stupid css.
+
 

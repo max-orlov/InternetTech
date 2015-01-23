@@ -1,5 +1,5 @@
 var hujiwebserver   = require('./hujiwebserver'),
-    Data            = require('./data'),
+    Value            = require('./Value'),
     Users           = require('./users');
 
 
@@ -7,7 +7,7 @@ hujiwebserver.start(8888, function (e, server) {
     if (e) {
         console.log(e);
     } else {
-        var data = new Data();
+        var value = new Value();
         var users = new Users();
         server.use('/app', hujiwebserver.static('/www/'));
 
@@ -15,7 +15,7 @@ hujiwebserver.start(8888, function (e, server) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             response.status(200);
             if (user){
-                response.json(data.list(user.id));
+                response.json({list: value.list(user.id), listSize: value.todos.size()});
             }
             else{
                 response.send();
@@ -31,13 +31,25 @@ hujiwebserver.start(8888, function (e, server) {
                     response.status(200).send();
                 }
             }
+        });
+
+        server.get('/env', function(request, response){
+            var user = users.getUserBySessionId(request.cookies['sessionId']);
+            if (user) {
+                response.json({tasksRemain: value.tasksRemain, totalListSize: value.todos.size()})
+            }
+            else{
+                var stat = {status: 1, msg: "User is not logged in"};
+                response.statusText = stat.msg;
+                response.status(400).json(stat);
+            }
 
         });
 
         server.get('/item', function (request, response) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             if (user) {
-                response.json(data.list(user.id));
+                response.json(value.list(user.id));
             } else {
                 var stat = {status: 1, msg: "User is not logged in"};
                 response.statusText = stat.msg;
@@ -49,7 +61,7 @@ hujiwebserver.start(8888, function (e, server) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             if (user) {
                 request.body.owner = user.id;
-                var stat = data.create(request.body);
+                var stat = value.create(request.body);
                 var responseStatus = stat.status === 0 ? 200 : 500;
                 if (responseStatus === 500) {
                     response.statusText = stat.msg;
@@ -65,7 +77,7 @@ hujiwebserver.start(8888, function (e, server) {
         server.put('/item', function (request, response) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             if (user) {
-                var stat = data.update(request.body, user.id);
+                var stat = value.update(request.body, user.id);
                 var responseStatus = stat.status === 0 ? 200 : 500;
                 if (responseStatus === 500) {
                     response.statusText = stat.msg;
@@ -83,7 +95,7 @@ hujiwebserver.start(8888, function (e, server) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             if (user) {
                 request.body.owner = user.id;
-                var stat = data.delete(request.body.id , user.id);
+                var stat = value.delete(request.body.id , user.id);
                 var responseStatus = stat.status === 0 ? 200 : 500;
                 if (responseStatus === 500) {
                     response.statusText = stat.msg;
@@ -95,7 +107,6 @@ hujiwebserver.start(8888, function (e, server) {
                 response.status(400).json(stat);
             }
         });
-
 
         server.post('/register', function (request, response) {
             var stat = users.register(request.body);

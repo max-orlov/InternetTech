@@ -1,8 +1,9 @@
 var uuid = require('uuid');
 
 
-var Data = function () {
-    this.todoCounter = 0;
+var Value = function () {
+    this.tasksRemain = 0;
+    this.index = 0;
     this.todos = {
         size: function(){
             var size = 0, key;
@@ -21,15 +22,15 @@ var Data = function () {
  * @param owner user id.
  * @returns {Array} array containing all the todos of the given user.
  */
-Data.prototype.list = function (owner) {
-    var list = [];
+Value.prototype.list = function (owner) {
+    var todoList = [];
     for (var id in this.todos) {
         //pushes the todos of the specific owner.
         if (this.todos.hasOwnProperty(id) && this.todos[id].owner === owner) {
-            list.push(this.todos[id]);
+            todoList.push(this.todos[id]);
         }
     }
-    return list;
+    return todoList;
 };
 
 /**
@@ -37,13 +38,14 @@ Data.prototype.list = function (owner) {
  * @param dataObj object containing the todo properties.
  * @returns {{status: number}} object containing the process status (0 for success, 1 for failure).
  */
-Data.prototype.create = function (dataObj) {
+Value.prototype.create = function (dataObj) {
     var newTodo = {
-        id      : this.todoCounter++,
+        id      : this.index++,
         title   : dataObj.title,
         status  : dataObj.status,
         owner   : dataObj.owner
     };
+    this.tasksRemain++;
     this.todos[newTodo.id] = newTodo;
     return {status: 0};
 };
@@ -54,7 +56,7 @@ Data.prototype.create = function (dataObj) {
  * @param owner the requesting owner of the todo (used for validation).
  * @returns {{}} object containing the process status (0 for success, 1 for failure).
  */
-Data.prototype.update = function (dataObj, owner) {
+Value.prototype.update = function (dataObj, owner) {
     var stat = {};
     //the given todo doesn't exists.
     if (!(dataObj.id in this.todos)) {
@@ -70,10 +72,10 @@ Data.prototype.update = function (dataObj, owner) {
                 this.todos[dataObj.id].title = dataObj.title;
             }
             if (dataObj.status !== undefined) {
-                this.todoCounter += dataObj.status == "1" ? -1 : 1;
+                this.tasksRemain += dataObj.status == "1" ? -1 : 1;
                 this.todos[dataObj.id].status = dataObj.status;
             }
-            stat = {status: 0, isAnyNonActive: this.todoCounter !== this.todos.size()};
+            stat = {status: 0};
 
         }
     }
@@ -86,7 +88,7 @@ Data.prototype.update = function (dataObj, owner) {
  * @param owner the requesting owner of the todo
  * @returns {*} object containing the process status (0 for success, 1 for failure).
  */
-Data.prototype.delete = function (todoId, owner) {
+Value.prototype.delete = function (todoId, owner) {
     //in case todoId === -1 deletes all the todos of thisUser
     if (todoId == -1) {
         this.deleteAllCompleted(owner);
@@ -96,8 +98,9 @@ Data.prototype.delete = function (todoId, owner) {
     if (todoId in this.todos) {
         //verifies that the requested owner is the real owner.
         if (this.todos[todoId].owner === owner) {
+            this.tasksRemain += this.todos[todoId].status != 1 ? -1 : 0;
             delete this.todos[todoId];
-            return {status: 0, isAnyNonActive: this.todoCounter !== this.todos.size()};
+            return {status: 0};
         } else {
             return {status: 1, msg: "User cannot delete other user's todo"};
         }
@@ -110,15 +113,14 @@ Data.prototype.delete = function (todoId, owner) {
  * Deletes all the completed todos of a given user
  * @param owner the user id.
  */
-Data.prototype.deleteAllCompleted = function (owner) {
+Value.prototype.deleteAllCompleted = function (owner) {
     for (var id in this.todos) {
         if (this.todos.hasOwnProperty(id) && this.todos[id].status == 1 && this.todos[id].owner === owner) {
             delete this.todos[id];
-            this.activeToDoCounter--;
         }
     }
 };
 
 
 
-module.exports = Data;
+module.exports = Value;

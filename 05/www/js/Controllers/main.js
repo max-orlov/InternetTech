@@ -13,7 +13,8 @@ function aloha(){
         success: function (result, status, xhr) {
             if (result !== ''){
                 displayTodoScreen();
-                populateList(result);
+                populateList(result.list);
+                updateEnviroment(result.listSize);
             }
             else{
                 displayLoginScreen();
@@ -106,6 +107,25 @@ function addTodo() {
     }
 }
 
+
+function updateEnviroment(tasksRemain, totalListSize){
+    $.ajax({
+        url: '/env',
+        type: 'GET',
+        success: function (result, status, xhr) {
+            var tasksDone = result.totalListSize - result.tasksRemain;
+            document.getElementById('clear-completed').style.display = tasksDone > 0 ? 'block' : 'none';
+            document.getElementById('todo-count').innerHTML = result.totalListSize > 0 ? result.totalListSize : '';
+            document.getElementById('toggle-all').checked = (result.tasksRemain === 0 && result.totalListSize > 0);
+
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+
+}
+
 function populateList(todos){
     todoList.innerHTML = "";
     for (var i = 0; i <= todos.length - 1; i++) {
@@ -113,9 +133,7 @@ function populateList(todos){
     }
 }
 
-function managerClearAllButton(isNeeded){
-    document.getElementById('clear-completed').style.display = isNeeded ? 'block' : 'none';
-}
+
 
 function getList() {
     $.ajax({
@@ -123,6 +141,7 @@ function getList() {
         type: 'GET',
         success: function (result, status, xhr) {
             populateList(result);
+            updateEnviroment();
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -147,10 +166,10 @@ function updateTodo(todoId) {
         type: 'PUT',
         data: todo,
         success: function (result, status, xhr) {
-
             listTodo.removeChild(input);
             listTodo.className = listTodo.className.replace('editing', '');
             listTodo.getElementsByTagName('label')[0].firstChild.data = inputValue;
+            updateEnviroment();
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -186,7 +205,6 @@ function deleteTodo(todoId) {
         type: 'DELETE',
         data: {id: todoId},
         success: function (result, status, xhr) {
-            managerClearAllButton(result.isAnyNonActive);
             getList();
         },
         error: function (xhr, status, error) {
@@ -207,6 +225,7 @@ function completeTodo(todoId) {
 
     var todoStatus = newStatus === '' ? active : completed;
 
+
     $.ajax({
         url: '/item',
         type: 'PUT',
@@ -214,7 +233,7 @@ function completeTodo(todoId) {
         success: function (result, status, xhr) {
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
-            managerClearAllButton(result.isAnyNonActive);
+            updateEnviroment(result.tasksRemain, result.totalListSize);
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -244,6 +263,7 @@ function completeAll() {
                     }
                 }
             }
+            updateEnviroment();
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -257,7 +277,6 @@ function clearCompleted() {
         type: 'DELETE',
         data: {id : -1},
         success: function (result, status, xhr) {
-            managerClearAllButton(false);
             getList()
         },
         error: function (xhr, status, error) {
