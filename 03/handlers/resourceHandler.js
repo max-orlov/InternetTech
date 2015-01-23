@@ -41,7 +41,7 @@ ResourceHandler.prototype.regex = function (path) {
             }
         }
     }
-    regexStr += '\/?';
+    regexStr += '($|\/)';
     return new RegExp(regexStr, 'i');
 };
 
