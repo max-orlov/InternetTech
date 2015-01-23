@@ -193,44 +193,6 @@ function basicRecordHandlerURITest(callback) {
 }
 
 /**
- * Tests the basic record handler, where query is received through the body.
- * @param callback the next test to be called (if exists).
- */
-function basicRecordHandlerBodyTest(callback) {
-    console.log("Getting a response to the query basic handler <basicRecordHandlerBodyTest> began");
-    var options = generateOptions('localhost', lport, '/root/tests/json_file?name=tom', 'POST', 'close');
-    var bodyQuery = 'name=maxim';
-    var queryResponse = '"name":"maxim"';
-    options.headers['Content-length'] = bodyQuery.length;
-    options.headers['Content-type'] = 'application/x-www-form-urlencoded';
-    var req = http.request(options, function (response) {
-        var body = "";
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
-        response.on('error', function (error) {
-            console.log('Error running basicRecordHandlerURITest. ' + error);
-        });
-        response.on('end', function(){
-            if (response.statusCode === 200 && body.indexOf(queryResponse) !== -1) {
-                console.log('basicRecordHandlerURITest passed!!');
-                next(callback);
-            } else {
-                if (response.statusCode !== 200) {
-                    console.log('basicRecordHandlerURITest failed. expected : 200 |  actual :' + response.statusCode);
-                } else {
-                    console.log("The records wasn't found at all");
-                }
-            }
-        })
-    });
-
-    req.write(bodyQuery+serverSetting.CRLF);
-    req.end();
-
-}
-
-/**
  * Tests if the server responds to POST requests if it is set up as GET.
  * @param callback the next test to be called (if exists).
  */
@@ -396,7 +358,6 @@ function testSuite4(callback) {
             }
             var orderedTesters = [
                 basicRecordHandlerURITest,
-                basicRecordHandlerBodyTest,
                 stopServerAndTest,
                 callback
             ];
