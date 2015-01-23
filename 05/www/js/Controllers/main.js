@@ -6,6 +6,29 @@ var loginScreen = document.getElementById('login'),
     completed = 1;
 
 
+function aloha(){
+    $.ajax( {
+        url: '/aloha',
+        type: 'GET',
+        success: function (result, status, xhr) {
+            if (result !== ''){
+                displayTodoScreen();
+                var todos = result;
+                todoList.innerHTML = "";
+                for (var i = 0; i <= todos.length - 1; i++) {
+                    injectTodo(todos[i])
+                }            }
+            else{
+                displayLoginScreen();
+            }
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+}
+
+
 /**
  * Performs user login.
  */
@@ -74,7 +97,8 @@ function addTodo() {
         $.ajax( {
             url: '/item',
             type: 'POST',
-            data: newTodo,
+            contentType: 'application/json',
+            data: JSON.stringify(newTodo),
             success: function (result, status, xhr) {
                 getList();
             },
@@ -263,8 +287,20 @@ function injectTodo(todo) {
 }
 
 function logout() {
-    document.cookie = 'sessionId=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    displayLoginScreen();
+    $.ajax( {
+        url: '/mahalo',
+        type: 'GET',
+        success: function (result, status, xhr) {
+            if (result !== ''){
+                document.cookie = 'sessionId=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                displayLoginScreen();
+            }
+        },
+        error: function (xhr, status, error) {
+            alert(error);
+        }
+    });
+
 }
 
 function displayLoginScreen() {
@@ -299,3 +335,5 @@ function clearLoginInfo() {
     document.getElementById("login_username").value = "";
     document.getElementById("login_password").value = "";
 }
+
+aloha();

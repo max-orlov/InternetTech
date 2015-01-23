@@ -11,6 +11,16 @@ hujiwebserver.start(8888, function (e, server) {
         var users = new Users();
         server.use('/app', hujiwebserver.static('/www/'));
 
+        server.get('/aloha', function(request, respone){
+            var user = users.getUserBySessionId(request.cookies['sessionId']);
+                respone.status(200).send(user ? data.list(user.id) : undefined);
+        });
+
+        server.get('/mahalo', function(request, response){
+            users.getUserBySessionId(request.cookies['sessionId']).session.sessionId = 0;
+            response.status(200).send(request.cookies['sessionId']);
+        });
+
         server.get('/item', function (request, response) {
             var user = users.getUserBySessionId(request.cookies['sessionId']);
             if (user) {

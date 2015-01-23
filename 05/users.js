@@ -103,7 +103,7 @@ Users.prototype.login = function (userObj) {
         //everything is good.
     } else {
         stat = {status: 0, msg: ""};
-        user.session = new Session(uuid.v1(), Date.now() + (60 * 60 * 24 * 30))
+        user.session = new Session(uuid.v1(), Date.now() + (60 * 60 * 24 * 30));
     }
     return stat;
 };
