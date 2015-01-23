@@ -94,10 +94,10 @@ function addTodo() {
         $.ajax( {
             url: '/item',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(newTodo),
+            data: newTodo,
             success: function (result, status, xhr) {
                 getList();
+
             },
             error: function (xhr, status, error) {
                 alert(error);
@@ -111,6 +111,10 @@ function populateList(todos){
     for (var i = 0; i <= todos.length - 1; i++) {
         injectTodo(todos[i])
     }
+}
+
+function managerClearAllButton(isNeeded){
+    document.getElementById('clear-completed').style.display = isNeeded ? 'block' : 'none';
 }
 
 function getList() {
@@ -182,6 +186,7 @@ function deleteTodo(todoId) {
         type: 'DELETE',
         data: {id: todoId},
         success: function (result, status, xhr) {
+            managerClearAllButton(result.isAnyNonActive);
             getList();
         },
         error: function (xhr, status, error) {
@@ -209,6 +214,7 @@ function completeTodo(todoId) {
         success: function (result, status, xhr) {
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
+            managerClearAllButton(result.isAnyNonActive);
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -251,6 +257,7 @@ function clearCompleted() {
         type: 'DELETE',
         data: {id : -1},
         success: function (result, status, xhr) {
+            managerClearAllButton(false);
             getList()
         },
         error: function (xhr, status, error) {
@@ -273,7 +280,7 @@ function injectTodo(todo) {
         +		'</div>'
         +	'</li>';
 
-    if (todo.status === completed) {
+    if (todo.status === completed.toString()) {
         completedStatus = 'completed';
         checkedStatus = 'checked';
     }
@@ -291,10 +298,7 @@ function logout() {
         url: '/mahalo',
         type: 'GET',
         success: function (result, status, xhr) {
-            if (result !== ''){
-                document.cookie = 'sessionId=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                displayLoginScreen();
-            }
+            displayLoginScreen();
         },
         error: function (xhr, status, error) {
             alert(error);

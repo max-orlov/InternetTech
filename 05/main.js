@@ -11,14 +11,27 @@ hujiwebserver.start(8888, function (e, server) {
         var users = new Users();
         server.use('/app', hujiwebserver.static('/www/'));
 
-        server.get('/aloha', function(request, respone){
+        server.get('/aloha', function(request, response){
             var user = users.getUserBySessionId(request.cookies['sessionId']);
-                respone.status(200).send(user ? data.list(user.id) : undefined);
+            response.status(200);
+            if (user){
+                response.json(data.list(user.id));
+            }
+            else{
+                response.send();
+            }
         });
 
-        server.get('/mahalo', function(request, response){
-            users.getUserBySessionId(request.cookies['sessionId']).session.sessionId = 0;
-            response.status(200).send(request.cookies['sessionId']);
+        server.get('/mahalo', function(request, response) {
+            if (request.cookies && request.cookies['sessionId']) {
+                var sessionId = users.getUserBySessionId(request.cookies['sessionId']).session.sessionId;
+                if (sessionId) {
+                    users.getUserBySessionId(request.cookies['sessionId']).session.expirationDate = Date.now() - 1;
+                    response.cookie('sessionId', sessionId, {expires: 0});
+                    response.status(200).send();
+                }
+            }
+
         });
 
         server.get('/item', function (request, response) {

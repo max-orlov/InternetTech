@@ -5,6 +5,7 @@ TODO ~ Check if the return value of all the function (outer main.js file) matche
 
 
 TODO ~ Show 'clear completed' button only when at least one todo is completed.
+- Done.
 
 TODO ~ Check toggle-all checkbox when all the todos are marked as completed (when we mark them one by one it doesn't happen).
 
