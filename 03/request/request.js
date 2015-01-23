@@ -48,13 +48,18 @@ Request.prototype.get = function (field) {
  */
 Request.prototype.param = function (name, defaultValue) {
     if(name) {
+
+        var params = generalFuncs.objKeysToLowerCase(this.params);
+        var body = this.body === undefined ? {} : generalFuncs.objKeysToLowerCase(this.body);
+        var query = generalFuncs.objKeysToLowerCase(this.query);
+
         name = name.toLowerCase();
-        if (name in generalFuncs.objKeysToLowerCase(this.params)) {
-            return  generalFuncs.objKeysToLowerCase(this.params)[name];
-        } else if (name in generalFuncs.objKeysToLowerCase(this.body)) {
-            return  generalFuncs.objKeysToLowerCase(this.body)[name];
-        } else if (name in generalFuncs.objKeysToLowerCase(this.query)) {
-            return generalFuncs.objKeysToLowerCase(this.query)[name];
+        if (params && name in params){
+            return params[name];
+        } else if (body && name in body) {
+            return body[name];
+        } else if (query &&name in query) {
+            return query[name];
         }
     }
     return defaultValue;

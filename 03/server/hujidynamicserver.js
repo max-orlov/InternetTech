@@ -58,14 +58,14 @@ var Hujidynamicserver = function (hujiEventEmitter) {
                     try {
                         handlers[index].handle(request, response, next);
                     } catch (e) {
-                        response.status(500).send('');
+                        response.status(500).send('Internal Server Error');
                     }
                     return;
                 }
             }
         }
         if (index === handlers.length) {
-            response.status(404).send("404 - Page Not Found");
+            response.status(404).send("The requested resource not found");
         }
     };
 

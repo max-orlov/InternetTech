@@ -4,6 +4,9 @@
  * @returns {{}} a copy of the object except that the new object keys are lower-case.
  */
 function objKeysToLowerCase(obj) {
+    if (obj === undefined) {
+        return undefined;
+    }
     var newObj = {};
     Object.keys(obj).forEach(function (key) {
         var k = key.toLowerCase();
