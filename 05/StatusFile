@@ -1,6 +1,8 @@
 TODO ~ When the user is already logged in, redirect him to the todoapp section.
+- Done.
 
 TODO ~ Check if the return value of all the function (outer main.js file) matches the exercise description (I guess there are few fixes to be done).
+
 
 TODO ~ Show 'clear completed' button only when at least one todo is completed.
 

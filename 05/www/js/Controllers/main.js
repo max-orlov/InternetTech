@@ -13,11 +13,8 @@ function aloha(){
         success: function (result, status, xhr) {
             if (result !== ''){
                 displayTodoScreen();
-                var todos = result;
-                todoList.innerHTML = "";
-                for (var i = 0; i <= todos.length - 1; i++) {
-                    injectTodo(todos[i])
-                }            }
+                populateList(result);
+            }
             else{
                 displayLoginScreen();
             }
@@ -109,16 +106,19 @@ function addTodo() {
     }
 }
 
+function populateList(todos){
+    todoList.innerHTML = "";
+    for (var i = 0; i <= todos.length - 1; i++) {
+        injectTodo(todos[i])
+    }
+}
+
 function getList() {
     $.ajax({
         url: '/item',
         type: 'GET',
         success: function (result, status, xhr) {
-            var todos = result;
-            todoList.innerHTML = "";
-            for (var i = 0; i <= todos.length - 1; i++) {
-                injectTodo(todos[i])
-            }
+            populateList(result);
         },
         error: function (xhr, status, error) {
             alert(error);
