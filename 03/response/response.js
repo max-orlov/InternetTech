@@ -79,7 +79,7 @@ Response.prototype.cookie = function (name, value, options) {
         }
         //if expires property isn't set, sets it to the first date.
         if (!(('expires') in optionsToLower)) {
-            optionsToLower['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
+            optionsToLower['expires'] = 'Thu, 01 Jan 1970 00:00:01 GMT';
         }
         if (typeof value === 'object') {
             value = JSON.stringify(value);
