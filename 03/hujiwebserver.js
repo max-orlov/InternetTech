@@ -43,4 +43,4 @@ exports.recordsHandler = function(){
 
 exports.myUse = function(){
     return requestCookieHandler();
-}
+};
