@@ -49,11 +49,14 @@ Request.prototype.param = function (name, defaultValue) {
     if(name) {
 
         var params = generalFuncs.objKeysToLowerCase(this.params);
+        var body = typeof this.body === 'object' ? generalFuncs.objKeysToLowerCase(this.body) : {};
         var query = generalFuncs.objKeysToLowerCase(this.query);
 
         name = name.toLowerCase();
-        if (params && name in params) {
+        if (params && name in params){
             return params[name];
+        } else if (body && name in body) {
+            return body[name];
         } else if (query &&name in query) {
             return query[name];
         }
