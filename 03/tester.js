@@ -34,8 +34,8 @@ function basicCookieTest(callback){
     options.headers['Cookie'] = 'name=tom; id=123';
     http.get(options, function (response) {
         response.on('data', function () {
-            if (response.statusCode === 200 && response.headers['set-cookie'][0].substr('name=tom') !== -1 &&
-            response.headers['set-cookie'][1].substr('id=123') !== -1) {
+            if (response.statusCode === 200 && response.headers['set-cookie'][0].substr('name=tom') != -1 &&
+            response.headers['set-cookie'][1].substr('id=123') != -1) {
                 console.log('basicCookieTest passed!!');
                 next(callback);
             } else {

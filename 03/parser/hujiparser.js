@@ -183,6 +183,9 @@ function validateHeaders(request) {
             throw new Error("HTTP version is v1.res and doesn't contain 'host' key");
         }
     }
+    if ('content-length' in request.headers) {
+        request.body = "";
+    }
     request.status = request.requestStatus.validatedHeaders;
 
 }
@@ -198,28 +201,14 @@ function parseBody(request) {
         var body = request.rawData.slice(request.parseIndex + 1,
             request.headersEnd + 1 + contentLength);
 
-        request.rawBody += body;
+        request.body += body;
         request.parseIndex += body.length;
-        if (request.rawBody.length >= contentLength) {
+        if (request.body.length >= contentLength) {
             request.status = request.requestStatus.done;
         }
     } else {
-        request.rawBody = "";
+        request.body = null;
         request.status =  request.requestStatus.done;
-    }
-
-    // If the body is of input type, parse it into
-    if(request.is(mimeTypes.getMimeType('json'))) {
-        if (request.rawBody.length > 0) {
-            body = JSON.parse(request.rawBody.replace("'",'"').trim());
-            if (typeof body === 'object') {
-                request.body = body;
-            } else {
-                throw new Error("invalid body structure");
-            }
-        }
-    } else if (request.is(mimeTypes.getMimeType('xform'))) {
-        request.body = queryParser.parseQuery(request.rawBody.trim());
     }
 
 }

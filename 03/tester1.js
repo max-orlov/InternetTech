@@ -110,7 +110,7 @@ hujiwebserver.start(PORT, function(err, server) {
 
 
     server.use('/request/test/is', function (req, res, next) {
-        var t = req.is(req.rawBody);
+        var t = req.is(req.body);
         t = ( t ) ? "true" : "false";
         res.status(200);
         res.send(t);

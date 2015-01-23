@@ -18,7 +18,6 @@ var Request = function() {
 
     this.rawData = "";
     this.rawHeaders = "";
-    this.rawBody = "";
     this.parseIndex = 0;
 
 };
@@ -50,14 +49,11 @@ Request.prototype.param = function (name, defaultValue) {
     if(name) {
 
         var params = generalFuncs.objKeysToLowerCase(this.params);
-        var body = this.body === undefined ? {} : generalFuncs.objKeysToLowerCase(this.body);
         var query = generalFuncs.objKeysToLowerCase(this.query);
 
         name = name.toLowerCase();
-        if (params && name in params){
+        if (params && name in params) {
             return params[name];
-        } else if (body && name in body) {
-            return body[name];
         } else if (query &&name in query) {
             return query[name];
         }
