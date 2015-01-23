@@ -49,7 +49,7 @@ Request.prototype.param = function (name, defaultValue) {
     if(name) {
 
         var params = generalFuncs.objKeysToLowerCase(this.params);
-        var body = typeof this.body === 'object' ? generalFuncs.objKeysToLowerCase(this.body) : {};
+        var body = this.body === undefined ? {} : generalFuncs.objKeysToLowerCase(this.body);
         var query = generalFuncs.objKeysToLowerCase(this.query);
 
         name = name.toLowerCase();
