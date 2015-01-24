@@ -159,7 +159,7 @@ function updateTodo(todoId) {
     var input = listTodo.querySelector('input.edit');
     var inputValue = input.value;
 
-    var todo = {id: todoId, title: inputValue};
+    var todo = {id: todoId, value: inputValue};
 
     $.ajax( {
         url: '/item',
