@@ -2,6 +2,7 @@ var hujiwebserver   = require('./hujiwebserver'),
     Data            = require('./Data'),
     Users           = require('./users');
 
+var myServer;
 
 var start = function() {
     hujiwebserver.start(8888, function (e, server) {
@@ -10,7 +11,7 @@ var start = function() {
         } else {
             var data = new Data();
             var users = new Users();
-
+            myServer = server;
             server.use('/app', hujiwebserver.static('/www/'));
 
             server.get('/aloha', function (request, response) {
@@ -138,8 +139,15 @@ var start = function() {
     });
 }
 
+function stop(){
+    myServer.stop();
+}
+
 //start();
 
-module.exports.startServer = start;
+module.exports = {
+    startServer: start,
+    stopServer: stop
+}
 
 

@@ -68,8 +68,10 @@ function next(subStr, callback) {
     console.log(subStr);
     if (callback !== undefined )
             callback();
-    else
+    else {
         console.log("You are done   -   Good Job!");
+        server.stopServer();
+    }
 
 
 
