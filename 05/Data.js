@@ -41,7 +41,7 @@ Value.prototype.list = function (owner) {
 Value.prototype.create = function (dataObj) {
     var newTodo = {
         id      : this.index++,
-        title   : dataObj.title,
+        value   : dataObj.value,
         status  : dataObj.status,
         owner   : dataObj.owner
     };
@@ -68,8 +68,8 @@ Value.prototype.update = function (dataObj, owner) {
             stat =  {status: 1, msg: "User cannot update other user's todo"};
             //everything is fine.
         } else {
-            if (dataObj.title !== undefined) {
-                this.todos[dataObj.id].title = dataObj.title;
+            if (dataObj.value !== undefined) {
+                this.todos[dataObj.id].value = dataObj.value;
             }
             if (dataObj.status !== undefined) {
                 this.tasksRemain += dataObj.status == "1" ? -1 : 1;

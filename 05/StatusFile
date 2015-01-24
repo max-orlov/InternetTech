@@ -13,11 +13,16 @@ TODO ~ Check if the return value of all the function (outer main.js file) matche
 TODO ~ Show the number of completed todos (near 'clear completed' button) - see the how the original app acts.
 - Done.
 
-TODO ~ the change the data into value in the 'Value.js', both in the client side and in the 'Value.js'
+TODO ~ the change the data into value in the 'Data.js', both in the client side and in the 'Data.js'
 - Done.
 
 TODO ~ BONUS - Run the app on top of express js instead of on top of our Ex4 (I added a folder named express containing the express module files).
 
+TODO :: TESTING:
+
+        TODO ~ Write some tests for all the HTTP APIs (test.js).
+
+        TODO ~ Write description of the tests (tester.txt).
 
 TODO :: ONLY COSMETICS:
 
@@ -26,10 +31,6 @@ TODO :: ONLY COSMETICS:
         TODO ~ When we are done, delete unnecessary files, and reorganize the www subtree.
 
         TODO ~ Write personal.txt file.
-
-        TODO ~ Write some tests for all the HTTP APIs (test.js).
-
-        TODO ~ Write description of the tests (tester.txt).
 
         TODO ~ Maybe change errors from alert into an html span/label tag.
         -

@@ -88,7 +88,7 @@ function addTodo() {
     //add the new todo only if it's not empty
     if (todo.value.trim() !== '') {
         var newTodo = {
-            title: todo.value.trim(),
+            value: todo.value.trim(),
             status: active
         };
         todo.value = '';
@@ -294,7 +294,7 @@ function injectTodo(todo) {
         =	'<li data-id="{{id}}" class="{{completed}}">'
         +		'<div class="view">'
         +			'<input class="toggle" onclick="completeTodo(' + "{{id}}" + ')" type="checkbox" {{checked}}>'
-        +			'<label ondblclick="editTodo(' + "{{id}}" + ')">{{title}}</label>'
+        +			'<label ondblclick="editTodo(' + "{{id}}" + ')">{{value}}</label>'
         +			'<button class="destroy" onclick="deleteTodo(' + "{{id}}" + ')"></button>'
         +		'</div>'
         +	'</li>';
@@ -305,7 +305,7 @@ function injectTodo(todo) {
     }
 
     newTodo = newTodo.replace(/\{\{id}}/g, todo.id);
-    newTodo = newTodo.replace('{{title}}', todo.title);
+    newTodo = newTodo.replace('{{value}}', todo.value);
     newTodo = newTodo.replace('{{completed}}', completedStatus);
     newTodo = newTodo.replace('{{checked}}', checkedStatus);
 
