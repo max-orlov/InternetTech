@@ -1,5 +1,4 @@
 var serverSettings  = require('./../settings/settings'),
-    mimeTypes       = require('./../settings/mimeTypes'),
     queryParser     = require('./queryparser');
 
 /**

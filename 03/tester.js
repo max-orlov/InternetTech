@@ -1,6 +1,5 @@
 var http            = require('http'),
     net             = require('net'),
-    serverSetting   = require('./settings/settings'),
     hujiwebserver   = require('./hujiwebserver');
 
 var lport           = 8888;
