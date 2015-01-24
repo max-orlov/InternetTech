@@ -30,7 +30,6 @@ function parse(requestStr, request) {
 
     } catch (e) {
         request.status = request.requestStatus.errorParsing;
-        request.messageError = e.message + serverSettings.CRLF;
     }
 }
 
@@ -196,7 +195,7 @@ function validateHeaders(request) {
  * @param request HTTP request object.
  */
 function parseBody(request) {
-    if ('content-length' in request.headers) {
+    if ('content-length' in request.headers && request.headers['content-length'].length > 0) {
         var contentLength = parseInt(request.headers['content-length']);
         var body = request.rawData.slice(request.parseIndex + 1,
             request.headersEnd + 1 + contentLength);
