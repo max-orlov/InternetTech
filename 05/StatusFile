@@ -13,7 +13,7 @@ TODO ~ Check if the return value of all the function (outer main.js file) matche
 TODO ~ Show the number of completed todos (near 'clear completed' button) - see the how the original app acts.
 - Done.
 
-TODO ~ the change the data into value in the 'data1.js', both in the client side and in the 'data1.js'
+TODO ~ the change the data into value in the 'data.js', both in the client side and in the 'data.js'
 - Done.
 
 TODO ~ BONUS - Run the app on top of express js instead of on top of our Ex4 (I added a folder named express containing the express module files).
