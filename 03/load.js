@@ -6,6 +6,11 @@ var serverSettings  = require("./settings/settings"),
 var lPort               = 8888,
     numberOfRequests    = 1000;
 
+/**
+ * creates the actual http request and sends it to the server, upon response from the server a feedback message
+ * is returned.
+ * @param requestNumber specified the number of request (mainly for monitoring reasons).
+ */
 function test(requestNumber) {
     var request;
     var conn;
@@ -25,15 +30,19 @@ function test(requestNumber) {
 }
 
 
-
-function load() {
+/**
+ *  This function starts up the server, and upon success creates the specified number of requests to
+ *  Simulate a load condition.
+ * @param numOfRequests the number of requests to be loaded up.
+ */
+function load(numOfRequests) {
 
     hujiwebserver.start(lPort, function (e, server) {
         if (e) {
             console.log(e);
         } else {
             server.use('/', hujiwebserver.static('/tests'));
-            for (var i = 0; i < numberOfRequests; i++) {
+            for (var i = 0; i < numOfRequests; i++) {
                 test(i);
             }
 
@@ -46,4 +55,4 @@ function load() {
 }
 
 
-load();
+load(numberOfRequests);
