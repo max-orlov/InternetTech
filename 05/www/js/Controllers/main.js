@@ -219,7 +219,7 @@ function completeTodo(todoId) {
         return;
     }
 
-    var title = listTodo.getElementsByTagName('label')[0].firstChild.data;
+    var value = listTodo.getElementsByTagName('label')[0].firstChild.data;
     var oldStatus = listTodo.className;
     var newStatus = oldStatus === '' ? 'completed' : '';
 
@@ -229,7 +229,7 @@ function completeTodo(todoId) {
     $.ajax({
         url: '/item',
         type: 'PUT',
-        data: {id: todoId, title: title, status: todoStatus},
+        data: {id: todoId, value: value, status: todoStatus},
         success: function (result, status, xhr) {
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
