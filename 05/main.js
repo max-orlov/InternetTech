@@ -1,5 +1,5 @@
 var hujiwebserver   = require('./hujiwebserver'),
-    Data            = require('./Data'),
+    Data            = require('./data'),
     Users           = require('./users');
 
 var myServer;
