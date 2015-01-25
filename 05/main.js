@@ -1,6 +1,7 @@
-var hujiwebserver   = require('./hujiwebserver'),
-    Data            = require('./data'),
-    Users           = require('./users');
+var hujiwebserver       = require('./hujiwebserver'),
+    Data                = require('./data'),
+    Users               = require('./users'),
+    RequestBodyHandler  = require('./handlers/requestBodyHandler');
 
 var myServer;
 
@@ -13,6 +14,8 @@ var start = function() {
             var users = new Users();
             myServer = server;
             server.use('/app', hujiwebserver.static('/www/'));
+
+            server.use('/', RequestBodyHandler());
 
             server.get('/aloha', function (request, response) {
                 var user = users.getUserBySessionId(request.cookies['sessionId']);
@@ -143,7 +146,7 @@ function stop(){
     myServer.stop();
 }
 
-//start();
+start();
 
 module.exports = {
     startServer: start,
