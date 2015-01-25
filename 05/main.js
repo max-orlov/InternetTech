@@ -13,9 +13,10 @@ var start = function() {
             var data = new Data();
             var users = new Users();
             myServer = server;
-            server.use('/app', hujiwebserver.static('/www/'));
 
             server.use('/', RequestBodyHandler());
+
+            server.use('/app', hujiwebserver.static('/www/'));
 
             server.get('/aloha', function (request, response) {
                 var user = users.getUserBySessionId(request.cookies['sessionId']);
