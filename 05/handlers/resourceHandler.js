@@ -29,21 +29,20 @@ ResourceHandler.prototype.handle = function(req, res, next) {
  * @returns {RegExp} the regex representation of the resource.
  */
 ResourceHandler.prototype.regex = function (path) {
-    var parts = path.split('/');
-    var str= '^';
-    for (var i = 0; i < parts.length; i++) {
-        if (parts[i] === '') {
-            continue;
-        }
-        str += '\/';
-        if (parts[i].match(/:/g)) {
-            str += '(?:([^\/]+?))';
-        } else {
-            str += parts[i];
+    var pathParts = path.split('/');
+    var regexStr = '^';
+    for (var i = 0; i < pathParts.length; i++) {
+        if (pathParts[i] !== '') {
+            regexStr += '\/';
+            if (pathParts[i].match(/:/g)) {
+                regexStr += '(?:([^\/]+?))';
+            } else {
+                regexStr += pathParts[i];
+            }
         }
     }
-    str += '\/?';
-    return new RegExp(str, 'i');
+    regexStr += '($|\/)';
+    return new RegExp(regexStr, 'i');
 };
 
 

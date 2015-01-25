@@ -1,6 +1,6 @@
-var path = require('path'),
-    fs = require('fs'),
-    serverSettings = require('./../settings/settings');
+var path            = require('path'),
+    fs              = require('fs'),
+    serverSettings  = require('./../settings/settings');
 
 /**
  * A built-in record handler for JSON queries

@@ -1,7 +1,7 @@
 var uuid = require('uuid');
 
 
-var Value = function () {
+var Data = function () {
     this.tasksRemain = 0;
     this.index = 0;
     this.todos = {
@@ -12,7 +12,7 @@ var Value = function () {
             }
             return size - 1;
         }
-    };
+    }; //TODO:: maybe change to Object.keys(this).length
 
 };
 
@@ -22,7 +22,7 @@ var Value = function () {
  * @param owner user id.
  * @returns {Array} array containing all the todos of the given user.
  */
-Value.prototype.list = function (owner) {
+Data.prototype.list = function (owner) {
     var todoList = [];
     for (var id in this.todos) {
         //pushes the todos of the specific owner.
@@ -38,7 +38,7 @@ Value.prototype.list = function (owner) {
  * @param dataObj object containing the todo properties.
  * @returns {{status: number}} object containing the process status (0 for success, 1 for failure).
  */
-Value.prototype.create = function (dataObj) {
+Data.prototype.create = function (dataObj) {
     var newTodo = {
         id      : this.index++,
         value   : dataObj.value,
@@ -56,7 +56,7 @@ Value.prototype.create = function (dataObj) {
  * @param owner the requesting owner of the todo (used for validation).
  * @returns {{}} object containing the process status (0 for success, 1 for failure).
  */
-Value.prototype.update = function (dataObj, owner) {
+Data.prototype.update = function (dataObj, owner) {
     var stat = {};
     //the given todo doesn't exists.
     if (!(dataObj.id in this.todos)) {
@@ -88,7 +88,7 @@ Value.prototype.update = function (dataObj, owner) {
  * @param owner the requesting owner of the todo
  * @returns {*} object containing the process status (0 for success, 1 for failure).
  */
-Value.prototype.delete = function (todoId, owner) {
+Data.prototype.delete = function (todoId, owner) {
     //in case todoId === -1 deletes all the todos of thisUser
     if (todoId == -1) {
         this.deleteAllCompleted(owner);
@@ -113,7 +113,7 @@ Value.prototype.delete = function (todoId, owner) {
  * Deletes all the completed todos of a given user
  * @param owner the user id.
  */
-Value.prototype.deleteAllCompleted = function (owner) {
+Data.prototype.deleteAllCompleted = function (owner) {
     for (var id in this.todos) {
         if (this.todos.hasOwnProperty(id) && this.todos[id].status == 1 && this.todos[id].owner === owner) {
             delete this.todos[id];
@@ -123,4 +123,4 @@ Value.prototype.deleteAllCompleted = function (owner) {
 
 
 
-module.exports = Value;
+module.exports = Data;

@@ -18,7 +18,6 @@ var Request = function() {
 
     this.rawData = "";
     this.rawHeaders = "";
-    this.rawBody = "";
     this.parseIndex = 0;
 
 };
@@ -48,13 +47,15 @@ Request.prototype.get = function (field) {
  */
 Request.prototype.param = function (name, defaultValue) {
     if(name) {
+
+        var params = generalFuncs.objKeysToLowerCase(this.params);
+        var query = generalFuncs.objKeysToLowerCase(this.query);
+
         name = name.toLowerCase();
-        if (name in generalFuncs.objKeysToLowerCase(this.params)) {
-            return  generalFuncs.objKeysToLowerCase(this.params)[name];
-        } else if (name in generalFuncs.objKeysToLowerCase(this.body)) {
-            return  generalFuncs.objKeysToLowerCase(this.body)[name];
-        } else if (name in generalFuncs.objKeysToLowerCase(this.query)) {
-            return generalFuncs.objKeysToLowerCase(this.query)[name];
+        if (params && name in params){
+            return params[name];
+        } else if (query &&name in query) {
+            return query[name];
         }
     }
     return defaultValue;

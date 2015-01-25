@@ -8,11 +8,12 @@ function RequestCookieHandler() {
         var cookies = request.cookies;
         if (cookies !== undefined) {
             for (var cookieHeader in cookies){
+                if (cookies.hasOwnProperty(cookieHeader))
                 response.cookie(cookieHeader, cookies[cookieHeader]);
             }
         }
         return next();
-    }
+    };
 
     /**
      * Describes the usage of the handler
@@ -22,7 +23,7 @@ function RequestCookieHandler() {
             return  "This handler enables us to keep the cookies fresh. That is, if a cookie arrives from the server " +
                     "It is automatically copied to the response from the server to the browser.\n" +
                     "It is used to make the login (and staying) easier";
-    }
+    };
 
     return funcToReturn;
 }

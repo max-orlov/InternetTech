@@ -137,7 +137,7 @@ var start = function() {
 
         }
     });
-}
+};
 
 function stop(){
     myServer.stop();
@@ -148,6 +148,6 @@ function stop(){
 module.exports = {
     startServer: start,
     stopServer: stop
-}
+};
 
 
