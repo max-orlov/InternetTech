@@ -22,6 +22,8 @@ var httpApi={
  * @param path the path required
  * @param method the method of the request
  * @param connection the connection of the request
+ * @param contentLength the content length
+ * @param contentType the content type
  * @returns {{host: *, port: *, path: *, method: *, headers: {Connection: *}}}
  */
 function generateOptions(host, port, path, method, connection, contentLength, contentType, cookie) {
@@ -46,7 +48,7 @@ var user = {
 var todo = {
     value: 'todoTest',
     status: 0
-}
+};
 /**
  * Creates a test sequence by creating a callback chain.
  * @param funcs the functions to chain together.
@@ -62,6 +64,7 @@ function testSequence(funcs) {
 
 /**
  * Calls for the next test to be run
+ * @param subStr string to print
  * @param callback the next function to run.
  */
 function next(subStr, callback) {
@@ -72,9 +75,6 @@ function next(subStr, callback) {
         console.log("You are done   -   Good Job!");
         server.stopServer();
     }
-
-
-
 }
 
 function nonExistingUserLoginTest(callback){
@@ -102,7 +102,7 @@ function registerNewUserInvalidPasswordValidationTest(callback){
     var options = generateOptions(httpApi.url, httpApi.lport, '/register', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
-    var req = http.request(options, function (response) {
+    http.request(options, function (response) {
         response.on('data', function (chunk) {
             buff += chunk;
         });
@@ -138,16 +138,16 @@ function registerNewUserTest(callback){
 }
 
 function loginInvalidPasswordTest(callback){
-    var mockUser={
+    var mockUser = {
         username: user.username,
         password: 'a'
-    }
+    };
     var cred = JSON.stringify(mockUser);
     var options = generateOptions(httpApi.url, httpApi.lport, '/login', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var bodySize = 0;
     var buff = '';
 
-    var req = http.request(options, function (response) {
+    http.request(options, function (response) {
         response.on('data', function (chunk) {
             bodySize += chunk.length;
             buff += chunk;
@@ -169,7 +169,7 @@ function loginTest(callback){
     var bodySize = 0;
     var buff = '';
 
-    var req = http.request(options, function (response) {
+    http.request(options, function (response) {
         response.on('data', function (chunk) {
             bodySize += chunk.length;
             buff += chunk;
@@ -230,7 +230,7 @@ function updateExistingToDoTest(callback){
     var updateToDo={
         id: todo.id,
         value: todo.value + '!'
-    }
+    };
     var updateToDoStr = JSON.stringify(updateToDo);
 
     var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
@@ -248,7 +248,7 @@ function updateExistingToDoTest(callback){
                 var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0);
                 listOpt.headers.cookie = httpApi.cookie;
 
-                var listBuff = ''
+                var listBuff = '';
                 http.request(listOpt, function (response) {
                     response.on('data', function (listChunk) {
                         listBuff += listChunk;
@@ -276,7 +276,7 @@ function updateNonExistingToDoTest(callback){
     var updateToDo={
         id: 1,
         value: todo.value + '!'
-    }
+    };
     var updateToDoStr = JSON.stringify(updateToDo);
 
     var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
@@ -300,9 +300,9 @@ function updateNonExistingToDoTest(callback){
 }
 
 function deleteToDoTest(callback) {
-    var updateToDo={
+    var updateToDo = {
         id: todo.id
-    }
+    };
     var updateToDoStr = JSON.stringify(updateToDo);
 
     var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
@@ -343,9 +343,9 @@ function deleteToDoTest(callback) {
 }
 
 function deleteNotExistingToDoTest(callback){
-    var updateToDo={
+    var updateToDo = {
         id: 1
-    }
+    };
     var updateToDoStr = JSON.stringify(updateToDo);
 
     var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));

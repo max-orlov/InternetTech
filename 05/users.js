@@ -1,5 +1,5 @@
 var Session = require('./session'),
-    uuid = require('uuid');
+    uuid    = require('uuid');
 
 var Users = function () {
     this.numberOfUsers = 0;
@@ -81,9 +81,7 @@ Users.prototype.validateUser = function (user) {
     } else {
         stat = {status: 0};
     }
-
     return stat;
-
 };
 
 /**
@@ -107,8 +105,6 @@ Users.prototype.login = function (userObj) {
     }
     return stat;
 };
-
-
 
 module.exports = Users;
 

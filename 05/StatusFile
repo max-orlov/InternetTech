@@ -16,8 +16,6 @@ TODO ~ Show the number of completed todos (near 'clear completed' button) - see 
 TODO ~ the change the data into value in the 'data.js', both in the client side and in the 'data.js'
 - Done.
 
-TODO ~ BONUS - Run the app on top of express js instead of on top of our Ex4 (I added a folder named express containing the express module files).
-
 TODO :: TESTING:
 
         TODO ~ Write some tests for all the HTTP APIs (test.js).

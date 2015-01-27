@@ -1,5 +1,3 @@
-var uuid = require('uuid');
-
 
 var Data = function () {
     this.tasksRemain = 0;
@@ -12,8 +10,7 @@ var Data = function () {
             }
             return size - 1;
         }
-    }; //TODO:: maybe change to Object.keys(this).length
-
+    };
 };
 
 
@@ -120,7 +117,6 @@ Data.prototype.deleteAllCompleted = function (owner) {
         }
     }
 };
-
 
 
 module.exports = Data;
