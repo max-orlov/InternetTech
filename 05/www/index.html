@@ -15,7 +15,8 @@
     <input type="password" class="box" id="register_password" placeholder="Password"> <br>
     <input type="password" class="box" id="register_password_validation" placeholder="Password Validation"> <br>
     <input type="button" id="register_submit" onclick="register()" value="Register">
-    <a href="#" id="go_to_login_link" onclick="displayLoginScreen()">Already a Member? Login</a>
+    <a href="#" id="go_to_login_link" onclick="clearRegistrationInfo(); displayLoginScreen();">Already a Member? Login</a>
+    <span id="register_error_message"></span>
 </section>
 
 <section id="login">
@@ -23,7 +24,8 @@
     <input type="text" id="login_username" placeholder="Username" autofocus>
     <input type="password" id="login_password" placeholder="Password">
     <input type="button" id="login_submit" onclick="login()" value="Login">
-    <a href="#" id="go_to_register_link" onclick="displayRegisterScreen()">Not a Member? Register</a>
+    <a href="#" id="go_to_register_link" onclick="clearLoginInfo(); displayRegisterScreen();">Not a Member? Register</a>
+    <span id="login_error_message"></span>
 </section>
 
 <section id="todoapp">

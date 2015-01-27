@@ -27,13 +27,19 @@ TODO :: ONLY COSMETICS:
         TODO ~ Clean and document code of both main.js files.
 
         TODO ~ When we are done, delete unnecessary files, and reorganize the www subtree.
-        - Done
+        - Done.
 
         TODO ~ Write personal.txt file.
 
         TODO ~ Maybe change errors from alert into an html span/label tag.
-        -
+        - Done.
         TODO ~ Maybe change the location of the logout button (probably should be in other html zone).
         - that to touch, the location was set by the stupid css.
 
+        TODO ~ if the status value is 400, show the login screen (on get, post, put, delete etc.)
+        - Done.
 
+        TODO ~ change the login to 'GET' method.
+        - Done.
+
+        TODO ~ check why there is delay after error.

@@ -127,11 +127,11 @@ var start = function() {
                 response.status(responseStatus).json(stat);
             });
 
-            server.post('/login', function (request, response) {
-                var stat = users.login(request.body);
+            server.get('/login', function (request, response) {
+                var stat = users.login(request.query);
                 var responseStatus = stat.status === 0 ? 200 : 500;
                 if (responseStatus === 200) {
-                    var sessionId = users.getUserByUsername(request.body.username).session.sessionId;
+                    var sessionId = users.getUserByUsername(request.query.username).session.sessionId;
                     response.cookie('sessionId', sessionId, {expires: Date.now() + (60 * 60 * 24 * 30)});
                 } else if (responseStatus === 500) {
                     response.statusText = stat.msg;

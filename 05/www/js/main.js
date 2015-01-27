@@ -1,9 +1,11 @@
-var loginScreen = document.getElementById('login'),
-    registerScreen = document.getElementById('register'),
-    todoScreen = document.getElementById('todoapp'),
-    todoList = document.getElementById('todo-list'),
-    active = 0,
-    completed = 1;
+var loginScreen             = document.getElementById('login'),
+    registerScreen          = document.getElementById('register'),
+    todoScreen              = document.getElementById('todoapp'),
+    todoList                = document.getElementById('todo-list'),
+    registerErrorMessage    = document.getElementById('register_error_message'),
+    loginErrorMessage       = document.getElementById('login_error_message'),
+    active                  = 0,
+    completed               = 1;
 
 
 function aloha(){
@@ -14,9 +16,10 @@ function aloha(){
             if (result !== ''){
                 displayTodoScreen();
                 populateList(result.list);
-                updateEnviroment(result.listSize);
+                updateEnvironment(result.listSize);
             }
             else{
+                clearLoginInfo();
                 displayLoginScreen();
             }
         },
@@ -39,15 +42,15 @@ function login() {
     };
     $.ajax( {
         url: '/login',
-        type: 'POST',
+        type: 'GET',
         data: user,
         success: function (result, status, xhr) {
+            getList();
             clearLoginInfo();
             displayTodoScreen();
-            getList();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            loginErrorMessage.innerHTML = error;
         }
     });
 }
@@ -71,11 +74,12 @@ function register() {
         type: 'POST',
         data: user,
         success: function (result, status, xhr) {
+            getList();
             clearRegistrationInfo();
             displayTodoScreen();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            registerErrorMessage.innerHTML = error;
         }
     });
 }
@@ -101,14 +105,19 @@ function addTodo() {
 
             },
             error: function (xhr, status, error) {
-                alert(error);
+                if (xhr.status == 400) {
+                    loginErrorMessage.innerHTML = error;
+                    displayLoginScreen();
+                } else {
+                    alert(error);
+                }
             }
         });
     }
 }
 
 
-function updateEnviroment(tasksRemain, totalListSize){
+function updateEnvironment(tasksRemain, totalListSize){
     $.ajax({
         url: '/env',
         type: 'GET',
@@ -117,7 +126,6 @@ function updateEnviroment(tasksRemain, totalListSize){
             document.getElementById('clear-completed').style.display = tasksDone > 0 ? 'block' : 'none';
             document.getElementById('todo-count').innerHTML = result.totalListSize > 0 ? result.totalListSize : '';
             document.getElementById('toggle-all').checked = (result.tasksRemain === 0 && result.totalListSize > 0);
-
         },
         error: function (xhr, status, error) {
             alert(error);
@@ -126,6 +134,10 @@ function updateEnviroment(tasksRemain, totalListSize){
 
 }
 
+/**
+ * Populates the todos in the todos-list.
+ * @param todos todos to populate.
+ */
 function populateList(todos){
     todoList.innerHTML = "";
     for (var i = 0; i <= todos.length - 1; i++) {
@@ -134,21 +146,32 @@ function populateList(todos){
 }
 
 
-
+/**
+ * Get all the items of the current user.
+ */
 function getList() {
     $.ajax({
         url: '/item',
         type: 'GET',
         success: function (result, status, xhr) {
             populateList(result);
-            updateEnviroment();
+            updateEnvironment();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 }
 
+/**
+ * Updates the todo body inside the database.
+ * @param todoId the id of the todo to update.
+ */
 function updateTodo(todoId) {
     var listTodo = document.querySelector('[data-id="' + todoId + '"]');
 
@@ -169,15 +192,24 @@ function updateTodo(todoId) {
             listTodo.removeChild(input);
             listTodo.className = listTodo.className.replace('editing', '');
             listTodo.getElementsByTagName('label')[0].firstChild.data = inputValue;
-            updateEnviroment();
+            updateEnvironment();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 
 }
 
+/**
+ * Edit the body of a given todo.
+ * @param todoId the id of the todo to edit.
+ */
 function editTodo(todoId) {
     var listTodo = document.querySelector('[data-id="' + todoId + '"]');
 
@@ -199,6 +231,10 @@ function editTodo(todoId) {
 
 }
 
+/**
+ * Delete a given todo from the database.
+ * @param todoId the id of the todo to delete.
+ */
 function deleteTodo(todoId) {
     $.ajax({
         url: '/item',
@@ -208,11 +244,20 @@ function deleteTodo(todoId) {
             getList();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 }
 
+/**
+ * Updates the status of a given todo to completed.
+ * @param todoId the id of the todo to update.
+ */
 function completeTodo(todoId) {
     var listTodo = document.querySelector('[data-id="' + todoId + '"]');
     if (!listTodo) {
@@ -233,10 +278,15 @@ function completeTodo(todoId) {
         success: function (result, status, xhr) {
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
-            updateEnviroment(result.tasksRemain, result.totalListSize);
+            updateEnvironment(result.tasksRemain, result.totalListSize);
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 }
@@ -263,14 +313,22 @@ function completeAll() {
                     }
                 }
             }
-            updateEnviroment();
+            updateEnvironment();
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 }
 
+/**
+ * Deleted all the completed todos from the db.
+ */
 function clearCompleted() {
     $.ajax({
         url: '/item',
@@ -280,13 +338,21 @@ function clearCompleted() {
             getList()
         },
         error: function (xhr, status, error) {
-            alert(error);
+            if (xhr.status == 400) {
+                loginErrorMessage.innerHTML = error;
+                displayLoginScreen();
+            } else {
+                alert(error);
+            }
         }
     });
 }
 
 
-
+/**
+ * Insert a new todo into the todo list.
+ * @param todo the new todo to insert.
+ */
 function injectTodo(todo) {
     var completedStatus = '';
     var checkedStatus = '';
@@ -312,11 +378,15 @@ function injectTodo(todo) {
     todoList.innerHTML += newTodo;
 }
 
+/**
+ * Performs logout.
+ */
 function logout() {
     $.ajax( {
         url: '/mahalo',
         type: 'GET',
         success: function (result, status, xhr) {
+            clearLoginInfo();
             displayLoginScreen();
         },
         error: function (xhr, status, error) {
@@ -326,6 +396,9 @@ function logout() {
 
 }
 
+/**
+ * Displays the login screen.
+ */
 function displayLoginScreen() {
     loginScreen.style.display = 'block';
     registerScreen.style.display = 'none';
@@ -333,6 +406,9 @@ function displayLoginScreen() {
     document.getElementById("login_username").focus();
 }
 
+/**
+ * Display the registration screen.
+ */
 function displayRegisterScreen() {
     loginScreen.style.display = 'none';
     registerScreen.style.display = 'block';
@@ -340,6 +416,9 @@ function displayRegisterScreen() {
     document.getElementById("register_fullname").focus();
 }
 
+/**
+ * Display the todo screen.
+ */
 function displayTodoScreen() {
     loginScreen.style.display = 'none';
     registerScreen.style.display = 'none';
@@ -347,14 +426,22 @@ function displayTodoScreen() {
     document.getElementById("new-todo").focus();
 }
 
+/**
+ * Clears the registration information.
+ */
 function clearRegistrationInfo() {
+    registerErrorMessage.innerHTML = '';
     document.getElementById("register_fullname").value = "";
     document.getElementById("register_username").value = "";
     document.getElementById("register_password").value = "";
     document.getElementById("register_password_validation").value = "";
 }
 
+/**
+ * Clears the login information.
+ */
 function clearLoginInfo() {
+    loginErrorMessage.innerHTML = '';
     document.getElementById("login_username").value = "";
     document.getElementById("login_password").value = "";
 }
