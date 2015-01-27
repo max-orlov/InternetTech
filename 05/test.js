@@ -6,7 +6,6 @@ var http            = require('http'),
 
 // Starting up server
 server.startServer();
-var myServer;
 
 
 var httpApi={
@@ -26,15 +25,17 @@ var httpApi={
  * @param contentType the content type
  * @returns {{host: *, port: *, path: *, method: *, headers: {Connection: *}}}
  */
-function generateOptions(host, port, path, method, connection, contentLength, contentType, cookie) {
+function generateOptions(host, port, path, method, connection, contentLength, contentType) {
     return {
         host: host,
         port: port,
         path: path,
         method: method,
-        headers : {Connection: connection,
+        headers : {
+            Connection: connection,
             'content-length': contentLength,
-            'content-type': contentType}
+            'content-type': contentType
+        }
     }
 }
 
@@ -79,7 +80,7 @@ function next(subStr, callback) {
 
 function nonExistingUserLoginTest(callback){
     var cred = JSON.stringify(user);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/login', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/login', 'GET', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -187,7 +188,7 @@ function loginTest(callback){
 
 function addToDoTest(callback){
     var newToDo = JSON.stringify(todo);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'POST', 'close', newToDo.length, mimeType.getMimeType('json'), httpApi.cookie);
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'POST', 'close', newToDo.length, mimeType.getMimeType('json'));
     var buff = '';
     options.headers.cookie = httpApi.cookie;
 
@@ -206,7 +207,7 @@ function addToDoTest(callback){
 }
 
 function getListTest(callback){
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0);
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0, mimeType.getMimeType('json'));
     options.headers.cookie = httpApi.cookie;
     var buff = '';
 
@@ -245,7 +246,7 @@ function updateExistingToDoTest(callback){
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0);
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0, mimeType.getMimeType('json'));
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';
@@ -317,7 +318,7 @@ function deleteToDoTest(callback) {
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0);
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', 'GET', 'close', 0, mimeType.getMimeType('json'));
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';

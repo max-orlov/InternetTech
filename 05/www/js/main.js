@@ -16,7 +16,7 @@ function aloha(){
             if (result !== ''){
                 displayTodoScreen();
                 populateList(result.list);
-                updateEnvironment(result.listSize);
+                updateEnvironment();
             }
             else{
                 clearLoginInfo();
@@ -47,6 +47,7 @@ function login() {
         success: function (result, status, xhr) {
             getList();
             clearLoginInfo();
+            updateEnvironment();
             displayTodoScreen();
         },
         error: function (xhr, status, error) {
@@ -74,8 +75,9 @@ function register() {
         type: 'POST',
         data: user,
         success: function (result, status, xhr) {
-            getList();
+            todoList.innerHTML = '';
             clearRegistrationInfo();
+            updateEnvironment();
             displayTodoScreen();
         },
         error: function (xhr, status, error) {
@@ -117,7 +119,7 @@ function addTodo() {
 }
 
 
-function updateEnvironment(tasksRemain, totalListSize){
+function updateEnvironment(){
     $.ajax({
         url: '/env',
         type: 'GET',
@@ -278,7 +280,7 @@ function completeTodo(todoId) {
         success: function (result, status, xhr) {
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
-            updateEnvironment(result.tasksRemain, result.totalListSize);
+            updateEnvironment();
         },
         error: function (xhr, status, error) {
             if (xhr.status == 400) {
