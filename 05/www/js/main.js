@@ -7,7 +7,9 @@ var loginScreen             = document.getElementById('login'),
     active                  = 0,
     completed               = 1;
 
-
+/**
+ * Initialized the first contact of the user with the server - checking for cookies etc...
+ */
 function aloha(){
     $.ajax( {
         url: '/aloha',
@@ -31,7 +33,7 @@ function aloha(){
 
 
 /**
- * Performs user login.
+ * Performs jsonUser login.
  */
 function login() {
     var username = document.getElementById('login_username');
@@ -57,7 +59,7 @@ function login() {
 }
 
 /**
- * Performs user registration.
+ * Performs jsonUser registration.
  */
 function register() {
     var fullname = document.getElementById('register_fullname');
@@ -118,7 +120,10 @@ function addTodo() {
     }
 }
 
-
+/**
+ * A function which updates the environment object, such as the todo counter, clear done button, and select
+ * all button.
+ */
 function updateEnvironment(){
     $.ajax({
         url: '/env',
@@ -149,7 +154,7 @@ function populateList(todos){
 
 
 /**
- * Get all the items of the current user.
+ * Get all the items of the current jsonUser.
  */
 function getList() {
     $.ajax({
@@ -293,6 +298,9 @@ function completeTodo(todoId) {
     });
 }
 
+/**
+ * A function which checks all the task as completed.
+ */
 function completeAll() {
     $.ajax({
         url: '/item',
