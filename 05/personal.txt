@@ -5,7 +5,13 @@ Q3. General comments about the course.
 
 Answers
 A1.
-
+    The hardest part of this ex was understanding the relationship between any ajax request and the dynamic
+    web server. Another thing which was kinda hard to figure out is the querySelector used to find
+    the specific to do and use its attributes.
 A2.
-
+    Actually once we figured out the entire ajax-webServer communication, the rest (in regards to the functionality)
+    was kind of no brainer.
 A3.
+    The Exs help greatly in understanding the principles of the topic covered in the course. It really does feel
+    that this technologies we learned cover a great amount of the technologies currently used in web development.
+    Furthermore, a quick into to the html5 and the es6 left us hungry for more.
