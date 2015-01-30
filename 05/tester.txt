@@ -1,0 +1,68 @@
+Ex5 testing
+
+Just as we've done in the 4 ex, we've made ac couple of suites which differ in the types of requests we tested;
+
+jsonSuite:      This suite tests mainly json body-type requests. In addition we test here the login and getList
+                api (which is GET type requests, so the type of the content is irrelevant).
+
+    Login tests:
+        loginInvalidPasswordTest                                :       Tests trying to login with an existing user
+                                                                        but with the wrong password.
+        loginTest                                               :       Tests trying to login with valid credentials.
+        nonExistingUserLoginTest                                :       Tests trying to login with a non existing user.
+
+    Getting the list:
+        getListTest                                             :       Testing retrieving the list of todo for
+                                                                        current user.
+
+    Registration json content-type test:
+        registerNewUserInvalidPasswordValidationJsonTest        :       Tests registering a new user while the
+                                                                        password validation field does not match the
+                                                                        password field.
+
+        registerNewUserInvalidFullNameJsonTest                  :       Tests registering a new user without
+                                                                        full name field remains empty.
+        registerNewUserInvalidUserNameJsonTest                  :       Tests registering a new user without a
+                                                                        username.
+        registerNewUserJsonTest                                 :       Tests registering a valid new user.
+        registerExistingUserJsonTest                            :       Tests registering an already existing user.
+
+    Adding new todo , json content-type:
+        addToDoJsonTest                                         :       Tests adding a new todo to the list.
+
+    Updating an existing todo, json content-type:
+        updateExistingToDoJsonTest                              :       Tests updating an existing todo.
+        updateNonExistingToDoJsonTest                           :       Test updating a non existing todo.
+
+    Deleting an existing todo, json content-type:
+        deleteNonExistingToDoJsonTest                           :       Tests deleting a non existing todo.
+        deleteToDoJsonTest                                      :       Tests deleting a valid todo.
+
+
+xFormSuite:     This tests all the function with a non GET content-type, but instead testing with the json
+                content-type this is tested with the xform body type. note all the functions pretty much test the
+                same thing - only the format differs. in addition this suite does not test the login and the get
+                list api, as it is a GET type request, so no double testing is needed.
+
+    Registration json content-type test:
+        registerNewUserInvalidPasswordValidationJsonTest        :       Tests registering a new user while the
+                                                                        password validation field does not match the
+                                                                        password field.
+
+        registerNewUserInvalidFullNameJsonTest                  :       Tests registering a new user without
+                                                                        full name field remains empty.
+        registerNewUserInvalidUserNameJsonTest                  :       Tests registering a new user without a
+                                                                        username.
+        registerNewUserJsonTest                                 :       Tests registering a valid new user.
+        registerExistingUserJsonTest                            :       Tests registering an already existing user.
+
+    Adding new todo , json content-type:
+        addToDoJsonTest                                         :       Tests adding a new todo to the list.
+
+    Updating an existing todo, json content-type:
+        updateExistingToDoJsonTest                              :       Tests updating an existing todo.
+        updateNonExistingToDoJsonTest                           :       Test updating a non existing todo.
+
+    Deleting an existing todo, json content-type:
+        deleteNonExistingToDoJsonTest                           :       Tests deleting a non existing todo.
+        deleteToDoJsonTest                                      :       Tests deleting a valid todo.

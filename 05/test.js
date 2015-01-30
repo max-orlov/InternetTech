@@ -71,8 +71,12 @@ var xFormUser = alterUser(baseUser, 'xform');
  */
 function alterUser(user, postfix){
     var newUser = {};
-    for (var key in user)
-        newUser[key] = user[key] + postfix;
+    if (user)
+    for (var key in user) {
+            if (user[key])
+            newUser[key] = user[key] + postfix;
+        }
+
     return newUser;
 }
 
@@ -112,10 +116,13 @@ function next(subStr, callback) {
  * @param jsonObject the object to convert
  * @returns {string} as tring of xform which is equivelent to the json given
  */
-function jsonToXForm(jsonObject){
-    var strToReturn = ''
-    for (var key in jsonObject){
-        strToReturn += key + '=' + jsonObject[key] + '&'
+function jsonToXForm(jsonObject) {
+    var strToReturn = '';
+    if (jsonObject) {
+        for (var key in jsonObject) {
+            if (jsonObject[key])
+                strToReturn += key + '=' + jsonObject[key] + '&'
+        }
     }
     strToReturn = strToReturn.substr(0, strToReturn.length-1);
     return strToReturn
@@ -141,7 +148,9 @@ function nonExistingUserLoginTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 1)
                 next("You've passed nonExistingUserLoginTest", callback);
             else
-                next("You Failed nonExistingUserLoginTest   >>  You were not suppose to able to login with unregistered: " + jsonUser.username + "  >>  "  +jsonRes.msg);
+                next("You Failed nonExistingUserLoginTest   >>" +
+                "  You were not suppose to able to login with unregistered: " + jsonUser.username + "  >> " +
+                " "  +jsonRes.msg);
         })
     }).end();
 }
@@ -170,7 +179,8 @@ function loginInvalidPasswordTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 1 && jsonRes.msg.indexOf('Password is incorrect') !== -1)
                 next("You've passed loginInvalidPasswordTest", callback);
             else
-                next("You Failed loginInvalidPasswordTest   >>  You should have gotten an error while trying to login, as " +
+                next("You Failed loginInvalidPasswordTest   >>" +
+                "  You should have gotten an error while trying to login, as " +
                 mockUser.password + "!=" + jsonUser.password + "  >>  "  +jsonRes.msg);
         })
     }).end();
@@ -197,7 +207,8 @@ function loginTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 0)
                 next("You've passed loginTest", callback);
             else
-                next("You Failed loginTest   >>  You failed to login, when you should have succeeded " + "  >>  "  +jsonRes.msg);
+                next("You Failed loginTest   >>  You failed to login, when you should have succeeded " + "  >>" +
+                "  "  +jsonRes.msg);
         })
     }).end();
 }
@@ -244,9 +255,9 @@ function registerNewUserInvalidPasswordValidationJsonTest(testIndex, callback){
         password: jsonUser.password,
         passwordValidation: 'a'
     };
-    jsonUser.passwordValidation = 'a';
     var cred = JSON.stringify(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -258,7 +269,8 @@ function registerNewUserInvalidPasswordValidationJsonTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 1)
                 next("You've passed registerNewUserInvalidPasswordValidationJsonTest", callback);
             else
-                next("You Failed registerNewUserInvalidPasswordValidationJsonTest   >>  You should have gotten an error while trying to register, as " +
+                next("You Failed registerNewUserInvalidPasswordValidationJsonTest   >>" +
+                "  You should have gotten an error while trying to register, as " +
                 jsonUser.password + "!=" + jsonUser.passwordValidation + "  >>  " + jsonRes.msg);
             }
         )
@@ -280,7 +292,8 @@ function registerNewUserInvalidFullNameJsonTest(testIndex, callback){
         passwordValidation: jsonUser.passwordValidation
     };
     var cred = JSON.stringify(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -292,7 +305,9 @@ function registerNewUserInvalidFullNameJsonTest(testIndex, callback){
                 if (jsonRes && jsonRes.status === 1)
                     next("You've passed registerNewUserInvalidFullNameJsonTest", callback);
                 else
-                    next("You Failed registerNewUserInvalidFullNameJsonTest   >>  You should have gotten an error while trying to register, with fullanme=" + jsonUser.fullname + "  >>  " + jsonRes.msg);
+                    next("You Failed registerNewUserInvalidFullNameJsonTest   >>" +
+                    "  You should have gotten an error while trying to register, with fullName="
+                    + jsonUser.fullname + "  >>  " + jsonRes.msg);
             }
         )
     }).end(cred);
@@ -313,7 +328,8 @@ function registerNewUserInvalidUserNameJsonTest(testIndex, callback){
         passwordValidation: jsonUser.passwordValidation
     };
     var cred = JSON.stringify(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -325,7 +341,8 @@ function registerNewUserInvalidUserNameJsonTest(testIndex, callback){
                 if (jsonRes && jsonRes.status === 1)
                     next("You've passed registerNewUserInvalidUserNameJsonTest", callback);
                 else
-                    next("You Failed registerNewUserInvalidUserNameJsonTest   >>  You should have gotten an error while trying to register, as username=" +
+                    next("You Failed registerNewUserInvalidUserNameJsonTest   >>" +
+                    "  You should have gotten an error while trying to register, as username=" +
                     jsonUser.username + "  >>  " + jsonRes.msg);
             }
         )
@@ -342,7 +359,8 @@ function registerNewUserJsonTest(testIndex, callback){
 
     jsonUser.passwordValidation = jsonUser.password;
     var cred = JSON.stringify(jsonUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -354,7 +372,8 @@ function registerNewUserJsonTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 0)
                 next("You've passed registerNewUserJsonTest", callback);
             else
-                next("You Failed registerNewUserJsonTest   >>  You failed to register, when you should have succeeded   >>  " + jsonRes.msg);
+                next("You Failed registerNewUserJsonTest   >>" +
+                "  You failed to register, when you should have succeeded   >>  " + jsonRes.msg);
         })
     }).end(cred);
 }
@@ -366,9 +385,16 @@ function registerNewUserJsonTest(testIndex, callback){
  */
 function registerExistingUserJsonTest(testIndex, callback){
     process.stdout.write('starting test number ' + testIndex + '    >>  ');
+    var mockUser={
+        fullname: 'a',
+        username: jsonUser.username,
+        password: 'b',
+        passwordValidation: 'b'
 
-    var cred = JSON.stringify(jsonUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('json'));
+    };
+    var cred = JSON.stringify(mockUser);
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('json'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -380,7 +406,9 @@ function registerExistingUserJsonTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 1)
                 next("You've passed registerExistingUserJsonTest", callback);
             else
-                next("You Failed registerExistingUserJsonTest   >>  You succeded registering, although you shouldn't have, as the jsonUser :" + jsonUser.username + "alreay exists");
+                next("You Failed registerExistingUserJsonTest   >>" +
+                "  You succeded registering, although you shouldn't have, as the jsonUser :"
+                + mockUser.username + "already exists");
         })
     }).end(cred);
 }
@@ -394,7 +422,8 @@ function addToDoJsonTest(testIndex, callback){
     process.stdout.write('starting test number ' + testIndex + '    >>  ');
 
     var newToDo = JSON.stringify(todo);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'POST', 'close', newToDo.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'POST', 'close', newToDo.length, mimeType.getMimeType('json'));
     var buff = '';
     options.headers.cookie = httpApi.cookie;
 
@@ -407,7 +436,8 @@ function addToDoJsonTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 0)
                 next("You've passed addToDoJsonTest", callback);
             else
-                next("You Failed addToDoJsonTest   >>  You failed to add a todo item, when you should have succeeded " + "  >>  "  +jsonRes.msg);
+                next("You Failed addToDoJsonTest   >>  You failed to add a todo item, when you should have succeeded" +
+                " " + "  >>  "  +jsonRes.msg);
         })
     }).end(newToDo);
 }
@@ -426,7 +456,8 @@ function updateNonExistingToDoJsonTest(testIndex, callback){
     };
     var updateToDoStr = JSON.stringify(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -441,7 +472,8 @@ function updateNonExistingToDoJsonTest(testIndex, callback){
                 next("You've passed updateNonExistingToDoJsonTest", callback);
             }
             else
-                next("You Failed updateNonExistingToDoJsonTest   >>  You Manages to Update the with the wrond id " + "  >>  "  + jsonRes.status);
+                next("You Failed updateNonExistingToDoJsonTest   >>" +
+                "  You Manages to Update the with the wrond id " + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -460,7 +492,8 @@ function updateExistingToDoJsonTest(testIndex, callback){
     };
     var updateToDoStr = JSON.stringify(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -472,7 +505,8 @@ function updateExistingToDoJsonTest(testIndex, callback){
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'GET', 'close', 0, mimeType.getMimeType('json'));
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+                    'GET', 'close', 0, mimeType.getMimeType('json'));
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';
@@ -487,14 +521,16 @@ function updateExistingToDoJsonTest(testIndex, callback){
                         if (todoEntry.id === 0 && todoEntry.value.substr(updateToDo['value']) != -1)
                             next("You've passed updateExistingToDoJsonTest", callback);
                         else
-                            next("You Failed updateExistingToDoJsonTest   >>  You failed to get the list " + "  >>  "  + listJsonRes.msg);
+                            next("You Failed updateExistingToDoJsonTest   >>  You failed to get the list "
+                            + "  >>  "  + listJsonRes.msg);
                     })
                 }).end();
 
 
             }
             else
-                next("You Failed updateExistingToDoJsonTest   >>  You failed to Update the list " + "  >>  "  + jsonRes.status);
+                next("You Failed updateExistingToDoJsonTest   >>  You failed to Update the list "
+                + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -511,7 +547,8 @@ function deleteNonExistingToDoJsonTest(testIndex, callback){
     };
     var updateToDoStr = JSON.stringify(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -526,7 +563,8 @@ function deleteNonExistingToDoJsonTest(testIndex, callback){
                 next("You've passed deleteNonExistingToDoJsonTest", callback);
             }
             else
-                next("You Failed deleteNonExistingToDoJsonTest   >>  You Manages to delete a non existing entry" + "  >>  "  + jsonRes.status);
+                next("You Failed deleteNonExistingToDoJsonTest   >> " +
+                " You Manages to delete a non existing entry" + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -544,7 +582,8 @@ function deleteToDoJsonTest(testIndex, callback) {
     };
     var updateToDoStr = JSON.stringify(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('json'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -556,7 +595,8 @@ function deleteToDoJsonTest(testIndex, callback) {
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'GET', 'close', 0, mimeType.getMimeType('json'));
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+                    'GET', 'close', 0, mimeType.getMimeType('json'));
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';
@@ -569,14 +609,16 @@ function deleteToDoJsonTest(testIndex, callback) {
                         if (listJsonRes.length === 0)
                             next("You've passed deleteToDoJsonTest", callback);
                         else
-                            next("You Failed deleteToDoJsonTest   >>  You failed to get the list " + "  >>  "  + listJsonRes.msg);
+                            next("You Failed deleteToDoJsonTest   >>  You failed to get the list " +
+                            "  >>  "  + listJsonRes.msg);
                     })
                 }).end();
 
 
             }
             else
-                next("You Failed deleteToDoJsonTest   >>  You failed to Update the list " + "  >>  "  + jsonRes.status);
+                next("You Failed deleteToDoJsonTest   >>  You failed to Update the list " +
+                "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -597,7 +639,8 @@ function registerNewUserInvalidPasswordValidationXformTest(testIndex, callback){
     };
     jsonUser.passwordValidation = 'a';
     var cred = jsonToXForm(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('xform'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -609,7 +652,8 @@ function registerNewUserInvalidPasswordValidationXformTest(testIndex, callback){
                 if (jsonRes && jsonRes.status === 1)
                     next("You've passed registerNewUserInvalidPasswordValidationXformTest", callback);
                 else
-                    next("You Failed registerNewUserInvalidPasswordValidationXformTest   >>  You should have gotten an error while trying to register, as " +
+                    next("You Failed registerNewUserInvalidPasswordValidationXformTest   >>" +
+                    "  You should have gotten an error while trying to register, as " +
                     xFormUser.password + "!=" + xFormUser.passwordValidation + "  >>  " + jsonRes.msg);
             }
         )
@@ -631,7 +675,8 @@ function registerNewUserInvalidFullNameXformTest(testIndex, callback){
         passwordValidation: xFormUser.passwordValidation
     };
     var cred = jsonToXForm(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('xform'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -643,7 +688,9 @@ function registerNewUserInvalidFullNameXformTest(testIndex, callback){
                 if (jsonRes && jsonRes.status === 1)
                     next("You've passed registerNewUserInvalidPasswordValidationXformTest", callback);
                 else
-                    next("You Failed registerNewUserInvalidFullNameJsonTest   >>  You should have gotten an error while trying to register, with fullanme=" + xFormUser.fullname + "  >>  " + jsonRes.msg);
+                    next("You Failed registerNewUserInvalidFullNameJsonTest   >> " +
+                    " You should have gotten an error while trying to register, with fullanme=" +
+                    xFormUser.fullname + "  >>  " + jsonRes.msg);
             }
         )
     }).end(cred);
@@ -664,7 +711,8 @@ function registerNewUserInvalidUserNameXformTest(testIndex, callback){
         passwordValidation: xFormUser.passwordValidation
     };
     var cred = jsonToXForm(mockUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('xform'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -676,7 +724,8 @@ function registerNewUserInvalidUserNameXformTest(testIndex, callback){
                 if (jsonRes && jsonRes.status === 1)
                     next("You've passed registerNewUserInvalidUserNameXformTest", callback);
                 else
-                    next("You Failed registerNewUserInvalidUserNameJsonTest   >>  You should have gotten an error while trying to register, as username=" +
+                    next("You Failed registerNewUserInvalidUserNameJsonTest   >> " +
+                    " You should have gotten an error while trying to register, as username=" +
                     xFormUser.username + "  >>  " + jsonRes.msg);
             }
         )
@@ -693,7 +742,8 @@ function registerNewUserXformTest(testIndex, callback){
 
     jsonUser.passwordValidation = jsonUser.password;
     var cred = jsonToXForm(xFormUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('xform'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -705,7 +755,8 @@ function registerNewUserXformTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 0)
                 next("You've passed registerNewUserXformTest", callback);
             else
-                next("You Failed registerNewUserXformTest   >>  You failed to register, when you should have succeeded   >>  " + jsonRes.msg);
+                next("You Failed registerNewUserXformTest   >>" +
+                "  You failed to register, when you should have succeeded   >>  " + jsonRes.msg);
         })
     }).end(cred);
 }
@@ -718,9 +769,16 @@ function registerNewUserXformTest(testIndex, callback){
 
 function registerExistingUserXformTest(testIndex, callback){
     process.stdout.write('starting test number ' + testIndex + '    >>  ');
+    var mockUser={
+        fullname: 'a',
+        username: xFormUser.username,
+        password: 'b',
+        passwordValidation: 'b'
 
-    var cred = jsonToXForm(xFormUser);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '', 'POST', 'close', cred.length, mimeType.getMimeType('xform'));
+    };
+    var cred = jsonToXForm(mockUser);
+    var options = generateOptions(httpApi.url, httpApi.lport, '/register', '', '',
+        'POST', 'close', cred.length, mimeType.getMimeType('xform'));
     var buff = '';
 
     http.request(options, function (response) {
@@ -732,7 +790,9 @@ function registerExistingUserXformTest(testIndex, callback){
             if (jsonRes && jsonRes.status === 1)
                 next("You've passed registerExistingUserXformTest", callback);
             else
-                next("You Failed registerExistingUserXformTest   >>  You succeded registering, although you shouldn't have, as the jsonUser :" + xFormUser.username + "alreay exists");
+                next("You Failed registerExistingUserXformTest   >>" +
+                "  You succeded registering, although you shouldn't have, as the jsonUser :" +
+                mockUser.username + "already exists");
         })
     }).end(cred);
 }
@@ -746,7 +806,8 @@ function addToDoXFormTest(testIndex, callback){
     process.stdout.write('starting test number ' + testIndex + '    >>  ');
 
     var newToDo = jsonToXForm(todo);
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'POST', 'close', newToDo.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'POST', 'close', newToDo.length, mimeType.getMimeType('xform'));
     var buff = '';
     options.headers.cookie = httpApi.cookie;
 
@@ -761,7 +822,8 @@ function addToDoXFormTest(testIndex, callback){
                 next("You've passed addToDoXFormTest", callback);
             }
             else
-                next("You Failed addToDoXFormTest   >>  You failed to add a todo item, when you should have succeeded " + "  >>  "  +jsonRes.msg);
+                next("You Failed addToDoXFormTest   >>" +
+                "  You failed to add a todo item, when you should have succeeded " + "  >>  "  +jsonRes.msg);
         })
     }).end(newToDo);
 }
@@ -780,7 +842,8 @@ function updateExistingToDoXFormTest(testIndex, callback){
     };
     var updateToDoStr = jsonToXForm(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -792,7 +855,8 @@ function updateExistingToDoXFormTest(testIndex, callback){
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'GET', 'close', 0, mimeType.getMimeType('json'));
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+                    'GET', 'close', 0, mimeType.getMimeType('json'));
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';
@@ -807,14 +871,16 @@ function updateExistingToDoXFormTest(testIndex, callback){
                         if (todoEntry.id === 1 && todoEntry.value.substr(updateToDo['value']) != -1)
                             next("You've passed updateExistingToDoXFormTest", callback);
                         else
-                            next("You Failed updateExistingToDoXFormTest   >>  You failed to get the list " + "  >>  "  + listJsonRes.msg);
+                            next("You Failed updateExistingToDoXFormTest   >>" +
+                            "  You failed to get the list " + "  >>  "  + listJsonRes.msg);
                     })
                 }).end();
 
 
             }
             else
-                next("You Failed updateExistingToDoXFormTest   >>  You failed to Update the list " + "  >>  "  + jsonRes.status);
+                next("You Failed updateExistingToDoXFormTest   >>" +
+                "  You failed to Update the list " + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -833,7 +899,8 @@ function updateNonExistingToDoXFormTest(testIndex, callback){
     };
     var updateToDoStr = JSON.stringify(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -848,7 +915,8 @@ function updateNonExistingToDoXFormTest(testIndex, callback){
                 next("You've passed updateNonExistingToDoXFormTest", callback);
             }
             else
-                next("You Failed updateNonExistingToDoXFormTest   >>  You Manages to Update the with the wrond id " + "  >>  "  + jsonRes.status);
+                next("You Failed updateNonExistingToDoXFormTest   >>" +
+                "  You Manages to Update the with the wrond id " + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -866,7 +934,8 @@ function deleteToDoXFormTest(testIndex, callback) {
     };
     var updateToDoStr = jsonToXForm(deleteToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'DELETE', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -878,7 +947,8 @@ function deleteToDoXFormTest(testIndex, callback) {
         response.on('end', function () {
             var jsonRes = JSON.parse(buff);
             if (jsonRes.status === 0) {
-                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'GET', 'close', 0, '');
+                var listOpt = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+                    'GET', 'close', 0, '');
                 listOpt.headers.cookie = httpApi.cookie;
 
                 var listBuff = '';
@@ -891,14 +961,16 @@ function deleteToDoXFormTest(testIndex, callback) {
                         if (listJsonRes.length === 0)
                             next("You've passed deleteToDoXFormTest", callback);
                         else
-                            next("You Failed deleteToDoXFormTest   >>  You failed to get the list " + "  >>  "  + listJsonRes.msg);
+                            next("You Failed deleteToDoXFormTest   >>  You failed to get the list " +
+                            "  >>  "  + listJsonRes.msg);
                     })
                 }).end();
 
 
             }
             else
-                next("You Failed deleteToDoXFormTest   >>  You failed to Update the list " + "  >>  "  + jsonRes.status);
+                next("You Failed deleteToDoXFormTest   >>  You failed to Update the list " +
+                "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -915,7 +987,8 @@ function deleteNonExistingToDoXFormTest(testIndex, callback){
     };
     var updateToDoStr = jsonToXForm(updateToDo);
 
-    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '', 'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
+    var options = generateOptions(httpApi.url, httpApi.lport, '/item', '', '',
+        'PUT', 'close', updateToDoStr.length, mimeType.getMimeType('xform'));
     options.headers.cookie = httpApi.cookie;
 
     var buff = '';
@@ -930,7 +1003,8 @@ function deleteNonExistingToDoXFormTest(testIndex, callback){
                 next("You've passed deleteNonExistingToDoXFormTest", callback);
             }
             else
-                next("You Failed deleteNonExistingToDoXFormTest   >>  You Manages to delete a non existing entry" + "  >>  "  + jsonRes.status);
+                next("You Failed deleteNonExistingToDoXFormTest   >>" +
+                "  You Manages to delete a non existing entry" + "  >>  "  + jsonRes.status);
         })
     }).end(updateToDoStr);
 }
@@ -979,7 +1053,7 @@ function jsonSuite(suiteIndex, callback){
  * @param suiteIndex the number of the suite
  * @param callback a callback to the next suite
  */
-function xFormSuite(suiteIndex, callback) {
+function xFormSuite(suiteIndex) {
     console.log('~~~starting json based number ' + suiteIndex + '~~~');
 
     testSequence(
