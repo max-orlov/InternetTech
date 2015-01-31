@@ -18,25 +18,26 @@ var start = function() {
 
             server.use('/app', hujiwebserver.static('/www/'));
 
-            server.get('/aloha', function (request, response) {
+            server.get('/welcome', function (request, response) {
                 var user = users.getUserBySessionId(request.cookies['sessionId']);
                 response.status(200);
                 if (user) {
-                    response.json({list: data.list(user.id), listSize: data.todos.size()});
+                    response.json({status: 0, list: data.list(user.id), listSize: data.todos.size()});
                 }
                 else {
-                    response.send();
+                    response.json({status: 1, msg: "User is not logged in"});
                 }
             });
 
-            server.get('/mahalo', function (request, response) {
+            server.get('/logout', function (request, response) {
                 if (request.cookies && request.cookies['sessionId']) {
                     var sessionId = users.getUserBySessionId(request.cookies['sessionId']).session.sessionId;
+                    response.status(200);
                     if (sessionId) {
                         users.getUserBySessionId(request.cookies['sessionId']).session.expirationDate = Date.now() - 1;
                         response.cookie('sessionId', sessionId, {expires: 0});
-                        response.status(200).send();
                     }
+                    response.send('')
                 }
             });
 

@@ -10,12 +10,12 @@ var loginScreen             = document.getElementById('login'),
 /**
  * Initialized the first contact of the user with the server - checking for cookies etc...
  */
-function aloha(){
+function welcome(){
     $.ajax( {
-        url: '/aloha',
+        url: '/welcome',
         type: 'GET',
         success: function (result, status, xhr) {
-            if (result !== ''){
+            if (result.status === 0){
                 displayTodoScreen();
                 populateList(result.list);
                 updateEnvironment();
@@ -393,7 +393,7 @@ function injectTodo(todo) {
  */
 function logout() {
     $.ajax( {
-        url: '/mahalo',
+        url: '/logout',
         type: 'GET',
         success: function (result, status, xhr) {
             clearLoginInfo();
@@ -456,4 +456,4 @@ function clearLoginInfo() {
     document.getElementById("login_password").value = "";
 }
 
-aloha();
+welcome();
