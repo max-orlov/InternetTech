@@ -16,7 +16,7 @@ var start = function() {
 
             server.use('/', RequestBodyHandler());
 
-            server.use('/app', hujiwebserver.static('/www/'));
+            server.use('/', hujiwebserver.static('/www/'));
 
             server.get('/welcome', function (request, response) {
                 var user = users.getUserBySessionId(request.cookies['sessionId']);
