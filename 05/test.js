@@ -4,8 +4,6 @@ var http            = require('http'),
 
 
 
-// Starting up server
-server.startServer();
 
 var httpApi={
     url: 'localhost',
@@ -1016,7 +1014,7 @@ function deleteNonExistingToDoXFormTest(testIndex, callback){
  * @param callback a callback to the next suite
  */
 function jsonSuite(suiteIndex, callback){
-    console.log('~~~starting xform based number ' + suiteIndex + '~~~');
+    console.log('~~~starting json based number ' + suiteIndex + '~~~');
 
     testSequence(
         [
@@ -1054,7 +1052,7 @@ function jsonSuite(suiteIndex, callback){
  * @param callback a callback to the next suite
  */
 function xFormSuite(suiteIndex) {
-    console.log('~~~starting json based number ' + suiteIndex + '~~~');
+    console.log('~~~starting xform based number ' + suiteIndex + '~~~');
 
     testSequence(
         [
@@ -1073,8 +1071,8 @@ function xFormSuite(suiteIndex) {
             updateNonExistingToDoXFormTest,
             // Testing Deletion
             deleteToDoXFormTest,
-            deleteNonExistingToDoXFormTest
-
+            deleteNonExistingToDoXFormTest,
+            server.stopServer
         ]
     )();
 }
