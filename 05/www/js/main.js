@@ -109,7 +109,7 @@ function addTodo() {
 
             },
             error: function (xhr, status, error) {
-                if (xhr.status == 400) {
+                if (xhr.status === 400) {
                     loginErrorMessage.innerHTML = error;
                     displayLoginScreen();
                 } else {
@@ -165,7 +165,7 @@ function getList() {
             updateEnvironment();
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
@@ -202,7 +202,7 @@ function updateTodo(todoId) {
             updateEnvironment();
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
@@ -229,7 +229,7 @@ function editTodo(todoId) {
 
     var input = document.createElement('input');
     input.className = 'edit';
-    input.setAttribute('onkeydown', 'if (event.keyCode == 13) updateTodo(' + todoId + ')');
+    input.setAttribute('onkeydown', 'if (event.keyCode === 13) updateTodo(' + todoId + ')');
     input.setAttribute('onblur', 'updateTodo(' + todoId + ')');
 
     listTodo.appendChild(input);
@@ -251,7 +251,7 @@ function deleteTodo(todoId) {
             getList();
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
@@ -288,7 +288,7 @@ function completeTodo(todoId) {
             updateEnvironment();
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
@@ -326,7 +326,7 @@ function completeAll() {
             updateEnvironment();
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
@@ -348,7 +348,7 @@ function clearCompleted() {
             getList()
         },
         error: function (xhr, status, error) {
-            if (xhr.status == 400) {
+            if (xhr.status === 400) {
                 loginErrorMessage.innerHTML = error;
                 displayLoginScreen();
             } else {
