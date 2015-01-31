@@ -9,7 +9,7 @@ var httpApi={
     url: 'localhost',
     lport: 8888,
     cookies: ''
-    };
+};
 
 /**
  * Generates the options for an http request
@@ -45,7 +45,7 @@ function generateOptions(host, port, path, username, password, method, connectio
  */
 var baseUser = {
     fullname: "fullName",
-    username: "jsonUser",
+    username: "user",
     password: "pass",
     passwordValidation: "pass"
 };
@@ -69,11 +69,15 @@ var xFormUser = alterUser(baseUser, 'xform');
  */
 function alterUser(user, postfix){
     var newUser = {};
-    if (user)
-    for (var key in user) {
-            if (user[key])
-            newUser[key] = user[key] + postfix;
+    if (user) {
+        for (var key in user) {
+            if (user.hasOwnProperty(key)) {
+                if (user[key]) {
+                    newUser[key] = user[key] + postfix;
+                }
+            }
         }
+    }
 
     return newUser;
 }
@@ -102,10 +106,10 @@ function testSequence(funcs) {
 function next(subStr, callback) {
     console.log(subStr);
     if (callback !== undefined )
-            callback();
+        callback();
     else {
         console.log("You are done");
-        //server.stopServer();
+        server.stopServer();
     }
 }
 
@@ -118,8 +122,10 @@ function jsonToXForm(jsonObject) {
     var strToReturn = '';
     if (jsonObject) {
         for (var key in jsonObject) {
-            if (jsonObject[key])
-                strToReturn += key + '=' + jsonObject[key] + '&'
+            if (jsonObject.hasOwnProperty(key)) {
+                if (jsonObject[key])
+                    strToReturn += key + '=' + jsonObject[key] + '&'
+            }
         }
     }
     strToReturn = strToReturn.substr(0, strToReturn.length-1);
@@ -263,13 +269,13 @@ function registerNewUserInvalidPasswordValidationJsonTest(testIndex, callback){
             buff += chunk;
         });
         response.on('end', function () {
-            var jsonRes = JSON.parse(buff);
-            if (jsonRes && jsonRes.status === 1)
-                next("You've passed registerNewUserInvalidPasswordValidationJsonTest", callback);
-            else
-                next("You Failed registerNewUserInvalidPasswordValidationJsonTest   >>" +
-                "  You should have gotten an error while trying to register, as " +
-                jsonUser.password + "!=" + jsonUser.passwordValidation + "  >>  " + jsonRes.msg);
+                var jsonRes = JSON.parse(buff);
+                if (jsonRes && jsonRes.status === 1)
+                    next("You've passed registerNewUserInvalidPasswordValidationJsonTest", callback);
+                else
+                    next("You Failed registerNewUserInvalidPasswordValidationJsonTest   >>" +
+                    "  You should have gotten an error while trying to register, as " +
+                    jsonUser.password + "!=" + jsonUser.passwordValidation + "  >>  " + jsonRes.msg);
             }
         )
     }).end(cred);
@@ -1049,7 +1055,6 @@ function jsonSuite(suiteIndex, callback){
 /**
  * This suite tests all the xform type content-types.
  * @param suiteIndex the number of the suite
- * @param callback a callback to the next suite
  */
 function xFormSuite(suiteIndex) {
     console.log('~~~starting xform based number ' + suiteIndex + '~~~');
@@ -1071,8 +1076,7 @@ function xFormSuite(suiteIndex) {
             updateNonExistingToDoXFormTest,
             // Testing Deletion
             deleteToDoXFormTest,
-            deleteNonExistingToDoXFormTest,
-            server.stopServer
+            deleteNonExistingToDoXFormTest
         ]
     )();
 }
